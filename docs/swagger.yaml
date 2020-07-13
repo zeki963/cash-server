@@ -1,0 +1,31 @@
+info:
+  contact: {}
+  license: {}
+paths:
+  /json_post:
+    post:
+      parameters:
+      - description: Name 名稱
+        in: query
+        name: name
+        required: true
+        type: string
+      - description: Message
+        in: query
+        name: message
+        required: true
+        type: string
+      - description: Num
+        in: query
+        name: num
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code":"200","message":"","name":"","num":"","status":"SUCCESS"}'
+          schema:
+            type: string
+      summary: JSONtestPost
+swagger: "2.0"

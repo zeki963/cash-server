@@ -1,0 +1,48 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "contact": {},
+        "license": {}
+    },
+    "paths": {
+        "/json_post": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "JSONtestPost",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Name 名稱",
+                        "name": "name",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Message",
+                        "name": "message",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Num",
+                        "name": "num",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\":\"200\",\"message\":\"\",\"name\":\"\",\"num\":\"\",\"status\":\"SUCCESS\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
