@@ -110,9 +110,9 @@ func ginlog() {
 	gin.DefaultWriter = io.MultiWriter(f)
 }
 
-//NoResponse 请求的url不存在，返回404
+//NoResponse 不存在，返回404
 func NoResponse(c *gin.Context) {
-	//返回404状态码
+	//返回404
 	c.JSON(http.StatusNotFound, gin.H{
 		"status": 404,
 		"error":  "404, page not exists!",

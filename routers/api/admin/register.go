@@ -1,6 +1,9 @@
 package admin
 
 import (
+	madmin "cash-server/model"
+	"cash-server/pkg/encryption"
+	"cash-server/pkg/util"
 	"log"
 	"net/http"
 
@@ -16,18 +19,29 @@ import (
 // @Param cqikey formData string true "cqikey"
 // @success 200 {string} string "{"name":"test","token":"123456","status":"SUCCESS"}"
 // @success 400 {string} string "{"status":"FAIL"}"
-// @Router /register [post]
+// @Router /admin/register [post]
 func RegisterServer(c *gin.Context) {
 	name := c.PostForm("name")
 	cqikey := c.PostForm("cqikey")
-	token := "123456"
 	if name != "" && cqikey == "cqig7777" {
-		log.Println(name, token)
-		c.JSON(http.StatusOK, gin.H{
-			"status": "SUCCESS",
-			"name":   name,
-			"token":  token,
-		})
+		token := encryption.Md5(name + "123")
+
+		time := util.GETNowsqltime()
+		log.Println(name, token, time)
+		err := madmin.InsertServer(name, token, time)
+		if err != nil {
+			c.JSON(400, gin.H{
+				"status": err,
+			})
+
+		} else {
+			c.JSON(http.StatusOK, gin.H{
+				"status": "success",
+				"name":   name,
+				"token":  token,
+				"time":   time,
+			})
+		}
 	} else {
 		c.JSON(400, gin.H{
 			"status": "FAIL",

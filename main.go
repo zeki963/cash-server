@@ -3,6 +3,7 @@ package main
 import (
 	config "cash-server/configs"
 	db "cash-server/database"
+
 	encryption "cash-server/pkg/encryption"
 	flag "cash-server/pkg/flag"
 	util "cash-server/pkg/util"
@@ -10,8 +11,8 @@ import (
 )
 
 func init() {
+	util.Success(" < - SERVER INIT - > ")
 	encryption.Md5("123")
-	//println(Dblink)
 	flag.StartFlag()
 }
 
@@ -20,7 +21,7 @@ func init() {
 // @description This is a sample API server .
 
 // @contact.name  CQI-SERVICES
-// @contact.url http://www.cqiserv.com/
+// @contact.url https://www.cqiserv.com/
 // @contact.email zor@cqiserv.com
 func main() {
 	// server start

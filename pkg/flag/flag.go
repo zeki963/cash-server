@@ -2,6 +2,8 @@ package flag
 
 import (
 	config "cash-server/configs"
+	db "cash-server/database"
+
 	"cash-server/pkg/util"
 	"flag"
 	"fmt"
@@ -43,11 +45,12 @@ func StartFlag() {
 	util.Info("[MODE] " + config.GetGlobalConfig().RunMode)
 	if mod == "release" {
 		// release mode
-		//db.Dbcannot(Dblink)
+
 	} else {
 		// test mode
 	}
 	util.Info(config.MySQL.DSN(config.GetGlobalConfig().MySQL))
+	db.Dbcannot(config.MySQL.DSN(config.GetGlobalConfig().MySQL))
 }
 
 //usage 說明文件

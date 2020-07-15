@@ -1,5 +1,5 @@
 # 運行模式 (debug:調試,test:測試,release:正式)
-run_mode = "debug"
+run_mode = "test"
 
 # swagger 配置
 swagger = true
@@ -9,9 +9,9 @@ https =false
 
 # mysql 
 [mysql]
-host = "127.0.0.1"
-port= 3306
+host = "34.92.36.107"
+port= 32001
 user = "root"
 password = "cqig7777"
-db_name = "test"
+db_name = "zor"
 parameters = "parseTime=true"
