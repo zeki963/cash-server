@@ -18,7 +18,11 @@ var doc = `{
     "info": {
         "description": "{{.Description}}",
         "title": "{{.Title}}",
-        "contact": {},
+        "contact": {
+            "name": "CQI-SERVICES",
+            "url": "http://www.cqiserv.com/",
+            "email": "zor@cqiserv.com"
+        },
         "license": {},
         "version": "{{.Version}}"
     },
@@ -63,6 +67,87 @@ var doc = `{
                     }
                 }
             }
+        },
+        "/list": {
+            "post": {
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "ListServer",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "cqikey",
+                        "name": "cqikey",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"status\":\"SUCCESS\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "{\"status\":\"FAIL\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/register": {
+            "post": {
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "RegisterServer",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Name",
+                        "name": "name",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "cqikey",
+                        "name": "cqikey",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"name\":\"test\",\"token\":\"123456\",\"status\":\"SUCCESS\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "{\"status\":\"FAIL\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
         }
     }
 }`
@@ -78,12 +163,12 @@ type swaggerInfo struct {
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = swaggerInfo{
-	Version:     "",
+	Version:     "2020.1.08.1.1.3.1.a",
 	Host:        "",
 	BasePath:    "",
 	Schemes:     []string{},
-	Title:       "",
-	Description: "",
+	Title:       "金流SERVER API",
+	Description: "This is a sample API server .",
 }
 
 type s struct{}

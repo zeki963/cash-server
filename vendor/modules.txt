@@ -1,5 +1,8 @@
 # cloud.google.com/go v0.34.0
 cloud.google.com/go/compute/metadata
+# github.com/BurntSushi/toml v0.3.1
+## explicit
+github.com/BurntSushi/toml
 # github.com/KyleBanks/depth v1.2.1
 github.com/KyleBanks/depth
 # github.com/PuerkitoBio/purell v1.1.1

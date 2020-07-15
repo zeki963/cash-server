@@ -1,6 +1,7 @@
 package flag
 
 import (
+	config "cash-server/configs"
 	"cash-server/pkg/util"
 	"flag"
 	"fmt"
@@ -13,12 +14,12 @@ var (
 	t          bool
 	s          string
 	appversion = "v1"
-
-	modelFile string
-	testMod   bool = false
+	modelFile  string
+	mod        string = config.GetGlobalConfig().RunMode
 )
 
 func init() {
+
 	flag.BoolVar(&h, "h", false, "This help")
 	flag.BoolVar(&v, "v", false, "Show version and exit")
 	flag.BoolVar(&t, "t", false, "Test mode")
@@ -27,6 +28,7 @@ func init() {
 
 //StartFlag  初始化Flag
 func StartFlag() {
+	config.LoadGlobalConfig("")
 	flag.Parse()
 	if h {
 		flag.Usage()
@@ -35,16 +37,17 @@ func StartFlag() {
 		util.Info(appversion)
 	}
 	if t {
-		testMod = true
+		mod = "test"
 	}
 
-	if testMod == false {
-		// db.Dbcannot(dblink)
+	util.Info("[MODE] " + config.GetGlobalConfig().RunMode)
+	if mod == "release" {
+		// release mode
+		//db.Dbcannot(Dblink)
 	} else {
-		util.Info(" Test Mode ")
-
+		// test mode
 	}
-
+	util.Info(config.MySQL.DSN(config.GetGlobalConfig().MySQL))
 }
 
 //usage 說明文件
@@ -56,9 +59,4 @@ Options:
 `)
 	flag.PrintDefaults()
 	os.Exit(0)
-}
-
-//SettestMod 設定
-func SettestMod(tf bool) {
-	testMod = tf
 }

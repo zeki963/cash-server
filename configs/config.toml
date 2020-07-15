@@ -1,93 +1,17 @@
 # 運行模式 (debug:調試,test:測試,release:正式)
 run_mode = "debug"
 
-# casbin模型配置文件(也可以啟動服務時使用-m指定)
-casbin_model_conf = ""
+# swagger 配置
+swagger = true
 
-# 數據存儲(支持：gorm)
-store = "gorm"
+# 443 配置
+https =false
 
-# 是否允許初始化菜單數據(檢查當前數據庫中是否存在菜單數據，如果不存在則執行數據初始化)
-allow_init_menu = true
-
-# 是否啟用casbin鑒權
-enable_casbin = true
-
-# 日志配置
-[log]
-# 日志級別(1:fatal 2:error,3:warn,4:info,5:debug)
-level = 4
-# 日志格式（支持輸出格式：text/json）
-format = "json"
-# 日志輸出(支持：stdout/stderr/file)
-output = "file"
-# 指定日志輸出的文件路徑
-output_file = "log/ginadmin.log"
-# 是否啟用日志鉤子
-enable_hook = true
-# 日志鉤子(支持：gorm)
-hook = "gorm"
-# 寫入鉤子的最大工作線程數量
-hook_max_thread = 1
-# 寫入鉤子的最大緩沖區數量
-hook_max_buffer = 512
-
-# 日志gorm鉤子配置
-[log_gorm_hook]
-# 數據庫類型(目前支持的數據庫類型：mysql/sqlite3/postgres)
-db_type = "mysql"
-# 設置連接可以重用的最長時間(單位：秒)
-max_lifetime = 7200
-# 設置數據庫的最大打開連接數
-max_open_conns = 1
-# 設置空閑連接池中的最大連接數
-max_idle_conns = 1
-# 數據庫表名
-table = "g_logger"
-
-
-# redis配置
-[redis]
-# 地址
-addr = "192.168.10.213:6381"
-# 密碼
-password = ""
-
-# gorm配置
-[gorm]
-# 是否開啟調試模式
-debug = false
-# 數據庫類型(目前支持的數據庫類型：mysql/sqlite3/postgres)
-db_type = "mysql"
-# 設置連接可以重用的最長時間(單位：秒)
-max_lifetime = 7200
-# 設置數據庫的最大打開連接數
-max_open_conns = 150
-# 設置空閑連接池中的最大連接數
-max_idle_conns = 50
-# 數據庫表名前綴
-table_prefix = "g_"
-
-# mysql數據庫配置
+# mysql 
 [mysql]
-# 連接地址
 host = "127.0.0.1"
-# 連接端口
 port= 3306
-# 用戶名
 user = "root"
-# 密碼
 password = "cqig7777"
-# 數據庫
 db_name = "test"
-# 連接參數
 parameters = "parseTime=true"
-
-#mongodb數據庫配置
-[mongodb]
-# 連接地址
-url = "mongodb://192.168.10.213:27017"
-# 數據庫
-db_name = "blueprints"
-
-
