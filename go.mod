@@ -19,6 +19,7 @@ require (
 	github.com/line/line-bot-sdk-go v7.4.0+incompatible
 	github.com/mailru/easyjson v0.7.1 // indirect
 	github.com/oleiade/reflections v1.0.0 // indirect
+	github.com/sirupsen/logrus v1.6.0
 	github.com/swaggo/gin-swagger v1.2.0
 	github.com/swaggo/swag v1.6.7
 	golang.org/x/net v0.0.0-20200707034311-ab3426394381 // indirect

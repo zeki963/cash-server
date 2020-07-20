@@ -53,6 +53,7 @@ type Config struct {
 	RunMode string `toml:"run_mode"`
 	Swagger bool   `toml:"swagger"`
 	HTTPS   bool   `toml:"https"`
+	Logger  bool   `toml:"logger"`
 	MySQL   MySQL  `toml:"mysql"`
 }
 

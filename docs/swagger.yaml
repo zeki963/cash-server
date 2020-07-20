@@ -2,16 +2,54 @@ info:
   contact:
     email: zor@cqiserv.com
     name: CQI-SERVICES
-    url: http://www.cqiserv.com/
+    url: https://www.cqiserv.com/
   description: This is a sample API server .
   license: {}
   title: 金流SERVER API
   version: 2020.1.08.1.1.3.1.a
 paths:
+  /admin/register:
+    post:
+      consumes:
+      - application/x-www-form-urlencoded
+      parameters:
+      - description: Name
+        in: formData
+        name: name
+        required: true
+        type: string
+      - description: account
+        in: formData
+        name: account
+        required: true
+        type: string
+      - description: password
+        in: formData
+        name: password
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: '{"name":"zor","status":"success","time":"2020-07-20 17:25:55","token":"Hqlur4OpUJveSpdy6rm+iw","tokenSecret":"Qvx5CXbGiZ5u1JdF"}'
+          schema:
+            type: string
+        "400":
+          description: '{"status":"FAIL"}'
+          schema:
+            type: string
+        "411":
+          description: '{"status":"FAIL"}'
+          schema:
+            type: string
+      summary: UserRegisterServer
+      tags:
+      - Admin
   /json_post:
     post:
       parameters:
-      - description: Name 名稱
+      - description: Name
         in: query
         name: name
         required: true
@@ -58,7 +96,7 @@ paths:
       summary: ListServer
       tags:
       - Admin
-  /register:
+  /test/A:
     post:
       consumes:
       - application/x-www-form-urlencoded
@@ -84,7 +122,7 @@ paths:
           description: '{"status":"FAIL"}'
           schema:
             type: string
-      summary: RegisterServer
+      summary: TestRegisterServer
       tags:
-      - Admin
+      - Test
 swagger: "2.0"

@@ -5,7 +5,10 @@ run_mode = "test"
 swagger = true
 
 # 443 配置
-https =false
+https = false
+
+# Logger 配置
+logger = true
 
 # mysql 
 [mysql]

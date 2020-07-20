@@ -20,7 +20,7 @@ var doc = `{
         "title": "{{.Title}}",
         "contact": {
             "name": "CQI-SERVICES",
-            "url": "http://www.cqiserv.com/",
+            "url": "https://www.cqiserv.com/",
             "email": "zor@cqiserv.com"
         },
         "license": {},
@@ -29,6 +29,63 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/admin/register": {
+            "post": {
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "UserRegisterServer",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Name",
+                        "name": "name",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "account",
+                        "name": "account",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "password",
+                        "name": "password",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "{\"name\":\"zor\",\"status\":\"success\",\"time\":\"2020-07-20 17:25:55\",\"token\":\"Hqlur4OpUJveSpdy6rm+iw\",\"tokenSecret\":\"Qvx5CXbGiZ5u1JdF\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "{\"status\":\"FAIL\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "411": {
+                        "description": "{\"status\":\"FAIL\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/json_post": {
             "post": {
                 "produces": [
@@ -38,7 +95,7 @@ var doc = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Name 名稱",
+                        "description": "Name",
                         "name": "name",
                         "in": "query",
                         "required": true
@@ -105,7 +162,7 @@ var doc = `{
                 }
             }
         },
-        "/register": {
+        "/test/A": {
             "post": {
                 "consumes": [
                     "application/x-www-form-urlencoded"
@@ -114,9 +171,9 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Admin"
+                    "Test"
                 ],
-                "summary": "RegisterServer",
+                "summary": "TestRegisterServer",
                 "parameters": [
                     {
                         "type": "string",

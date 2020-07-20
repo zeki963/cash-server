@@ -3,8 +3,7 @@ package main
 import (
 	config "cash-server/configs"
 	db "cash-server/database"
-
-	encryption "cash-server/pkg/encryption"
+	"cash-server/model"
 	flag "cash-server/pkg/flag"
 	util "cash-server/pkg/util"
 	router "cash-server/routers"
@@ -12,8 +11,8 @@ import (
 
 func init() {
 	util.Success(" < - SERVER INIT - > ")
-	encryption.Md5("123")
 	flag.StartFlag()
+	model.UserQuery("zoracc6")
 }
 
 // @title  金流SERVER API

@@ -1,9 +1,10 @@
 package router
 
 import (
-	// cash-server/docs swag DOC
 	config "cash-server/configs"
+	// cash-server/docs swag DOC
 	_ "cash-server/docs"
+
 	"cash-server/pkg/util"
 	"cash-server/routers/api/admin"
 	pay "cash-server/routers/api/pay"
@@ -13,6 +14,7 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"github.com/swaggo/gin-swagger/swaggerFiles"
 )
@@ -35,6 +37,9 @@ func InitRouter() *gin.Engine {
 		gin.SetMode(gin.DebugMode)
 	}
 	r := gin.Default()
+	if config.GetGlobalConfig().Logger {
+		r.Use(util.LoggerToFile())
+	}
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
 	r.StaticFile("/favicon.ico", "./favicon.ico")
@@ -42,33 +47,53 @@ func InitRouter() *gin.Engine {
 	// 根目錄
 	r.Any("/", func(context *gin.Context) {
 		context.String(http.StatusOK, "hello i'm gin server")
+		util.Logger().WithFields(logrus.Fields{
+			"name": "Info",
+		}).Info("記錄一下日志", "Info")
+		//Error級別的日志
+		util.Logger().WithFields(logrus.Fields{
+			"name": "Error",
+		}).Error("記錄一下日志", "Error")
+		//Warn級別的日志
+		util.Logger().WithFields(logrus.Fields{
+			"name": "Warn",
+		}).Warn("記錄一下日志", "Warn")
+		//Debug級別的日志
+		util.Logger().WithFields(logrus.Fields{
+			"name": "Debug",
+		}).Debug("記錄一下日志", "Debug")
 	})
 
 	//Group pay1
 	pay1 := r.Group("pay1")
 	{
-		//POST test
 		pay1.POST("/form_post", pay.UrlencodedPost)
-		//POST test
 		pay1.POST("/json_post", pay.JSONtestPost)
 		pay1.POST("/forget", pay.PayIndex)
 	}
 
-	//Group testrouter
-	testrouter := r.Group("testrouter")
+	//Group mycard
+	mycard := r.Group("mycard")
 	{
-		//ping
+		mycard.POST("/A", pay.UrlencodedPost)
+		mycard.POST("/B", pay.JSONtestPost)
+		mycard.POST("/C", pay.PayIndex)
+	}
+
+	//Group testrouter
+	testrouter := r.Group("test")
+	{
+		testrouter.POST("/A", pay.TestRegisterServer)
 		testrouter.GET("/ping", func(c *gin.Context) {
 			c.JSON(200, gin.H{
 				"message": "pong",
 			})
 		})
-		//input
+		//input output
 		r.GET("/putkey/:key", func(context *gin.Context) {
 			key = context.Param("key")
 			fmt.Printf("Hello, %s", key)
 		})
-		//output
 		r.GET("/getkey", func(context *gin.Context) {
 			if key != "" {
 				context.String(http.StatusOK, key)
@@ -84,7 +109,7 @@ func InitRouter() *gin.Engine {
 	v1 := r.Group("admin")
 	{
 		//register  提供註冊
-		v1.POST("/register", admin.RegisterServer)
+		v1.POST("/register", admin.UserRegisterServer)
 		//list   查詢
 		v1.POST("/list", admin.ListServer)
 	}
