@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<!-- CQIservices@
+     ____  ___   ___  
+      / / / / \ | |_) 
+     /_/_ \_\_/ |_| \ 
+-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <title>CQI-{{.title}}</title>
+  <link rel="icon" href="../static/images/icon.ico">
+  <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+  <link rel="stylesheet" href="../static/css/bootstrap-grid.css">
+	<link rel="stylesheet" href="../static/css/bootstrap-reboot.css">
+	<link rel="stylesheet" href="../static/css/bootstrap.css">	
+	<link rel="stylesheet" href="../static/css/font.css">	
+<header class="header">
+    <div class="navbar-light bg-gradient-dark mb-4 static-top " style="z-index: 100 ;color:beige;">
+        <div class="navbar topbar  nav-margin " style="max-width: 1200px;">
+          {{.title}}
+        </div>
+    </div>
+	{{template "content-meun" .}}
+  </header>
+</head>
+
+<body>
+  <div class="bg"></div>
+
+
+{{template "content1" .}}
+{{template "content-footer" .}}

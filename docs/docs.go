@@ -125,43 +125,6 @@ var doc = `{
                 }
             }
         },
-        "/list": {
-            "post": {
-                "consumes": [
-                    "application/x-www-form-urlencoded"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Admin"
-                ],
-                "summary": "ListServer",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "cqikey",
-                        "name": "cqikey",
-                        "in": "formData",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{\"status\":\"SUCCESS\"}",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "400": {
-                        "description": "{\"status\":\"FAIL\"}",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
         "/test/A": {
             "post": {
                 "consumes": [
@@ -220,7 +183,7 @@ type swaggerInfo struct {
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = swaggerInfo{
-	Version:     "2020.1.08.1.1.3.1.a",
+	Version:     "2020.07",
 	Host:        "",
 	BasePath:    "",
 	Schemes:     []string{},

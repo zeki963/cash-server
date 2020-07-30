@@ -1,18 +1,22 @@
-package router
+package routers
 
 import (
-	config "cash-server/configs"
+	"cash-server/configs"
+	"path/filepath"
+
 	// cash-server/docs swag DOC
 	_ "cash-server/docs"
 
 	"cash-server/pkg/util"
 	"cash-server/routers/api/admin"
-	pay "cash-server/routers/api/pay"
+	"cash-server/routers/api/mycard"
+	"cash-server/routers/api/pay"
 	"fmt"
 	"io"
 	"net/http"
 	"os"
 
+	"github.com/gin-contrib/multitemplate"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -26,10 +30,10 @@ var (
 //InitRouter 初始化路由表
 func InitRouter() *gin.Engine {
 	//Mode switch
-	switch config.GetGlobalConfig().RunMode {
+	switch configs.GetGlobalConfig().RunMode {
 	case "release":
 		gin.SetMode(gin.ReleaseMode)
-		ginlog()
+		ginlogmode()
 		util.Info(" < - ROUTER START - > ")
 	case "test":
 		gin.SetMode(gin.TestMode)
@@ -37,47 +41,54 @@ func InitRouter() *gin.Engine {
 		gin.SetMode(gin.DebugMode)
 	}
 	r := gin.Default()
-	if config.GetGlobalConfig().Logger {
+	if configs.GetGlobalConfig().Logconf.LoggerToFile {
 		r.Use(util.LoggerToFile())
+	}
+	if configs.GetGlobalConfig().Logconf.LoggerToDB {
+		r.Use(util.LoggerToDB())
 	}
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
 	r.StaticFile("/favicon.ico", "./favicon.ico")
-	r.Static("/statics", "./statics")
+	r.Static("/static", "./templates/static")
 	// 根目錄
-	r.Any("/", func(context *gin.Context) {
-		context.String(http.StatusOK, "hello i'm gin server")
+	r.Any("/", func(c *gin.Context) {
+		c.HTML(200, "index.html", gin.H{
+			"title": "Home page",
+		})
 		util.Logger().WithFields(logrus.Fields{
 			"name": "Info",
-		}).Info("記錄一下日志", "Info")
-		//Error級別的日志
-		util.Logger().WithFields(logrus.Fields{
-			"name": "Error",
-		}).Error("記錄一下日志", "Error")
-		//Warn級別的日志
-		util.Logger().WithFields(logrus.Fields{
-			"name": "Warn",
-		}).Warn("記錄一下日志", "Warn")
-		//Debug級別的日志
-		util.Logger().WithFields(logrus.Fields{
-			"name": "Debug",
-		}).Debug("記錄一下日志", "Debug")
+		}).Info("有人連進根目錄了", "Info")
+	})
+	//前端DEMO用
+	r.HTMLRender = loadTemplates("./templates")
+	r.GET("/demo", func(c *gin.Context) {
+		c.HTML(200, "demo.html", gin.H{
+			"title": "DEMO page",
+		})
 	})
 
 	//Group pay1
 	pay1 := r.Group("pay1")
 	{
-		pay1.POST("/form_post", pay.UrlencodedPost)
-		pay1.POST("/json_post", pay.JSONtestPost)
-		pay1.POST("/forget", pay.PayIndex)
+		pay1.POST("/A", pay.UrlencodedPost)
+		pay1.POST("/B", pay.JSONtestPost)
 	}
 
 	//Group mycard
-	mycard := r.Group("mycard")
+	rmycard := r.Group("mycard")
 	{
-		mycard.POST("/A", pay.UrlencodedPost)
-		mycard.POST("/B", pay.JSONtestPost)
-		mycard.POST("/C", pay.PayIndex)
+		//使用 mycard 建單 操作s
+		rmycard.POST("/AuthMycard", mycard.AuthMycard)
+		//查詢 mycard 查詢單筆交易
+		rmycard.POST("/QuiryMycardOderOne")
+		//查詢 mycard 查詢交易清單
+		//TODO 給web查詢 列出清單
+		rmycard.POST("/QuiryMycardOderList")
+
+		//給Mycard廠商用ReturnURL
+		rmycard.POST("/MycardCallback", mycard.CallbackMycard)
+
 	}
 
 	//Group testrouter
@@ -86,7 +97,7 @@ func InitRouter() *gin.Engine {
 		testrouter.POST("/A", pay.TestRegisterServer)
 		testrouter.GET("/ping", func(c *gin.Context) {
 			c.JSON(200, gin.H{
-				"message": "pong",
+				"msg": "pong",
 			})
 		})
 		//input output
@@ -105,16 +116,14 @@ func InitRouter() *gin.Engine {
 		})
 	}
 
-	//Group admin
-	v1 := r.Group("admin")
+	//Group radmin
+	radmin := r.Group("admin")
 	{
 		//register  提供註冊
-		v1.POST("/register", admin.UserRegisterServer)
-		//list   查詢
-		v1.POST("/list", admin.ListServer)
+		radmin.POST("/register", admin.PlatformRegisterServer)
 	}
 	//system 相關
-	if config.GetGlobalConfig().Swagger == true {
+	if configs.GetGlobalConfig().Swagger == true {
 		//swag interface
 		r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	}
@@ -122,12 +131,12 @@ func InitRouter() *gin.Engine {
 	return r
 }
 
-//ginlog  server logs
-func ginlog() {
+//ginlogmode  server logs
+func ginlogmode() {
 	// Disable log's color
 	gin.DisableConsoleColor()
 	// Force log's color
-	// gin.ForceConsoleColor()
+	//gin.ForceConsoleColor()
 	f, err := os.Create("gin.log")
 	if err != nil {
 		fmt.Println("Open Log File Failed", err)
@@ -137,9 +146,30 @@ func ginlog() {
 
 //NoResponse 不存在，返回404
 func NoResponse(c *gin.Context) {
-	//返回404
 	c.JSON(http.StatusNotFound, gin.H{
 		"status": 404,
-		"error":  "404, page not exists!",
+		"msg":    "page not exists!,你想幹嘛ヽ(`Д´)ノ  ",
 	})
+}
+
+//loadTemplates 前端DEMO用
+func loadTemplates(templatesDir string) multitemplate.Renderer {
+	r := multitemplate.NewRenderer()
+
+	layouts, err := filepath.Glob(templatesDir + "/layouts/*.html")
+	if err != nil {
+		panic(err.Error())
+	}
+	includes, err := filepath.Glob(templatesDir + "/includes/*.html")
+	if err != nil {
+		panic(err.Error())
+	}
+	// Generate our templates map from our layouts/ and includes/ directories
+	for _, include := range includes {
+		layoutCopy := make([]string, len(layouts))
+		copy(layoutCopy, layouts)
+		files := append(layoutCopy, include)
+		r.AddFromFiles(filepath.Base(include), files...)
+	}
+	return r
 }

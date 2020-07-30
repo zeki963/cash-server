@@ -1,0 +1,10 @@
+@font-face {
+    font-family: 'Fixedsys500c';
+    src: url('../fonts/Fixedsys500c.woff') format("woff"),
+            url('../fonts/Fixedsys500c.ttf') format("truetype"),
+            url('../fonts/Fixedsys500c.eot') format("embedded-opentype");
+
+}
+body{
+    font-size: 16px;
+}

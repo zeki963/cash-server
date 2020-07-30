@@ -1,24 +1,26 @@
 package main
 
 import (
-	config "cash-server/configs"
-	db "cash-server/database"
+	"cash-server/configs"
+	"cash-server/db"
 	"cash-server/model"
-	flag "cash-server/pkg/flag"
-	util "cash-server/pkg/util"
-	router "cash-server/routers"
+	"cash-server/pkg/flag"
+	"cash-server/pkg/util"
+	"cash-server/routers"
+	"cash-server/routers/api/mycard"
 )
 
 func init() {
 	util.Success(" < - SERVER INIT - > ")
 	flag.StartFlag()
-	model.UserQuery("zoracc6")
+	// <== 測試CODE == >
+	model.PlatformQueryInfodata("0OEaFvXvGXVjlanvAXZugA")
+	mycard.Savedb()
 }
 
 // @title  金流SERVER API
-// @version 2020.1.08.1.1.3.1.a
+// @version 2020.07
 // @description This is a sample API server .
-
 // @contact.name  CQI-SERVICES
 // @contact.url https://www.cqiserv.com/
 // @contact.email zor@cqiserv.com
@@ -28,9 +30,9 @@ func main() {
 	//DB config
 	defer db.SqlDB.Close()
 	//ROUTER
-	router := router.InitRouter()
+	router := routers.InitRouter()
 	//PORT
-	if config.GetGlobalConfig().HTTPS == true {
+	if configs.GetGlobalConfig().HTTPS == true {
 		router.RunTLS(":8443", "templates/server.crt", "templates/server.key")
 	} else {
 		if err := router.Run(":8080"); err != nil {

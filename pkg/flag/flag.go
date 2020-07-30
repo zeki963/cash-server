@@ -1,8 +1,8 @@
 package flag
 
 import (
-	config "cash-server/configs"
-	db "cash-server/database"
+	"cash-server/configs"
+	"cash-server/db"
 
 	"cash-server/pkg/util"
 	"flag"
@@ -17,11 +17,10 @@ var (
 	s          string
 	appversion = "v1"
 	modelFile  string
-	mod        string = config.GetGlobalConfig().RunMode
+	mod        string = configs.GetGlobalConfig().RunMode
 )
 
 func init() {
-
 	flag.BoolVar(&h, "h", false, "This help")
 	flag.BoolVar(&v, "v", false, "Show version and exit")
 	flag.BoolVar(&t, "t", false, "Test mode")
@@ -30,7 +29,7 @@ func init() {
 
 //StartFlag  初始化Flag
 func StartFlag() {
-	config.LoadGlobalConfig("")
+	configs.LoadGlobalConfig("")
 	flag.Parse()
 	if h {
 		flag.Usage()
@@ -42,15 +41,20 @@ func StartFlag() {
 		mod = "test"
 	}
 
-	util.Info("[MODE] " + config.GetGlobalConfig().RunMode)
+	util.Info("[MODE] " + configs.GetGlobalConfig().RunMode)
 	if mod == "release" {
 		// release mode
 
 	} else {
 		// test mode
 	}
-	util.Info(config.MySQL.DSN(config.GetGlobalConfig().MySQL))
-	db.Dbcannot(config.MySQL.DSN(config.GetGlobalConfig().MySQL))
+	util.Info(" < - MyDB INIT - >")
+	if err := db.Dbcannot(configs.MySQL.DSN(configs.GetGlobalConfig().MySQL)); err != nil {
+		util.Error(err.Error())
+	} else {
+		util.Info(configs.MySQL.DSN(configs.GetGlobalConfig().MySQL))
+	}
+
 }
 
 //usage 說明文件

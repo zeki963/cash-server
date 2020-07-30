@@ -24,30 +24,36 @@ const (
 func Trace(format string, a ...interface{}) {
 	prefix := yellow(trac)
 	fmt.Println(formatLog(prefix), fmt.Sprintf(format, a...))
+	Logger().Trace(trac, format)
 }
 
 //Info log
 func Info(format string, a ...interface{}) {
 	prefix := blue(info)
 	fmt.Println(formatLog(prefix), fmt.Sprintf(format, a...))
+	Logger().Info(info, format)
 }
 
 //Success log
 func Success(format string, a ...interface{}) {
 	prefix := green(succ)
 	fmt.Println(formatLog(prefix), fmt.Sprintf(format, a...))
+	Logger().Info(succ, format)
 }
 
 //Warning log
 func Warning(format string, a ...interface{}) {
 	prefix := magenta(warn)
 	fmt.Println(formatLog(prefix), fmt.Sprintf(format, a...))
+	Logger().Warning(warn, format)
+
 }
 
 //Error log
 func Error(format string, a ...interface{}) {
 	prefix := red(erro)
 	fmt.Println(formatLog(prefix), fmt.Sprintf(format, a...))
+	Logger().Error(erro, format)
 }
 func red(s string) string {
 	return fmt.Sprintf("\x1b[%dm%s\x1b[0m", colorRed, s)

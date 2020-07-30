@@ -1,4 +1,4 @@
-package config
+package configs
 
 import (
 	"fmt"
@@ -50,17 +50,25 @@ func ParseConfig(fpath string) (*Config, error) {
 
 //Config 配置參數
 type Config struct {
-	RunMode string `toml:"run_mode"`
-	Swagger bool   `toml:"swagger"`
-	HTTPS   bool   `toml:"https"`
-	Logger  bool   `toml:"logger"`
-	MySQL   MySQL  `toml:"mysql"`
+	RunMode string  `toml:"run_mode"`
+	Swagger bool    `toml:"swagger"`
+	HTTPS   bool    `toml:"https"`
+	Logconf Logconf `toml:"logconf"`
+	MySQL   MySQL   `toml:"mysql"`
+	Mycard  Mycard  `toml:"mycard"`
 }
 
 //Redis 配置參數
 type Redis struct {
 	Addr     string `toml:"addr"`
 	Password string `toml:"password"`
+}
+
+//Logger 配置參數
+type Logconf struct {
+	Logger       bool `toml:"logger"`
+	LoggerToFile bool `toml:"loggerToFile"`
+	LoggerToDB   bool `toml:"loggerToDB"`
 }
 
 //MySQL 配置參數
@@ -77,4 +85,15 @@ type MySQL struct {
 func (a MySQL) DSN() string {
 	return fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?%s",
 		a.User, a.Password, a.Host, a.Port, a.DBName, a.Parameters)
+}
+
+//Mycard 配置參數
+type Mycard struct {
+	FacServiceID string `toml:"FacServiceID"`
+}
+
+//Casino 配置參數
+type Casino struct {
+	Testip string `toml:"testip"`
+	Proip  string `toml:"proip"`
 }
