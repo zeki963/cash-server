@@ -25,24 +25,42 @@ type Mycardrep struct {
 }
 
 // AuthMycard  application/json  application/x-www-form-urlencoded
+// @Summary AuthMycard
+// @Tags MyCard
+// @Produce  json
+// @Accept  application/x-www-form-urlencoded
+// @Param userid formData string true "玩家帳號ID"
+// @Param groupid formData string true "遊戲GroupID"
+// @Param itemid formData string true "商品代號"
+// @Param itemprice formData string true "商品價格"
+// @Param token formData string true "平台token代號"
+// @success 200 {string} string "{"還沒寫好"}"
+// @success 400 {string} string "{"status":"FAIL",    "msg": "錯誤訊息"}"
+// @Router /mycard/CreateMycardOder [post]
 func AuthMycard(c *gin.Context) {
-	id := c.PostForm("id")
+	userid := c.PostForm("userid")
+	groupid := c.PostForm("groupid")
 	itemid := c.PostForm("itemid")
 	itemprice := c.PostForm("itemprice")
 	token := c.PostForm("token")
 	time := util.GETNowsqltime()
-	if id != "" && itemid != "" && itemprice != "" {
+	var guid string
+	if userid != "" && itemid != "" && itemprice != "" {
 		// 確認 參數 平台 帳號
 		platform := model.PlatformQueryInfodata(token)
-		//平台確認
-		if platform.Status == "1" {
+		//平台 Status確認  && GroupAuth確認
+		if platform.Status == "1" && model.PlatformQueryGroupAuth("1", groupid) {
 			//id  確認
-			if guid := casinogrpc.VetifyUserID(id); guid != "NoAccount" {
+			switch groupid {
+			case "2":
+				guid = casinogrpc.VetifyUserID(userid)
+			}
+			if guid != "NoAccount" {
 				util.Info("要求Mycard認証 -> token:", token)
-				toMycardAuthGlobal()
+				//toMycardAuthGlobal(userid, itemid, itemprice, groupid)
 				c.JSON(http.StatusCreated, gin.H{
 					"status":    "success",
-					"id":        id,
+					"userid":    userid,
 					"itemid":    itemid,
 					"itemprice": itemprice,
 					"token":     token,
@@ -70,11 +88,11 @@ func AuthMycard(c *gin.Context) {
 
 //3.1要求交易授權碼
 // authGlobal 向 MyCard 要求交易授權碼 (Server to Server)
-//測試 http(s)://testb2b.mycard520.com.tw/MyBillingPay/v1.1/AuthGlobal
-//正式 https://b2b.mycard520.com.tw/MyBillingPay/v1.1/AuthGlobal
-func toMycardAuthGlobal() {
+func toMycardAuthGlobal(userid string, itemid string, itemprice string, serverid string) {
 	util.Info("toMycardAuthGlobal")
 	var (
+		//測試 http(s)://testb2b.mycard520.com.tw/MyBillingPay/v1.1/AuthGlobal
+		//正式 https://b2b.mycard520.com.tw/MyBillingPay/v1.1/AuthGlobal
 		authURL = "https://testb2b.mycard520.com.tw/MyBillingPay/v1.1/AuthGlobal"
 		//廠商服務代碼
 		facServiceID string = configs.GetGlobalConfig().Mycard.FacServiceID
@@ -84,20 +102,22 @@ func toMycardAuthGlobal() {
 		tradeType string = "2"
 
 		//伺服器代號 - 用戶在廠商端的伺服器編號(僅允許 0-9 a-z A-Z . _ - )
-		serverID string = "0"
+		serverID string = serverid
 		//會員代號 - 用戶在廠商端的會員唯一識別編號(僅允許 0-9 a-z A-Z . _ -# $ % & * ~ : / ^ ! + @)
-		customerID string = "1"
+		customerID string = userid
 
-		//付費方式 / 付費方式群組代碼 - 參閱 4.1 付費方式和品項代碼查詢
-		paymentType string = "1"
-		//品項代碼  - 參閱 4.1 付費方式和品項代碼查詢
-		itemCode string = "1"
+		//付費方式 / 付費方式群組代碼 - 參閱 4.1 付費方式和品項代碼查詢 可不填**
+		paymentType string
+		//品項代碼  - 參閱 4.1 付費方式和品項代碼查詢 可不填**
+		itemCode string
+
 		//產品名稱 - 用戶購買的產品名稱(不可以輸入 ' < > 其他皆可)
-		productName string = "1"
+		productName string = itemid
 		//交易金額 - 可以為整數，若有小數點最多 2 位
-		amount string = "1"
+		amount string = itemprice
 		//幣別
-		currency string = "1"
+		currency string = "TWD"
+
 		//是否為測試環境
 		sandBoxMode string = "true"
 		//廠商回傳網址
@@ -143,7 +163,7 @@ func createMycardOder() {
 	data := []byte(msg)
 	json.Unmarshal(data, &nmycarderp)
 	fmt.Println(nmycarderp)
-
+	Savedb()
 }
 
 // CallbackMycard  這是給Mycard 摳背專用的

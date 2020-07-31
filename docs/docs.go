@@ -40,45 +40,57 @@ var doc = `{
                 "tags": [
                     "Admin"
                 ],
-                "summary": "UserRegisterServer",
+                "summary": "PlatformRegisterServer",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Name",
+                        "description": "平台名稱",
                         "name": "name",
                         "in": "formData",
                         "required": true
                     },
                     {
                         "type": "string",
-                        "description": "account",
+                        "description": "平台帳號",
                         "name": "account",
                         "in": "formData",
                         "required": true
                     },
                     {
                         "type": "string",
-                        "description": "password",
+                        "description": "平台密碼",
                         "name": "password",
                         "in": "formData",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "聯絡信箱",
+                        "name": "email",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "群組代號 - 預設為1",
+                        "name": "groupid",
+                        "in": "formData"
                     }
                 ],
                 "responses": {
-                    "201": {
-                        "description": "{\"name\":\"zor\",\"status\":\"success\",\"time\":\"2020-07-20 17:25:55\",\"token\":\"Hqlur4OpUJveSpdy6rm+iw\",\"tokenSecret\":\"Qvx5CXbGiZ5u1JdF\"}",
+                    "200": {
+                        "description": "{\"account\":\"zxcc\",\"status\":\"success\",\"time\":\"2020-07-30 17:18:05\",\"token\":\"18zM3WAF3HKa0Ve4Iss+HA\",\"tokenSecret\":\"BNFk4iJHx\"}",
                         "schema": {
                             "type": "string"
                         }
                     },
                     "400": {
-                        "description": "{\"status\":\"FAIL\"}",
+                        "description": "{\"status\":\"FAIL\",    \"msg\": \"錯誤訊息\"}",
                         "schema": {
                             "type": "string"
                         }
                     },
                     "411": {
-                        "description": "{\"status\":\"FAIL\"}",
+                        "description": "{\"status\":\"FAIL\",    \"msg\": \"錯誤訊息\"}",
                         "schema": {
                             "type": "string"
                         }
@@ -91,11 +103,14 @@ var doc = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Test"
+                ],
                 "summary": "JSONtestPost",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Name",
+                        "description": "Name 名稱",
                         "name": "name",
                         "in": "query",
                         "required": true
@@ -118,6 +133,64 @@ var doc = `{
                 "responses": {
                     "200": {
                         "description": "{\"code\":\"200\",\"message\":\"\",\"name\":\"\",\"num\":\"\",\"status\":\"SUCCESS\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/mycard/AuthMycard": {
+            "post": {
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "MyCard"
+                ],
+                "summary": "AuthMycard",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "玩家帳號ID",
+                        "name": "id",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "商品代號",
+                        "name": "itemid",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "商品價格",
+                        "name": "itemprice",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "平台token代號",
+                        "name": "token",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"還沒寫好\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "{\"status\":\"FAIL\",    \"msg\": \"錯誤訊息\"}",
                         "schema": {
                             "type": "string"
                         }

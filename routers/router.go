@@ -60,6 +60,7 @@ func InitRouter() *gin.Engine {
 			"name": "Info",
 		}).Info("有人連進根目錄了", "Info")
 	})
+
 	//前端DEMO用
 	r.HTMLRender = loadTemplates("./templates")
 	r.GET("/demo", func(c *gin.Context) {
@@ -79,7 +80,7 @@ func InitRouter() *gin.Engine {
 	rmycard := r.Group("mycard")
 	{
 		//使用 mycard 建單 操作s
-		rmycard.POST("/AuthMycard", mycard.AuthMycard)
+		rmycard.POST("/CreateMycardOder", mycard.AuthMycard)
 		//查詢 mycard 查詢單筆交易
 		rmycard.POST("/QuiryMycardOderOne")
 		//查詢 mycard 查詢交易清單
@@ -87,8 +88,14 @@ func InitRouter() *gin.Engine {
 		rmycard.POST("/QuiryMycardOderList")
 
 		//給Mycard廠商用ReturnURL
-		rmycard.POST("/MycardCallback", mycard.CallbackMycard)
+		rmycard.POST("/MycardOderCallback", mycard.CallbackMycard)
+	}
 
+	//Group mycard
+	rmycard := r.Group("casino")
+	{
+		//查詢 casino 查詢商品清單
+		rmycard.POST("/QuiryMycardOderOne")
 	}
 
 	//Group testrouter

@@ -22,12 +22,23 @@ CREATE TABLE IF NOT EXISTS `payment_type_url` (
  `update_date`  timestamp NOT NULL ,
  `url_code`     varchar(10) NOT NULL ,
   PRIMARY KEY (`url_id`)
-  KEY `fkIdx_114` (`type_id`),
-CONSTRAINT `FK_114` FOREIGN KEY `fkIdx_114` (`type_id`) REFERENCES `payment_type` (`type_id`)
 ) ENGINE=InnoDB;
 
+CREATE TABLE   IF NOT EXISTS `payment_platform_group_auth`(
+ `auth_id`     int(10) NOT NULL AUTO_INCREMENT ,
+ `group_id`    int(10) NOT NULL ,
+ `type_id`     int(10) NOT NULL ,
+ `create_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ,
+ `update_date` timestamp NOT NULL ,
+PRIMARY KEY (`auth_id`),
+KEY `fkIdx_105` (`group_id`),
+CONSTRAINT `FK_105` FOREIGN KEY `fkIdx_105` (`group_id`) REFERENCES `payment_platform_group` (`group_id`),
+KEY `fkIdx_108` (`type_id`),
+CONSTRAINT `FK_108` FOREIGN KEY `fkIdx_108` (`type_id`) REFERENCES `payment_type` (`type_id`)
+) ENGINE=INNODB;
 
-CREATE TABLE `payment_platform` (
+
+CREATE TABLE IF NOT EXISTS  `payment_platform` (
   `platform_id` int NOT NULL AUTO_INCREMENT,
   `platform_account` varchar(100) NOT NULL COMMENT '帳號',
   `platform_password` varchar(100) NOT NULL COMMENT '密碼',
@@ -45,19 +56,17 @@ CREATE TABLE `payment_platform` (
   CONSTRAINT `FK_101` FOREIGN KEY (`platform_group_id`) REFERENCES `payment_platform_group` (`group_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE `payment_platform_group`
-(
- `group_id`    int(10) NOT NULL AUTO_INCREMENT COMMENT '編號', ,
+CREATE TABLE IF NOT EXISTS  `payment_platform_group`(
+ `group_id`    int(10) NOT NULL AUTO_INCREMENT COMMENT '編號', 
  `group_name`  varchar(20) NOT NULL COMMENT '群組名稱',
  `group_describe`  varchar(45)  COMMENT '詳細',
- `create_date` timestamp NOT NULL  DEFAULT CURRENT_TIMESTAMP,,
- `update_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,,
+ `create_date` timestamp NOT NULL  DEFAULT CURRENT_TIMESTAMP,
+ `update_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
 PRIMARY KEY (`group_id`)
 );
 
 INSERT INTO `payment_platform_group` ( `group_name`, `group_describe`) VALUES ('nil', '預設群組');
-
 
 CREATE TABLE IF NOT EXISTS `payment_platform_url` (
   `url_id` int(11) NOT NULL AUTO_INCREMENT,

@@ -42,6 +42,7 @@ type User struct {
 // JSONtestPost application/json  application/x-www-form-urlencoded
 // @Summary JSONtestPost
 // @Produce  json
+// @Tags Test
 // @Param name query string true "Name 名稱"
 // @Param message query string true "Message"
 // @Param num query int true "Num"
@@ -61,6 +62,9 @@ func JSONtestPost(c *gin.Context) {
 		"message": user.Message,
 		"num":     user.Num,
 	})
+}
+func sadf() {
+
 }
 
 // TestRegisterServer  application/x-www-form-url

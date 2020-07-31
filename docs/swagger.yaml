@@ -13,43 +13,51 @@ paths:
       consumes:
       - application/x-www-form-urlencoded
       parameters:
-      - description: Name
+      - description: 平台名稱
         in: formData
         name: name
         required: true
         type: string
-      - description: account
+      - description: 平台帳號
         in: formData
         name: account
         required: true
         type: string
-      - description: password
+      - description: 平台密碼
         in: formData
         name: password
         required: true
         type: string
+      - description: 聯絡信箱
+        in: formData
+        name: email
+        type: string
+      - description: 群組代號 - 預設為1
+        in: formData
+        name: groupid
+        type: string
       produces:
       - application/json
       responses:
-        "201":
-          description: '{"name":"zor","status":"success","time":"2020-07-20 17:25:55","token":"Hqlur4OpUJveSpdy6rm+iw","tokenSecret":"Qvx5CXbGiZ5u1JdF"}'
+        "200":
+          description: '{"account":"zxcc","status":"success","time":"2020-07-30 17:18:05","token":"18zM3WAF3HKa0Ve4Iss+HA","tokenSecret":"BNFk4iJHx"}'
           schema:
             type: string
         "400":
-          description: '{"status":"FAIL"}'
+          description: '{"status":"FAIL",    "msg": "錯誤訊息"}'
           schema:
             type: string
         "411":
-          description: '{"status":"FAIL"}'
+          description: '{"status":"FAIL",    "msg": "錯誤訊息"}'
           schema:
             type: string
-      summary: UserRegisterServer
+      summary: PlatformRegisterServer
       tags:
       - Admin
   /json_post:
     post:
       parameters:
-      - description: Name
+      - description: Name 名稱
         in: query
         name: name
         required: true
@@ -72,6 +80,47 @@ paths:
           schema:
             type: string
       summary: JSONtestPost
+      tags:
+      - Test
+  /mycard/AuthMycard:
+    post:
+      consumes:
+      - application/x-www-form-urlencoded
+      parameters:
+      - description: 玩家帳號ID
+        in: formData
+        name: id
+        required: true
+        type: string
+      - description: 商品代號
+        in: formData
+        name: itemid
+        required: true
+        type: string
+      - description: 商品價格
+        in: formData
+        name: itemprice
+        required: true
+        type: string
+      - description: 平台token代號
+        in: formData
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"還沒寫好"}'
+          schema:
+            type: string
+        "400":
+          description: '{"status":"FAIL",    "msg": "錯誤訊息"}'
+          schema:
+            type: string
+      summary: AuthMycard
+      tags:
+      - MyCard
   /test/A:
     post:
       consumes:

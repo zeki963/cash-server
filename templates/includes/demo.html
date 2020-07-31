@@ -16,10 +16,16 @@
                         </div>
                         <input type="text" class="form-control" aria-describedby="basic-addon2" id="id1" VALUE="49312425">
                     </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" >groupid</span>
+                        </div>
+                        <input type="text" class="form-control" aria-describedby="basic-addon2" id="idg" VALUE="2">
+                    </div>
                     <br>
-                    Item $ :
+                    itemprice  :
                     <select class="custom-select mb-3" id="id2">
-                        <option selected>$$$</option>
+                        <option selected>0</option>
                         <option value="1">10</option>
                         <option value="2">500</option>
                         <option value="3">999</option>
@@ -60,7 +66,7 @@
             $.post({
                 url: "http://127.0.0.1:8080/mycard/AuthMycard",
                 data: {
-                    id: $("#id1").val(), itemid: $("#id2").val(), itemprice: $("#id3").val(),token:"0OEaFvXvGXVjlanvAXZugA"
+                    userid: $("#id1").val(),groupid: $("#idg").val(), itemid: $("#id2").val(), itemprice: $("#id3").val(),token:"0OEaFvXvGXVjlanvAXZugA"
                 },
                 success: function (result) {
                     $("#weather-temp").html("<strong>" + result + "</strong> degrees");

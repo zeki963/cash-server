@@ -52,7 +52,7 @@ func StartFlag() {
 	if err := db.Dbcannot(configs.MySQL.DSN(configs.GetGlobalConfig().MySQL)); err != nil {
 		util.Error(err.Error())
 	} else {
-		util.Info(configs.MySQL.DSN(configs.GetGlobalConfig().MySQL))
+		util.Info(configs.GetGlobalConfig().MySQL.Host)
 	}
 
 }

@@ -15,12 +15,14 @@ import (
 // @Tags Admin
 // @Produce  json
 // @Accept  application/x-www-form-urlencoded
-// @Param name formData string true "Name"
-// @Param account formData string true "account"
-// @Param password formData string true "password"
-// @success 201 {string} string "{"name":"zor","status":"success","time":"2020-07-20 17:25:55","token":"Hqlur4OpUJveSpdy6rm+iw","tokenSecret":"Qvx5CXbGiZ5u1JdF"}"
-// @success 400 {string} string "{"status":"FAIL"}"
-// @success 411 {string} string "{"status":"FAIL"}"
+// @Param name formData string true "平台名稱"
+// @Param account formData string true "平台帳號"
+// @Param password formData string true "平台密碼"
+// @Param email formData string false "聯絡信箱"
+// @Param groupid formData string false "群組代號 - 預設為1"
+// @success 200 {string} string "{"account":"zxcc","status":"success","time":"2020-07-30 17:18:05","token":"18zM3WAF3HKa0Ve4Iss+HA","tokenSecret":"BNFk4iJHx"}"
+// @success 400 {string} string "{"status":"FAIL",    "msg": "錯誤訊息"}"
+// @success 411 {string} string "{"status":"FAIL",    "msg": "錯誤訊息"}"
 // @Router /admin/register [post]
 func PlatformRegisterServer(c *gin.Context) {
 	account := c.PostForm("account")
@@ -28,6 +30,9 @@ func PlatformRegisterServer(c *gin.Context) {
 	name := c.PostForm("name")
 	email := c.PostForm("email")
 	groupid := c.PostForm("groupid")
+	if groupid == "" {
+		groupid = "1"
+	}
 	if account != "" && pw != "" && name != "" {
 		tokenSecret := encryption.Rand16()
 		token := encryption.PswEncrypt(account, tokenSecret)

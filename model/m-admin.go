@@ -173,8 +173,24 @@ func PlatformQueryInfodata(token string) Platform {
 		rows.Scan(&platforms.Platformid, &platforms.Platformaccount, &platforms.Platformpassword, &platforms.Platformname, &platforms.Platformgroupid, &platforms.PlatformEmail, &platforms.Platformtoken, &platforms.Platformtokensecret, &platforms.Status, &platforms.Createdate, &platforms.Updatedate)
 		//fmt.Printf("%+v", platforms)
 	}
-
 	return platforms
+}
+
+//   ---------------------------payment_platform_group_auth  表單相關-------------------------------------
+
+//PlatformQueryGroupAuth 查詢帳號資料
+//[typeid 1=mycard]
+func PlatformQueryGroupAuth(typeid string, groupid string) bool {
+	rows, err := db.SqlDB.Query("select * from payment_platform_group_auth WHERE group_id=? and type_id=? ", groupid, typeid)
+	if err != nil {
+		//log.Fatal(err)
+		util.Error(err.Error())
+		return false
+	}
+	for rows.Next() {
+		//fmt.Printf("%+v", platforms)
+	}
+	return true
 }
 
 //   ---------------------------log_connect  表單相關-------------------------------------
