@@ -1,8 +1,0 @@
-[GIN] 2020/07/31 - 14:27:41 | 201 |   96.450914ms |       127.0.0.1 | POST     "/mycard/AuthMycard"
-[GIN] 2020/07/31 - 14:27:41 | 201 |  158.456823ms |       127.0.0.1 | POST     "/mycard/AuthMycard"
-[GIN] 2020/07/31 - 14:27:41 | 201 |   93.893302ms |       127.0.0.1 | POST     "/mycard/AuthMycard"
-[GIN] 2020/07/31 - 14:27:41 | 201 |  139.961905ms |       127.0.0.1 | POST     "/mycard/AuthMycard"
-[GIN] 2020/07/31 - 14:29:47 | 400 |  152.916836ms |       127.0.0.1 | POST     "/mycard/AuthMycard"
-[GIN] 2020/07/31 - 14:29:47 | 400 |  199.536634ms |       127.0.0.1 | POST     "/mycard/AuthMycard"
-[GIN] 2020/07/31 - 14:29:52 | 201 |   93.352885ms |       127.0.0.1 | POST     "/mycard/AuthMycard"
-[GIN] 2020/07/31 - 14:29:52 | 201 |  145.182245ms |       127.0.0.1 | POST     "/mycard/AuthMycard"

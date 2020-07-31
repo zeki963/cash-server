@@ -91,11 +91,11 @@ func InitRouter() *gin.Engine {
 		rmycard.POST("/MycardOderCallback", mycard.CallbackMycard)
 	}
 
-	//Group mycard
-	rmycard := r.Group("casino")
+	//Group casino
+	casino := r.Group("casino")
 	{
 		//查詢 casino 查詢商品清單
-		rmycard.POST("/QuiryMycardOderOne")
+		casino.POST("/QuiryMycardOderOne")
 	}
 
 	//Group testrouter
