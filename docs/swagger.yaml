@@ -8,50 +8,46 @@ info:
   title: 金流SERVER API
   version: "2020.07"
 paths:
-  /admin/register:
+  /admin/platform:
     post:
       consumes:
       - application/x-www-form-urlencoded
       parameters:
       - description: 平台名稱
         in: formData
-        name: name
+        name: PlatformName
         required: true
         type: string
       - description: 平台帳號
         in: formData
-        name: account
+        name: PlatformAccount
         required: true
         type: string
       - description: 平台密碼
         in: formData
-        name: password
+        name: PlatformPassword
         required: true
         type: string
       - description: 聯絡信箱
         in: formData
-        name: email
+        name: PlatformEmail
         type: string
       - description: 群組代號 - 預設為1
         in: formData
-        name: groupid
+        name: PlatformGroupID
         type: string
       produces:
       - application/json
       responses:
         "200":
-          description: '{"account":"zxcc","status":"success","time":"2020-07-30 17:18:05","token":"18zM3WAF3HKa0Ve4Iss+HA","tokenSecret":"BNFk4iJHx"}'
-          schema:
-            type: string
-        "400":
-          description: '{"status":"FAIL",    "msg": "錯誤訊息"}'
+          description: '{"ecode":200,"msg":"ok","data":{"Account":"test123","Token":"7z7cxTyljnCXAyOLd/sOTw","TokenSecret":"wFwTezBIL0oElVXC","Time":"2020-08-06 15:53:36"}}'
           schema:
             type: string
         "411":
-          description: '{"status":"FAIL",    "msg": "錯誤訊息"}'
+          description: '{"ecode":1001,"msg":"請求參數短少或錯誤","data":null}'
           schema:
             type: string
-      summary: PlatformRegisterServer
+      summary: PlatformRegisterServer 新增平台帳號
       tags:
       - Admin
   /json_post:
@@ -82,14 +78,19 @@ paths:
       summary: JSONtestPost
       tags:
       - Test
-  /mycard/AuthMycard:
+  /mycard/CreateMycardOder:
     post:
       consumes:
       - application/x-www-form-urlencoded
       parameters:
       - description: 玩家帳號ID
         in: formData
-        name: id
+        name: userid
+        required: true
+        type: string
+      - description: 遊戲GroupID
+        in: formData
+        name: groupid
         required: true
         type: string
       - description: 商品代號
@@ -121,33 +122,4 @@ paths:
       summary: AuthMycard
       tags:
       - MyCard
-  /test/A:
-    post:
-      consumes:
-      - application/x-www-form-urlencoded
-      parameters:
-      - description: Name
-        in: formData
-        name: name
-        required: true
-        type: string
-      - description: cqikey
-        in: formData
-        name: cqikey
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: '{"name":"test","token":"123456","status":"SUCCESS"}'
-          schema:
-            type: string
-        "400":
-          description: '{"status":"FAIL"}'
-          schema:
-            type: string
-      summary: TestRegisterServer
-      tags:
-      - Test
 swagger: "2.0"

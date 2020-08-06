@@ -1,18 +1,18 @@
 package controller
 
-//Res 回覆結構
-type Res struct {
-	Ret  int         `json:"ret"`
-	Msg  string      `json:"msg"`
-	Data interface{} `json:"data"`
+//Resp 回覆結構
+type Resp struct {
+	Ecode int         `json:"ecode"`
+	Msg   string      `json:"msg"`
+	Data  interface{} `json:"data"`
 }
 
-func res(code int, data interface{}) Res {
-	var res Res
-	res.Ret = code
-	res.Msg = GetMsg(code)
-	res.Data = data
-	return res
+func resp(code int, data interface{}) Resp {
+	var resp Resp
+	resp.Ecode = code
+	resp.Msg = getMsg(code)
+	resp.Data = data
+	return resp
 }
 
 //MsgFlags errcode to string
@@ -31,8 +31,8 @@ var MsgFlags = map[int]string{
 	0000: "page not exists!,你想幹嘛ヽ(`Д´)ノ  ",
 }
 
-//GetMsg 訊息
-func GetMsg(code int) string {
+//getMsg 訊息
+func getMsg(code int) string {
 	msg, ok := MsgFlags[code]
 	if ok {
 		return msg

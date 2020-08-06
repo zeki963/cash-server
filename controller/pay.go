@@ -20,9 +20,9 @@ func Checkrouter(c *gin.Context) {
 			//id  確認
 
 		} else {
-			c.JSON(400, res(1001, nil))
+			c.JSON(400, resp(1001, nil))
 		}
 	} else {
-		c.JSON(400, res(1001, nil))
+		c.JSON(400, resp(1001, nil))
 	}
 }

@@ -29,7 +29,7 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/admin/register": {
+        "/admin/platform": {
             "post": {
                 "consumes": [
                     "application/x-www-form-urlencoded"
@@ -40,57 +40,51 @@ var doc = `{
                 "tags": [
                     "Admin"
                 ],
-                "summary": "PlatformRegisterServer",
+                "summary": "PlatformRegisterServer 新增平台帳號",
                 "parameters": [
                     {
                         "type": "string",
                         "description": "平台名稱",
-                        "name": "name",
+                        "name": "PlatformName",
                         "in": "formData",
                         "required": true
                     },
                     {
                         "type": "string",
                         "description": "平台帳號",
-                        "name": "account",
+                        "name": "PlatformAccount",
                         "in": "formData",
                         "required": true
                     },
                     {
                         "type": "string",
                         "description": "平台密碼",
-                        "name": "password",
+                        "name": "PlatformPassword",
                         "in": "formData",
                         "required": true
                     },
                     {
                         "type": "string",
                         "description": "聯絡信箱",
-                        "name": "email",
+                        "name": "PlatformEmail",
                         "in": "formData"
                     },
                     {
                         "type": "string",
                         "description": "群組代號 - 預設為1",
-                        "name": "groupid",
+                        "name": "PlatformGroupID",
                         "in": "formData"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "{\"account\":\"zxcc\",\"status\":\"success\",\"time\":\"2020-07-30 17:18:05\",\"token\":\"18zM3WAF3HKa0Ve4Iss+HA\",\"tokenSecret\":\"BNFk4iJHx\"}",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "400": {
-                        "description": "{\"status\":\"FAIL\",    \"msg\": \"錯誤訊息\"}",
+                        "description": "{\"ecode\":200,\"msg\":\"ok\",\"data\":{\"Account\":\"test123\",\"Token\":\"7z7cxTyljnCXAyOLd/sOTw\",\"TokenSecret\":\"wFwTezBIL0oElVXC\",\"Time\":\"2020-08-06 15:53:36\"}}",
                         "schema": {
                             "type": "string"
                         }
                     },
                     "411": {
-                        "description": "{\"status\":\"FAIL\",    \"msg\": \"錯誤訊息\"}",
+                        "description": "{\"ecode\":1001,\"msg\":\"請求參數短少或錯誤\",\"data\":null}",
                         "schema": {
                             "type": "string"
                         }
@@ -140,7 +134,7 @@ var doc = `{
                 }
             }
         },
-        "/mycard/AuthMycard": {
+        "/mycard/CreateMycardOder": {
             "post": {
                 "consumes": [
                     "application/x-www-form-urlencoded"
@@ -156,7 +150,14 @@ var doc = `{
                     {
                         "type": "string",
                         "description": "玩家帳號ID",
-                        "name": "id",
+                        "name": "userid",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "遊戲GroupID",
+                        "name": "groupid",
                         "in": "formData",
                         "required": true
                     },
@@ -191,50 +192,6 @@ var doc = `{
                     },
                     "400": {
                         "description": "{\"status\":\"FAIL\",    \"msg\": \"錯誤訊息\"}",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/test/A": {
-            "post": {
-                "consumes": [
-                    "application/x-www-form-urlencoded"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Test"
-                ],
-                "summary": "TestRegisterServer",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Name",
-                        "name": "name",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "cqikey",
-                        "name": "cqikey",
-                        "in": "formData",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{\"name\":\"test\",\"token\":\"123456\",\"status\":\"SUCCESS\"}",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "400": {
-                        "description": "{\"status\":\"FAIL\"}",
                         "schema": {
                             "type": "string"
                         }

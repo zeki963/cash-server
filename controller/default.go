@@ -26,5 +26,5 @@ func Homepage(c *gin.Context) {
 
 //NoResponse 不存在，返回404
 func NoResponse(c *gin.Context) {
-	c.JSON(404, res(0000, nil))
+	c.JSON(404, resp(0000, nil))
 }
