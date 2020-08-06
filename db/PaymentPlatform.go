@@ -1,5 +1,7 @@
 package db
 
+import "fmt"
+
 //PaymentPlatform PaymentPlatform
 type PaymentPlatform struct {
 	Model
@@ -11,4 +13,22 @@ type PaymentPlatform struct {
 	PlatformToken       string `gorm:"type:varchar(50) NOT NULL COMMENT '金鑰'"`
 	PlatformTokenSecret string `gorm:"type:varchar(100) NOT NULL COMMENT '加密金鑰'"`
 	Status              string `gorm:"type:varchar(1) DEFAULT '0' COMMENT '狀態，0為禁用，1為啟用'"`
+}
+
+//IPaymentPlatform IPaymentPlatform
+type IPaymentPlatform interface {
+	Echo() bool
+	Add() error
+}
+
+//Echo 呼叫
+func (i PaymentPlatform) Echo() bool {
+	fmt.Println(i)
+	return true
+}
+
+//Add 新增
+func (i PaymentPlatform) Add() bool {
+	SQLDBX.Create(&i)
+	return true
 }

@@ -46,6 +46,7 @@ func PlatformRegisterServerAdd(c *gin.Context) {
 		resmsg.TokenSecret = p.PlatformTokenSecret
 		resmsg.Account = p.PlatformAccount
 		p.Status = "0"
+		p.Add()
 		msg := service.PaymentPlatformAdd(p)
 		if msg == true {
 			c.JSON(200, resp(200, resmsg))
