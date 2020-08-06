@@ -26,7 +26,7 @@ func Dbcannot(DBInfo string) (err error) {
 	return nil
 }
 
-//GetJSON  通用JSON
+//GetJSON  SQL通用JSON
 func GetJSON(sqlString string, taskID string) (string, error) {
 	rows, err := SqlDB.Query(sqlString, taskID)
 	if err != nil {

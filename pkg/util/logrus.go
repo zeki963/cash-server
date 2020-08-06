@@ -2,6 +2,7 @@ package util
 
 import (
 	"cash-server/db"
+
 	"fmt"
 	"os"
 	"path"
@@ -121,13 +122,14 @@ func LoggerToDB() gin.HandlerFunc {
 }
 
 //InsertLogConnect 寫入紀錄
-func insertLogConnect(statusCode int, latencyTime time.Duration, clientIP, reqMethod string, reqURL string, time string, reqbody, reqheader string) error {
-	if _, err := db.SqlDB.Exec(
-		"INSERT INTO log_connect (statusCode, latencyTime, clientIP, reqMethod, reqURL, create_date,update_date,reqbody,reqheader) VALUES (?,?,?,?,?,?,?,?,?)",
-		statusCode, latencyTime, clientIP, reqMethod, reqURL, time, time, reqbody, reqheader); err != nil {
-		Error("DB INSERT fail")
-		Error(err.Error())
-		return err
-	}
-	return nil
+func insertLogConnect(statusCode int, latencyTime time.Duration, clientIP, reqMethod, reqURL, time string, reqbody, reqheader string) {
+	var n db.LogConnect
+	n.StatusCode = statusCode
+	n.Reqheader = reqheader
+	n.LatencyTime = ShortDur(latencyTime)
+	n.ReqURL = reqURL
+	n.ClientIP = clientIP
+	n.Reqbody = reqbody
+	n.ReqMethod = reqMethod
+	db.SQLDBX.Create(&n)
 }

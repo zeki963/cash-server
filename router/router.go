@@ -1,4 +1,4 @@
-package routers
+package router
 
 import (
 	"cash-server/configs"
@@ -7,18 +7,15 @@ import (
 	// cash-server/docs swag DOC
 	_ "cash-server/docs"
 
+	"cash-server/controller"
 	"cash-server/pkg/util"
-	"cash-server/routers/api/admin"
-	"cash-server/routers/api/mycard"
-	"cash-server/routers/api/pay"
+
 	"fmt"
 	"io"
-	"net/http"
 	"os"
 
 	"github.com/gin-contrib/multitemplate"
 	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"github.com/swaggo/gin-swagger/swaggerFiles"
 )
@@ -51,75 +48,38 @@ func InitRouter() *gin.Engine {
 	r.Use(gin.Recovery())
 	r.StaticFile("/favicon.ico", "./favicon.ico")
 	r.Static("/static", "./templates/static")
-	// 根目錄
-	r.Any("/", func(c *gin.Context) {
-		c.HTML(200, "index.html", gin.H{
-			"title": "Home page",
-		})
-		util.Logger().WithFields(logrus.Fields{
-			"name": "Info",
-		}).Info("有人連進根目錄了", "Info")
-	})
-
-	//前端DEMO用
 	r.HTMLRender = loadTemplates("./templates")
-	r.GET("/demo", func(c *gin.Context) {
-		c.HTML(200, "demo.html", gin.H{
-			"title": "DEMO page",
-		})
-	})
-
-	//Group pay1
-	pay1 := r.Group("pay1")
-	{
-		pay1.POST("/A", pay.UrlencodedPost)
-		pay1.POST("/B", pay.JSONtestPost)
-	}
+	r.Any("/", controller.Homepage)
+	r.GET("/demo", controller.Demopage)
 
 	//Group mycard
 	rmycard := r.Group("mycard")
 	{
-		//使用 mycard 建單 操作s
-		rmycard.POST("/CreateMycardOder", mycard.AuthMycard)
+		//使用 mycard 建單 Add
+		rmycard.POST("/oder", controller.AuthMycard)
 		//查詢 mycard 查詢單筆交易
-		rmycard.POST("/QuiryMycardOderOne")
+		rmycard.GET("/oder/:key")
 		//查詢 mycard 查詢交易清單
-		//TODO 給web查詢 列出清單
-		rmycard.POST("/QuiryMycardOderList")
-
+		rmycard.GET("/oders")
 		//給Mycard廠商用ReturnURL
-		rmycard.POST("/MycardOderCallback", mycard.CallbackMycard)
+		rmycard.POST("/odercallback", controller.CallbackMycard)
 	}
 
 	//Group casino
 	casino := r.Group("casino")
 	{
 		//查詢 casino 查詢商品清單
-		casino.POST("/QuiryMycardOderOne")
+		casino.GET("/Shop")
 	}
 
 	//Group testrouter
 	testrouter := r.Group("test")
 	{
-		testrouter.POST("/A", pay.TestRegisterServer)
-		testrouter.GET("/ping", func(c *gin.Context) {
-			c.JSON(200, gin.H{
-				"msg": "pong",
-			})
-		})
-		//input output
-		r.GET("/putkey/:key", func(context *gin.Context) {
+		testrouter.POST("/A", controller.UrlencodedPost)
+		testrouter.POST("/B", controller.JSONtestPost)
+		testrouter.GET("/putkey/:key", func(context *gin.Context) {
 			key = context.Param("key")
 			fmt.Printf("Hello, %s", key)
-		})
-		r.GET("/getkey", func(context *gin.Context) {
-			if key != "" {
-				context.String(http.StatusOK, key)
-				fmt.Printf("key is %s", key)
-			} else {
-				context.String(http.StatusOK, "No key.")
-				fmt.Println("No key.")
-			}
 		})
 	}
 
@@ -127,14 +87,14 @@ func InitRouter() *gin.Engine {
 	radmin := r.Group("admin")
 	{
 		//register  提供註冊
-		radmin.POST("/register", admin.PlatformRegisterServer)
+		radmin.POST("/platform", controller.PlatformRegisterServerAdd)
 	}
-	//system 相關
+
+	//Swagger 相關
 	if configs.GetGlobalConfig().Swagger == true {
-		//swag interface
-		r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+		r.Any("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	}
-	r.NoRoute(NoResponse)
+	r.NoRoute(controller.NoResponse)
 	return r
 }
 
@@ -151,18 +111,9 @@ func ginlogmode() {
 	gin.DefaultWriter = io.MultiWriter(f)
 }
 
-//NoResponse 不存在，返回404
-func NoResponse(c *gin.Context) {
-	c.JSON(http.StatusNotFound, gin.H{
-		"status": 404,
-		"msg":    "page not exists!,你想幹嘛ヽ(`Д´)ノ  ",
-	})
-}
-
 //loadTemplates 前端DEMO用
 func loadTemplates(templatesDir string) multitemplate.Renderer {
 	r := multitemplate.NewRenderer()
-
 	layouts, err := filepath.Glob(templatesDir + "/layouts/*.html")
 	if err != nil {
 		panic(err.Error())

@@ -1,4 +1,4 @@
-package mycard
+package controller
 
 import (
 	"cash-server/configs"

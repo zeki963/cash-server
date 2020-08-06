@@ -1,9 +1,6 @@
-package pay
+package controller
 
 import (
-	madmin "cash-server/model"
-	"cash-server/pkg/encryption"
-	"cash-server/pkg/util"
 	"log"
 	"net/http"
 
@@ -62,46 +59,4 @@ func JSONtestPost(c *gin.Context) {
 		"message": user.Message,
 		"num":     user.Num,
 	})
-}
-func sadf() {
-
-}
-
-// TestRegisterServer  application/x-www-form-url
-// @Summary TestRegisterServer
-// @Tags Test
-// @Produce  json
-// @Accept  application/x-www-form-urlencoded
-// @Param name formData string true "Name"
-// @Param cqikey formData string true "cqikey"
-// @success 200 {string} string "{"name":"test","token":"123456","status":"SUCCESS"}"
-// @success 400 {string} string "{"status":"FAIL"}"
-// @Router /test/A [post]
-func TestRegisterServer(c *gin.Context) {
-	name := c.PostForm("name")
-	cqikey := c.PostForm("cqikey")
-	if name != "" && cqikey == "cqig7777" {
-		token := encryption.Md5(name + "123")
-
-		time := util.GETNowsqltime()
-		log.Println(name, token, time)
-		err := madmin.InsertServer(name, token, time)
-		if err != nil {
-			c.JSON(400, gin.H{
-				"status": err,
-			})
-
-		} else {
-			c.JSON(http.StatusOK, gin.H{
-				"status": "success",
-				"name":   name,
-				"token":  token,
-				"time":   time,
-			})
-		}
-	} else {
-		c.JSON(400, gin.H{
-			"status": "FAIL",
-		})
-	}
 }

@@ -4,19 +4,10 @@ import (
 	"cash-server/configs"
 	"cash-server/db"
 	"cash-server/model"
-	"cash-server/pkg/flag"
 	"cash-server/pkg/util"
-	"cash-server/routers"
-	"cash-server/routers/api/mycard"
+	"cash-server/router"
+	"fmt"
 )
-
-func init() {
-	util.Success(" < - SERVER INIT - > ")
-	flag.StartFlag()
-	// <== 測試CODE == >
-	model.PlatformQueryInfodata("0OEaFvXvGXVjlanvAXZugA")
-	mycard.Savedb()
-}
 
 // @title  金流SERVER API
 // @version 2020.07
@@ -25,18 +16,33 @@ func init() {
 // @contact.url https://www.cqiserv.com/
 // @contact.email zor@cqiserv.com
 func main() {
+	// <== 測試CODE == >
+	fmt.Println(model.PlatformQueryExist("test"))
+	// <== 測試CODE == >
 	// server start
 	util.Success(" < - SERVER START - > ")
 	//DB config
-	defer db.SqlDB.Close()
+	defer db.SQLDBX.Close()
 	//ROUTER
-	router := routers.InitRouter()
+	r := router.InitRouter()
 	//PORT
 	if configs.GetGlobalConfig().HTTPS == true {
-		router.RunTLS(":8443", "templates/server.crt", "templates/server.key")
+		r.RunTLS(":8443", "templates/server.crt", "templates/server.key")
 	} else {
-		if err := router.Run(":8080"); err != nil {
+		if err := r.Run(":8080"); err != nil {
 			util.Error(err.Error())
 		}
+	}
+}
+
+func init() {
+	util.Success(" < - SERVER INIT - > ")
+	configs.LoadGlobalConfig("")
+	util.Info("[MODE] " + configs.GetGlobalConfig().RunMode)
+	util.Info(" < - MyDB INIT - >")
+	if err := db.Initgorm(); err != nil {
+		util.Error(err.Error())
+	} else {
+		util.Info("DB Host :" + configs.GetGlobalConfig().MySQL.Host)
 	}
 }

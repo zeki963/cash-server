@@ -36,3 +36,15 @@ func GETNowsqltime() string {
 	ts := t.Format("2006-01-02 15:04:05")
 	return ts
 }
+
+//ShortDur 型態轉換 time.Duration 2 string
+func ShortDur(d time.Duration) string {
+	s := d.String()
+	if strings.HasSuffix(s, "m0s") {
+		s = s[:len(s)-2]
+	}
+	if strings.HasSuffix(s, "h0m") {
+		s = s[:len(s)-2]
+	}
+	return s
+}

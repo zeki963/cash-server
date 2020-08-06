@@ -1,4 +1,4 @@
-package pay
+package controller
 
 import (
 	"cash-server/model"
@@ -20,13 +20,9 @@ func Checkrouter(c *gin.Context) {
 			//id  確認
 
 		} else {
-			c.JSON(400, gin.H{
-				"status": "權限不足",
-			})
+			c.JSON(400, res(1001, nil))
 		}
 	} else {
-		c.JSON(400, gin.H{
-			"status": "token 錯誤或參數不足",
-		})
+		c.JSON(400, res(1001, nil))
 	}
 }

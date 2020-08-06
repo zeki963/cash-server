@@ -16,6 +16,7 @@ require (
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/golang/protobuf v1.4.2
 	github.com/gorilla/sessions v1.2.0 // indirect
+	github.com/jinzhu/gorm v1.9.15
 	github.com/json-iterator/go v1.1.10 // indirect
 	github.com/line/line-bot-sdk-go v7.4.0+incompatible
 	github.com/mailru/easyjson v0.7.1 // indirect

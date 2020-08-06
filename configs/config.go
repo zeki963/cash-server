@@ -50,12 +50,13 @@ func ParseConfig(fpath string) (*Config, error) {
 
 //Config 配置參數
 type Config struct {
-	RunMode string  `toml:"run_mode"`
-	Swagger bool    `toml:"swagger"`
-	HTTPS   bool    `toml:"https"`
-	Logconf Logconf `toml:"logconf"`
-	MySQL   MySQL   `toml:"mysql"`
-	Mycard  Mycard  `toml:"mycard"`
+	RunMode  string   `toml:"run_mode"`
+	Swagger  bool     `toml:"swagger"`
+	HTTPS    bool     `toml:"https"`
+	Logconf  Logconf  `toml:"logconf"`
+	MySQL    MySQL    `toml:"mysql"`
+	Mycard   Mycard   `toml:"mycard"`
+	Postgres Postgres `toml:"Postgres"`
 }
 
 //Redis 配置參數
@@ -64,7 +65,7 @@ type Redis struct {
 	Password string `toml:"password"`
 }
 
-//Logger 配置參數
+//Logconf 配置參數
 type Logconf struct {
 	Logger       bool `toml:"logger"`
 	LoggerToFile bool `toml:"loggerToFile"`
@@ -79,6 +80,21 @@ type MySQL struct {
 	Password   string `toml:"password"`
 	DBName     string `toml:"db_name"`
 	Parameters string `toml:"parameters"`
+}
+
+//Postgres 配置參數
+type Postgres struct {
+	Host     string `toml:"host"`
+	Port     int    `toml:"port"`
+	User     string `toml:"user"`
+	Password string `toml:"password"`
+	DBName   string `toml:"db_name"`
+}
+
+//DSN Postgres-DSN 數據庫連接串
+func (a Postgres) DSN() string {
+	return fmt.Sprintf("host=%s port=%d user=%s dbname=%s password=%s",
+		a.Host, a.Port, a.User, a.DBName, a.Password)
 }
 
 //DSN mysql-DSN 數據庫連接串

@@ -32,103 +32,66 @@ type Platform struct {
 	Updatedate          string `json:"update_date"`
 }
 
-//---------------------------registerserver  表單相關-------------------------------------
-
-//InsertServer 測試寫入DB
-func InsertServer(name string, token string, time string) error {
-	if _, err := db.SqlDB.Exec(
-		"INSERT INTO registerserver (name, token , time) VALUES (?, ? , ?)", name, token, time,
-	); err != nil {
-		util.Error("DB INSERT fail")
-		util.Error(err.Error())
-		return err
-	}
-	return nil
-}
-
 //---------------------------payment_platform  表單相關-------------------------------------
 
-//PlatformRegister Platform 註冊
-func PlatformRegister(account string, pw string, name string, platformgroupid string, email string, token string, tokenSecret string, time string) error {
-	if _, err := db.SqlDB.Exec(
-		"INSERT INTO payment_platform (platform_account, platform_password, platform_name,platform_group_id,platform_email, platform_token, platform_token_secret, status, create_date, update_date) VALUES (?,?,?,?,?,?,?,0,?,?)",
-		account, pw, name, platformgroupid, email, token, tokenSecret, time, time,
-	); err != nil {
-		util.Error("> DB INSERT Fail")
-		util.Error(err.Error())
-		return err
-	}
+//PaymentPlatformAdd Platform 註冊
+func PaymentPlatformAdd(p db.PaymentPlatform) error {
+	db.SQLDBX.Create(&p)
 	return nil
 }
 
-//PlatformQueryExist  查詢帳號存在
+//PaymentPlatformCheck Platform 查詢
+func PaymentPlatformCheck(account string) bool {
+	model := &db.PaymentPlatform{}
+	a := db.SQLDBX.Where("platform_account = ?", account).First(&model)
+	if a.Error != nil {
+		return false
+	}
+	return true
+}
+
+//PlatformQueryExist 查詢帳號存在
 func PlatformQueryExist(account string) string {
-	var password string
-	rows, err := db.SqlDB.Query("SELECT platform_password FROM payment_platform WHERE platform_account = ?", account)
-	if err != nil {
-		//log.Fatal(err)
-		util.Error(err.Error())
+	model := &db.PaymentPlatform{}
+	a := db.SQLDBX.Where("platform_account = ?", account).First(&model)
+	if a.Error != nil {
+		return "err"
 	}
-	for rows.Next() {
-		if err := rows.Scan(&password); err != nil {
-			//log.Fatal(err)
-			util.Error(err.Error())
-		}
-		log.Println("PlatformQueryExist 查詢帳號存在 -> 帳號：", account, "密碼：", password)
-	}
-	if err := rows.Err(); err != nil {
-		//log.Fatal(err)
-		util.Error(err.Error())
-	}
-	return password
+	return model.PlatformPassword
 }
 
 //PlatformQueryStatus 查詢帳號開通狀態
 func PlatformQueryStatus(account string, password string) string {
-	var status string
-	rows, err := db.SqlDB.Query("SELECT status FROM payment_platform WHERE platform_account=? AND platform_password=? ", account, password)
-	if err != nil {
-		//log.Fatal(err)
-		util.Error(err.Error())
+	model := &db.PaymentPlatform{}
+	a := db.SQLDBX.Where("platform_account = ?", account).First(&model)
+	if a.Error != nil {
+		return "err"
 	}
-	for rows.Next() {
-		if err := rows.Scan(&status); err != nil {
-			//log.Fatal(err)
-			util.Error(err.Error())
-		}
-		log.Println("PlatformQueryStatus 查詢帳號開通狀態 -> 帳號：", account, "狀態：", status)
-	}
-	if err := rows.Err(); err != nil {
-		//log.Fatal(err)
-		util.Error(err.Error())
-	}
-	return status
+	log.Println("PlatformQueryStatus 查詢帳號開通狀態 -> 帳號：", account, "狀態：", model.Status)
+	return model.Status
 }
 
 //PlatformTokenQueryStatus 查詢帳號開通狀態
 func PlatformTokenQueryStatus(token string) string {
-	var status string
-	rows, err := db.SqlDB.Query("SELECT status FROM payment_platform WHERE platform_token=? ", token)
-	if err != nil {
-		//log.Fatal(err)
-		util.Error(err.Error())
-		return "error"
+	model := &db.PaymentPlatform{}
+	a := db.SQLDBX.Where("platform_token = ?", token).First(&model)
+	if a.Error != nil {
+		return "err"
 	}
-	for rows.Next() {
-		if err := rows.Scan(&status); err != nil {
-			//log.Fatal(err)
-			util.Error(err.Error())
-			return "error"
-		}
-		log.Println("PlatformTokenQueryStatus 查詢帳號狀態 -> token：", token)
-	}
-	if err := rows.Err(); err != nil {
-		//log.Fatal(err)
-		util.Error(err.Error())
-		return "error"
-	}
-	return status
+	log.Println("PlatformTokenQueryStatus 查詢帳號狀態 -> token：", token)
+	return model.Status
 }
+
+// //PlatformQueryInfo  查詢帳號詳細資料 乖 用id查
+// func PlatformQueryInfo(taskID string) *db.PaymentPlatform {
+// 	model := &db.PaymentPlatform{}
+// 	a := db.SQLDBX.Where("platform_id  = ?", taskID).First(&model)
+// 	if a.Error != nil {
+// 		return &db.PaymentPlatform{}
+// 	}
+// 	fmt.Println("PlatformQueryInfo 查詢帳號資料 ", taskID)
+// 	return model
+// }
 
 //PlatformQueryInfo  查詢帳號詳細資料 乖 用id查
 func PlatformQueryInfo(taskID string) string {
@@ -192,6 +155,16 @@ func PlatformQueryGroupAuth(typeid string, groupid string) bool {
 	}
 	return true
 }
+
+// //PlatformTokenQueryStatus 查詢帳號開通狀態
+// func PlatformQueryGroupAuth(typeid string, groupid string) bool {
+// 	model := &db.PaymentPlatform{}
+// 	a := db.SQLDBX.Where(" group_id=? and type_id=? = ?", groupid, typeid).First(&model)
+// 	if a.Error != nil {
+// 		return false
+// 	}
+// 	return true
+// }
 
 //   ---------------------------log_connect  表單相關-------------------------------------
 
