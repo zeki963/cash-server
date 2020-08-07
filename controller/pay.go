@@ -14,9 +14,9 @@ func Checkrouter(c *gin.Context) {
 	token := c.PostForm("token")
 	//time := util.GETNowsqltime()
 	if id != "" && itemid != "" && itemprice != "" {
-		platform := model.PlatformQueryInfodata(token)
+		platformStatus := model.PlatformQueryStatusUseToken(token)
 		//平台確認
-		if platform.Status == "1" {
+		if platformStatus == "1" {
 			//id  確認
 
 		} else {

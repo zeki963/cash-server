@@ -3,25 +3,26 @@ package main
 import (
 	"cash-server/configs"
 	"cash-server/db"
-	"cash-server/model"
 	"cash-server/pkg/util"
 	"cash-server/router"
-	"fmt"
 )
 
 // @title  金流SERVER API
-// @version 2020.07
+// @version 2020.08
 // @description This is a sample API server .
 // @contact.name  CQI-SERVICES
 // @contact.url https://www.cqiserv.com/
 // @contact.email zor@cqiserv.com
 func main() {
 	// <== 測試CODE == >
-	fmt.Println(model.PlatformQueryExist("test"))
+	var a db.PaymentPlatform
+	a.PlatformToken = "mSwgzQ6SV5hasRvQ0uJwVg"
+
+	//fmt.Println(model.PlatformQueryExist(a))
 	// <== 測試CODE == >
 	// server start
-	util.Success(" < - SERVER START - > ")
-	//DB config
+	util.Info(" < - SERVER START - > ")
+	//DB 連線關閉
 	defer db.SQLDBX.Close()
 	//ROUTER
 	r := router.InitRouter()
@@ -36,13 +37,14 @@ func main() {
 }
 
 func init() {
-	util.Success(" < - SERVER INIT - > ")
+	util.Info(" < - SERVER INIT - > ")
 	configs.LoadGlobalConfig("")
-	util.Info("[MODE] " + configs.GetGlobalConfig().RunMode)
+	util.Success("[MODE] > " + configs.GetGlobalConfig().RunMode)
 	util.Info(" < - MyDB INIT - >")
 	if err := db.Initgorm(); err != nil {
+		util.Error("! DB Connect ERROR !")
 		util.Error(err.Error())
 	} else {
-		util.Info("DB Host :" + configs.GetGlobalConfig().MySQL.Host)
+		util.Success("[DB Host] > " + configs.GetGlobalConfig().MySQL.Host)
 	}
 }

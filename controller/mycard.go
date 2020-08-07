@@ -2,10 +2,11 @@ package controller
 
 import (
 	"cash-server/configs"
+	"cash-server/db"
 	casinogrpc "cash-server/grpc/casino"
-	"cash-server/model"
 	"cash-server/pkg/encryption"
 	"cash-server/pkg/util"
+	"cash-server/service"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -15,8 +16,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-//Mycardrep Mycardrep 格式
-type Mycardrep struct {
+//Mycardresp Mycardresp 格式
+type Mycardresp struct {
 	InGameSaveType int
 	ReturnCode     string
 	ReturnMsg      string
@@ -24,7 +25,7 @@ type Mycardrep struct {
 	TradeSeq       string
 }
 
-// AuthMycard  application/json  application/x-www-form-urlencoded
+// MycardOderAdd  application/json  application/x-www-form-urlencoded
 // @Summary AuthMycard
 // @Tags MyCard
 // @Produce  json
@@ -37,52 +38,42 @@ type Mycardrep struct {
 // @success 200 {string} string "{"還沒寫好"}"
 // @success 400 {string} string "{"status":"FAIL",    "msg": "錯誤訊息"}"
 // @Router /mycard/CreateMycardOder [post]
-func AuthMycard(c *gin.Context) {
-	userid := c.PostForm("userid")
+func MycardOderAdd(c *gin.Context) {
+	var p db.PaymentPlatform
+	c.Bind(&p)
 	groupid := c.PostForm("groupid")
+	userid := c.PostForm("userid")
 	itemid := c.PostForm("itemid")
 	itemprice := c.PostForm("itemprice")
-	token := c.PostForm("token")
-	time := util.GETNowsqltime()
 	var guid string
 	if userid != "" && itemid != "" && itemprice != "" {
-		// 確認 參數 平台 帳號
-		platform := model.PlatformQueryInfodata(token)
+		util.Info("要求Mycard認証 -> token:", p.PlatformToken)
 		//平台 Status確認  && GroupAuth確認
-		if platform.Status == "1" && model.PlatformQueryGroupAuth("1", groupid) {
-			//id  確認
+		if service.PlatformQueryStatus(p) && service.PlatformGroupAuthQuery(groupid, "1") {
+			//依各group確認該遊戲帳戶是否存在
 			switch groupid {
 			case "2":
 				guid = casinogrpc.VetifyUserID(userid)
 			}
 			if guid != "NoAccount" {
-				util.Info("要求Mycard認証 -> token:", token)
-				//toMycardAuthGlobal(userid, itemid, itemprice, groupid)
+				//test
 				c.JSON(http.StatusCreated, gin.H{
 					"status":    "success",
 					"userid":    userid,
 					"itemid":    itemid,
 					"itemprice": itemprice,
-					"token":     token,
-					"time":      time,
+					"token":     p.PlatformToken,
 				})
+				//給前端3-2
+				//c.JSON(200, resp(200, Nresp))
 			} else {
-				c.JSON(400, gin.H{
-					"status": "error",
-					"msg":    "no account",
-				})
+				c.JSON(411, resp(1003, nil))
 			}
 		} else {
-			c.JSON(400, gin.H{
-				"status": "error",
-				"msg":    "token錯誤&權限不足",
-			})
+			c.JSON(411, resp(2003, nil))
 		}
 	} else {
-		c.JSON(400, gin.H{
-			"status": "error",
-			"msg":    "參數不足",
-		})
+		c.JSON(411, resp(1001, nil))
 	}
 }
 
@@ -144,7 +135,7 @@ func toMycardAuthGlobal(userid string, itemid string, itemprice string, serverid
 	//JSON
 	util.Trace("Mycardresp:")
 	util.Trace(string(body))
-	var nmycarderp Mycardrep
+	var nmycarderp Mycardresp
 	data := []byte(body)
 	json.Unmarshal(data, &nmycarderp)
 	fmt.Printf("%+v", nmycarderp)
@@ -158,7 +149,7 @@ func Savedb() {
 //createMycardOder  建立Oder
 func createMycardOder() {
 	util.Info("createMycardOder")
-	var nmycarderp Mycardrep
+	var nmycarderp Mycardresp
 	msg := `{"InGameSaveType":"2","ReturnCode":"1","ReturnMsg":"授權成功","AuthCode":"123456","TradeSeq":"KDS1512080000050"}`
 	data := []byte(msg)
 	json.Unmarshal(data, &nmycarderp)

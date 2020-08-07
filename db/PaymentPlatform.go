@@ -1,6 +1,10 @@
 package db
 
-import "fmt"
+import (
+	"cash-server/pkg/util"
+	"fmt"
+	"reflect"
+)
 
 //PaymentPlatform PaymentPlatform
 type PaymentPlatform struct {
@@ -31,4 +35,19 @@ func (i PaymentPlatform) Echo() bool {
 func (i PaymentPlatform) Add() bool {
 	SQLDBX.Create(&i)
 	return true
+}
+
+//Find 新增
+func (i PaymentPlatform) DBFind() (string, string) {
+	b := Struct2Map(i)
+	var Str string
+	var columnName string
+	for k, v := range b {
+		if v != "" && reflect.TypeOf(v).String() == "string" {
+			Str = fmt.Sprintf("%s", v)
+			columnName = k
+		}
+	}
+	//q := util.UnMarshal(columnName) + "=" + Str
+	return util.UnMarshal(columnName), Str
 }

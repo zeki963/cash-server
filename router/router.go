@@ -42,7 +42,7 @@ func InitRouter() *gin.Engine {
 		r.Use(util.LoggerToFile())
 	}
 	if configs.GetGlobalConfig().Logconf.LoggerToDB {
-		r.Use(util.LoggerToDB())
+		r.Use(controller.LoggerToDB())
 	}
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
@@ -56,7 +56,7 @@ func InitRouter() *gin.Engine {
 	rmycard := r.Group("mycard")
 	{
 		//使用 mycard 建單 Add
-		rmycard.POST("/oder", controller.AuthMycard)
+		rmycard.POST("/oder", controller.MycardOderAdd)
 		//查詢 mycard 查詢單筆交易
 		rmycard.GET("/oder/:key")
 		//查詢 mycard 查詢交易清單

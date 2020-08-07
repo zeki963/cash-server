@@ -1,5 +1,5 @@
 # 運行模式 (debug:調試,test:測試,release:正式)
-run_mode = "release"
+run_mode = "test"
 
 # swagger 配置
 swagger = true
@@ -21,6 +21,12 @@ user = "root"
 password = "cqig7777"
 db_name = "zor"
 parameters = "parseTime=true"
+# host = ""
+# port= 3306
+# user = "cqig"
+# password = "E1f1ee0cfcbb93EA"
+# db_name = "marbles"
+# parameters = "parseTime=true"
 
 # Postgres 
 [Postgres]

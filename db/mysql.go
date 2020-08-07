@@ -5,30 +5,31 @@ import (
 	"encoding/json"
 	"time"
 
+	//註解
 	_ "github.com/go-sql-driver/mysql"
 )
 
-//SqlDB DB控制項
-var SqlDB *sql.DB
+//SQLDB DB控制項
+var SQLDB *sql.DB
 
 //Dbcannot DB連線
 func Dbcannot(DBInfo string) (err error) {
-	SqlDB, err = sql.Open("mysql", DBInfo)
+	SQLDB, err = sql.Open("mysql", DBInfo)
 	if err != nil {
 		return err
 	}
-	err = SqlDB.Ping()
+	err = SQLDB.Ping()
 	if err != nil {
 		return err
 	}
-	SqlDB.SetConnMaxLifetime(100 * time.Second) //最大連接周期，超時close
-	SqlDB.SetMaxOpenConns(100)                  //設置最大連接數
+	SQLDB.SetConnMaxLifetime(100 * time.Second) //最大連接周期，超時close
+	SQLDB.SetMaxOpenConns(100)                  //設置最大連接數
 	return nil
 }
 
 //GetJSON  SQL通用JSON
 func GetJSON(sqlString string, taskID string) (string, error) {
-	rows, err := SqlDB.Query(sqlString, taskID)
+	rows, err := SQLDB.Query(sqlString, taskID)
 	if err != nil {
 		return "", err
 	}

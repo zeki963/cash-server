@@ -27,7 +27,7 @@ type AddRespMsg struct {
 // @Param PlatformPassword formData string true "平台密碼"
 // @Param PlatformEmail formData string false "聯絡信箱"
 // @Param PlatformGroupID formData string false "群組代號 - 預設為1"
-// @success 200 {string} string "{"ecode":200,"msg":"ok","data":{"Account":"test123","Token":"7z7cxTyljnCXAyOLd/sOTw","TokenSecret":"wFwTezBIL0oElVXC","Time":"2020-08-06 15:53:36"}}"
+// @success 200 {string} string "{"ecode":200,"msg":"ok","data":{"Account":"test123","Token":"7z7c***Cqw","TokenSecret":"wq0o***XC","Time":"2020-08-06 15:53:36"}}"
 // @success 411 {string} string "{"ecode":1001,"msg":"請求參數短少或錯誤","data":null}"
 // @Router /admin/platform [post]
 func PlatformRegisterServerAdd(c *gin.Context) {
@@ -46,9 +46,9 @@ func PlatformRegisterServerAdd(c *gin.Context) {
 		resmsg.TokenSecret = p.PlatformTokenSecret
 		resmsg.Account = p.PlatformAccount
 		p.Status = "0"
-		p.Add()
-		msg := service.PaymentPlatformAdd(p)
-		if msg == true {
+		add := service.PaymentPlatformAdd(p)
+		println(add)
+		if add == true {
 			c.JSON(200, resp(200, resmsg))
 		} else {
 			c.JSON(411, resp(1002, nil))

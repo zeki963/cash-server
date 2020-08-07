@@ -2,6 +2,7 @@ package db
 
 import (
 	"cash-server/configs"
+	"reflect"
 	"time"
 
 	"github.com/jinzhu/gorm"
@@ -14,32 +15,6 @@ type Model struct {
 	ID        uint      `gorm:"primary_key; AUTO_INCREMENT"`
 	CreatedAt time.Time `gorm:"type:timestamp;NOT NULL"`
 	UpdatedAt time.Time `gorm:"type:timestamp;NOT NULL"`
-}
-
-//LogConnect  連線紀錄
-type LogConnect struct {
-	Model
-	StatusCode  int
-	LatencyTime string
-	ClientIP    string `gorm:"type:varchar(15)"`
-	ReqMethod   string `gorm:"type:varchar(100)"`
-	ReqURL      string `gorm:"type:varchar(100)"`
-	Reqbody     string `gorm:"type:varchar(255)"`
-	Reqheader   string `gorm:"type:text"`
-}
-
-//PaymentPlatformGroup PaymentPlatformGroup
-type PaymentPlatformGroup struct {
-	Model
-	GroupName     string `gorm:" varchar(20) NOT NULL COMMENT '群組名稱'"`
-	GroupDescribe string `gorm:"varchar(45)  COMMENT '詳細'"`
-}
-
-//PaymentPlatformGroupAuth PaymentPlatformGroupAuth
-type PaymentPlatformGroupAuth struct {
-	Model
-	GroupID string `gorm:"int(10) NOT NULL"`
-	TypeID  string `gorm:"int(10) NOT NULLL"`
 }
 
 //SQLDBX  供外部呼叫
@@ -71,8 +46,9 @@ func Initgorm() error {
 //migratetable 初始化表 自動建表
 func migratetable(gdb *gorm.DB) {
 	// Migrate the schema
-	gdb.AutoMigrate(&LogConnect{}, &PaymentPlatform{}, &PaymentPlatformGroupAuth{}, &PaymentPlatformGroup{})
+	gdb.AutoMigrate(&LogConnect{}, &PaymentPlatform{}, &PaymentPlatformGroupsAuth{}, &PaymentPlatformGroup{}, &PaymentType{})
 	model := &PaymentPlatformGroup{}
+	//檢查初始資料
 	if a := gdb.Where("id = ?", 1).First(&model); a.Error != nil {
 		var PaymentPlatformGroup1 PaymentPlatformGroup
 		PaymentPlatformGroup1.GroupName = "nil"
@@ -83,4 +59,17 @@ func migratetable(gdb *gorm.DB) {
 		PaymentPlatformGroup2.GroupDescribe = "歡樂賭爛城"
 		gdb.Create(&PaymentPlatformGroup2)
 	}
+
+}
+
+//Struct2Map Struct2Map
+func Struct2Map(obj interface{}) map[string]interface{} {
+	t := reflect.TypeOf(obj)
+	v := reflect.ValueOf(obj)
+
+	var data = make(map[string]interface{})
+	for i := 0; i < t.NumField(); i++ {
+		data[t.Field(i).Name] = v.Field(i).Interface()
+	}
+	return data
 }
