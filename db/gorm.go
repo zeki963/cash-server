@@ -46,7 +46,7 @@ func Initgorm() error {
 //migratetable 初始化表 自動建表
 func migratetable(gdb *gorm.DB) {
 	// Migrate the schema
-	gdb.AutoMigrate(&LogConnect{}, &PaymentPlatform{}, &PaymentPlatformGroupsAuth{}, &PaymentPlatformGroup{}, &PaymentType{})
+	gdb.AutoMigrate(&LogConnect{}, &PaymentPlatform{}, &PaymentPlatformGroupsAuth{}, &PaymentPlatformGroup{}, &PaymentType{}, &Oder{})
 	model := &PaymentPlatformGroup{}
 	//檢查初始資料
 	if a := gdb.Where("id = ?", 1).First(&model); a.Error != nil {
@@ -59,7 +59,14 @@ func migratetable(gdb *gorm.DB) {
 		PaymentPlatformGroup2.GroupDescribe = "歡樂賭爛城"
 		gdb.Create(&PaymentPlatformGroup2)
 	}
-
+	model2 := &PaymentType{}
+	if b := gdb.Where("id = ?", 1).First(&model2); b.Error != nil {
+		var dfmycad PaymentType
+		dfmycad.TypeName = "mycard"
+		dfmycad.PaymentMemberID = "1234"
+		dfmycad.Status = "1"
+		gdb.Create(&dfmycad)
+	}
 }
 
 //Struct2Map Struct2Map

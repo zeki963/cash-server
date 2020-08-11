@@ -52,11 +52,17 @@ func ParseConfig(fpath string) (*Config, error) {
 type Config struct {
 	RunMode  string   `toml:"run_mode"`
 	Swagger  bool     `toml:"swagger"`
-	HTTPS    bool     `toml:"https"`
+	HTTP     HTTP     `toml:"http"`
 	Logconf  Logconf  `toml:"logconf"`
 	MySQL    MySQL    `toml:"mysql"`
 	Mycard   Mycard   `toml:"mycard"`
 	Postgres Postgres `toml:"Postgres"`
+}
+
+//HTTP 網路接口
+type HTTP struct {
+	HTTPS    bool   `toml:"https"`
+	HTTPPort string `toml:"httpport"`
 }
 
 //Redis 配置參數

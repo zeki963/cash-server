@@ -37,7 +37,7 @@ func (i PaymentPlatform) Add() bool {
 	return true
 }
 
-//Find 新增
+//DBFind 新增
 func (i PaymentPlatform) DBFind() (string, string) {
 	b := Struct2Map(i)
 	var Str string

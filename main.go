@@ -17,7 +17,6 @@ func main() {
 	// <== 測試CODE == >
 	var a db.PaymentPlatform
 	a.PlatformToken = "mSwgzQ6SV5hasRvQ0uJwVg"
-
 	//fmt.Println(model.PlatformQueryExist(a))
 	// <== 測試CODE == >
 	// server start
@@ -27,10 +26,10 @@ func main() {
 	//ROUTER
 	r := router.InitRouter()
 	//PORT
-	if configs.GetGlobalConfig().HTTPS == true {
+	if configs.GetGlobalConfig().HTTP.HTTPS == true {
 		r.RunTLS(":8443", "templates/server.crt", "templates/server.key")
 	} else {
-		if err := r.Run(":8080"); err != nil {
+		if err := r.Run(":" + configs.GetGlobalConfig().HTTP.HTTPPort); err != nil {
 			util.Error(err.Error())
 		}
 	}

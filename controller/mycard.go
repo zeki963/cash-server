@@ -48,9 +48,11 @@ func MycardOderAdd(c *gin.Context) {
 	var guid string
 	if userid != "" && itemid != "" && itemprice != "" {
 		util.Info("要求Mycard認証 -> token:", p.PlatformToken)
+		println(service.PlatformQueryStatus(p), service.PlatformGroupAuthQuery(groupid, "1"))
 		//平台 Status確認  && GroupAuth確認
 		if service.PlatformQueryStatus(p) && service.PlatformGroupAuthQuery(groupid, "1") {
 			//依各group確認該遊戲帳戶是否存在
+
 			switch groupid {
 			case "2":
 				guid = casinogrpc.VetifyUserID(userid)

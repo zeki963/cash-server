@@ -7,7 +7,7 @@
                     <h4 class="modal-title" id="add-version"> {{.title}} Add date ! </h4>
                 </div>
                 <div class="modal-body">
-                    token :  "0OEaFvXvGXVjlanvAXZugA"
+                    <input type="token" class="form-control" aria-describedby="basic-addon2" id="idtoken" VALUE="mSwgzQ6SV5hasRvQ0uJwVg">
                     <br>
                     <br>
                     <div class="input-group mb-3">
@@ -64,9 +64,9 @@
         function posttest() {
             $("#rep").text("NO");
             $.post({
-                url: "http://127.0.0.1:8080/mycard/AuthMycard",
+                url: "http://127.0.0.1:8081/mycard/oder",
                 data: {
-                    userid: $("#id1").val(),groupid: $("#idg").val(), itemid: $("#id2").val(), itemprice: $("#id3").val(),token:"0OEaFvXvGXVjlanvAXZugA"
+                    userid: $("#id1").val(),groupid: $("#idg").val(), itemid: $("#id2").val(), itemprice: $("#id3").val(),PlatformToken: $("#idtoken").val()
                 },
                 success: function (result) {
                     $("#weather-temp").html("<strong>" + result + "</strong> degrees");
