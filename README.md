@@ -2,14 +2,14 @@
 #### GO (Gin) 
 ##### 資料夾
 - routers 路由表
-    - api 
-        - admin   (系統本身相關)
-        - pay     (依各金流分開)
 - configs 設定檔
+- controller 
 - database 資料庫
 - doc swagger（*不要動）
-- model 
-- env 環境變數  （未實裝）
+- model  
+- services
+- grpc (casino連線)
+- logs (紀錄)
 - vendor 外部套件（*不要動）
 - templates web模組
 - pkg 套件
