@@ -1,5 +1,5 @@
 # 運行模式 (debug:調試,test:測試,release:正式)
-run_mode = "debug"
+run_mode = "release"
 
 # swagger 配置
 swagger = true
@@ -38,9 +38,8 @@ user = "postgres"
 password = "123456"
 db_name = "test"
 
-
 [mycard]
-facServiceID = "zortest123"
+facServiceID = "CQIG"
 
 [casino]
 testip =  "34.92.237.98:30001"

@@ -10,6 +10,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"strings"
 
@@ -59,6 +60,7 @@ func MycardOderAdd(c *gin.Context) {
 			}
 			if guid != "NoAccount" {
 				//test
+				toMycardAuthGlobal(userid, itemid, itemprice, groupid)
 				c.JSON(http.StatusCreated, gin.H{
 					"status":    "success",
 					"userid":    userid,
@@ -79,8 +81,7 @@ func MycardOderAdd(c *gin.Context) {
 	}
 }
 
-//3.1要求交易授權碼
-// authGlobal 向 MyCard 要求交易授權碼 (Server to Server)
+// authGlobal 向 MyCard 要求交易授權碼 (Server to Server) 3.1
 func toMycardAuthGlobal(userid string, itemid string, itemprice string, serverid string) {
 	util.Info("toMycardAuthGlobal")
 	var (
@@ -90,7 +91,7 @@ func toMycardAuthGlobal(userid string, itemid string, itemprice string, serverid
 		//廠商服務代碼
 		facServiceID string = configs.GetGlobalConfig().Mycard.FacServiceID
 		//廠商交易序號 - 廠商自訂，每筆訂單編號不得重覆，為訂單資料 key 值(只能用英數、底線(_)及連字號(-))
-		facTradeSeq string = "1"
+		facTradeSeq string = "zortest1"
 		//交易模式 - 1:Android SDK (手遊適用) 2:WEB
 		tradeType string = "2"
 
@@ -115,6 +116,7 @@ func toMycardAuthGlobal(userid string, itemid string, itemprice string, serverid
 		sandBoxMode string = "true"
 		//廠商回傳網址
 		facReturnURL string = ""
+		//Key := CQIGamesQ1FJR2FtZXM
 	)
 	preHashValue := facServiceID + facTradeSeq + tradeType + serverID + customerID + paymentType + itemCode + productName + amount + currency + sandBoxMode + facReturnURL
 	//轉換加密 測試連結 http://test.mycard520.com.tw/FactoryTestTool/MyCardPayCpTest/HASH.aspx
@@ -203,6 +205,60 @@ func CallbackMycard(c *gin.Context) {
 		"time":          time,
 	})
 	//TODO 要接DB
+}
+
+// Transactioncallback  這是給Mycard 摳背專用的 3.6
+func Transactioncallback(c *gin.Context) {
+	type TransactioncallbackForm struct {
+		ReturnCode   string   `form:"ReturnCode" binding:"required"`   //回傳結果代碼
+		ReturnMsg    string   `form:"ReturnMsg" binding:"required"`    //ReturnCode 訊息描述
+		FacTradeSeq  []string `form:"FacTradeSeq" binding:"required"`  //廠商交易序號
+		FacServiceID string   `form:"FacServiceID" binding:"required"` //廠商服務代碼
+		TotalNum     string   `form:"TotalNum" binding:"required"`     //交易筆數
+	}
+	form := &TransactioncallbackForm{}
+	c.BindJSON(form)
+	time := util.GETNowsqltime()
+	fmt.Println(form)
+	c.JSON(200, gin.H{
+		"status":       "success",
+		"ReturnCode":   form.ReturnCode,
+		"ReturnMsg":    form.ReturnMsg,
+		"FacServiceId": form.FacServiceID,
+		"FacTradeSeq":  form.FacTradeSeq,
+		"TotalNum":     form.TotalNum,
+		"time":         time,
+	})
+}
+
+// TransactionCheck  這是給Mycard 摳背專用的 3.6
+func TransactionCheck(c *gin.Context) {
+	type TransactionCheckForm struct {
+		StartDateTime string `form:"StartDateTime" binding:"required"` //※開始日期(UTC+8) yyyy-mm-ddThr:mi:se(24 )
+		EndDateTime   string `form:"EndDateTime" binding:"required"`   // ※結束日期(UTC+8) 2014-12-01T00:00:00
+		MyCardTradeNo string `form:"MyCardTradeNo" binding:"required"` //
+	}
+	type TransactionCheckBackForm struct {
+		PaymentType   string //※付費方式
+		TradeSeq      string //交易序號
+		MyCardTradeNo string //
+		FacTradeSeq   string //※廠商交易序號
+		CustomerID    string //※會員代號
+		Amount        string //※金額
+		Currency      string //※幣別
+		TradeDateTime string //※交易成功時間
+	}
+	form := &TransactionCheckForm{}
+	c.BindJSON(form)
+	fmt.Println(form)
+	var backform TransactionCheckBackForm
+	jsonbackform, err := json.Marshal(backform)
+	if err != nil {
+		log.Fatal(err)
+	}
+	c.JSON(200, gin.H{
+		"message": string(jsonbackform),
+	})
 }
 
 // // Returnurl33 3-3API

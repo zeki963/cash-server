@@ -63,7 +63,7 @@ func migratetable(gdb *gorm.DB) {
 	if b := gdb.Where("id = ?", 1).First(&model2); b.Error != nil {
 		var dfmycad PaymentType
 		dfmycad.TypeName = "mycard"
-		dfmycad.PaymentMemberID = "1234"
+		dfmycad.PaymentMemberID = "CQIG"
 		dfmycad.Status = "1"
 		gdb.Create(&dfmycad)
 	}

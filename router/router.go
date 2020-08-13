@@ -61,8 +61,13 @@ func InitRouter() *gin.Engine {
 		rmycard.GET("/oder/:key")
 		//查詢 mycard 查詢交易清單
 		rmycard.GET("/oders")
-		//給Mycard廠商用ReturnURL
+		//mycard link Call back!!
+		//給Mycard廠商用ReturnURL 3.2
 		rmycard.POST("/odercallback", controller.CallbackMycard)
+		//給Mycard廠商用ReturnURL 3.6
+		rmycard.POST("/transactioncallback", controller.Transactioncallback)
+		//給Mycard廠商用ReturnURL 3.7
+		rmycard.POST("/transactioncheck", controller.TransactionCheck)
 	}
 
 	//Group casino
