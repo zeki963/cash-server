@@ -115,16 +115,20 @@ func toMycardAuthGlobal(userid string, itemid string, itemprice string, serverid
 		//是否為測試環境
 		sandBoxMode string = "true"
 		//廠商回傳網址
-		facReturnURL string = ""
-		//Key := CQIGamesQ1FJR2FtZXM
+		//facReturnURL string = "https://35.201.250.106/payCallback"
+		facReturnURL string = "https://35.201.250.106/"
+		Key          string = "CQIGamesQ1FJR2FtZXM"
 	)
-	preHashValue := facServiceID + facTradeSeq + tradeType + serverID + customerID + paymentType + itemCode + productName + amount + currency + sandBoxMode + facReturnURL
-	//轉換加密 測試連結 http://test.mycard520.com.tw/FactoryTestTool/MyCardPayCpTest/HASH.aspx
-	hash := (encryption.Sha256encode(encryption.Urlencode(preHashValue)))
-	toServerVal := "FacServiceId=" + facServiceID + "FacTradeSeq=" + facTradeSeq + "TradeType=" + tradeType +
-		"ServerId=" + serverID + "CustomerId=" + customerID + "PaymentType=" + paymentType + "ItemCode=" + itemCode +
-		"ProductName=" + productName + "Amount=" + amount + "Currency=" + currency + "SandBoxMode=" + sandBoxMode +
-		"FacReturnURL=" + facReturnURL + "Hash=" + hash
+	preHashValue := facServiceID + facTradeSeq + tradeType + serverID + customerID + paymentType + itemCode + productName + amount + currency + sandBoxMode + encryption.Urlencode(facReturnURL) + "payCallback" + Key
+	fmt.Println(preHashValue)
+	//hash := (encryption.Sha256encode(encryption.Urlencode(preHashValue)))
+	hash := (encryption.Sha256encode(preHashValue))
+	fmt.Println(hash)
+	toServerVal := "FacServiceId=" + facServiceID + "&FacTradeSeq=" + facTradeSeq + "&TradeType=" + tradeType +
+		"&ServerId=" + serverID + "&CustomerId=" + customerID + "&PaymentType=" + paymentType + "&ItemCode=" + itemCode +
+		"&ProductName=" + productName + "&Amount=" + amount + "&Currency=" + currency + "&SandBoxMode=" + sandBoxMode +
+		"&FacReturnURL=" + facReturnURL + "payCallback&Hash=" + hash
+	fmt.Println(toServerVal)
 	resp, err := http.Post(authURL,
 		"application/x-www-form-urlencoded",
 		strings.NewReader(toServerVal))
@@ -137,7 +141,7 @@ func toMycardAuthGlobal(userid string, itemid string, itemprice string, serverid
 		util.Error(err.Error())
 	}
 	//JSON
-	util.Trace("Mycardresp:")
+	util.Trace("Mycard Resp:")
 	util.Trace(string(body))
 	var nmycarderp Mycardresp
 	data := []byte(body)

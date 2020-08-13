@@ -1,10 +1,14 @@
 package encryption
 
-import "net/url"
+import (
+	"net/url"
+	"strings"
+)
 
 //Urlencode URL 函式編碼
 func Urlencode(text string) string {
-	return url.QueryEscape(text)
+	return strings.ToLower(url.QueryEscape(text))
+
 }
 
 //Urldecrypt  URL 函式解碼
