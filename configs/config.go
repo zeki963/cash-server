@@ -50,13 +50,14 @@ func ParseConfig(fpath string) (*Config, error) {
 
 //Config 配置參數
 type Config struct {
-	RunMode  string   `toml:"run_mode"`
+	RunMode  string   `toml:"runMode"`
 	Swagger  bool     `toml:"swagger"`
 	HTTP     HTTP     `toml:"http"`
 	Logconf  Logconf  `toml:"logconf"`
 	MySQL    MySQL    `toml:"mysql"`
 	Mycard   Mycard   `toml:"mycard"`
 	Postgres Postgres `toml:"Postgres"`
+	Casino   Casino   `toml:"Casino"`
 }
 
 //HTTP 網路接口
@@ -84,7 +85,7 @@ type MySQL struct {
 	Port       int    `toml:"port"`
 	User       string `toml:"user"`
 	Password   string `toml:"password"`
-	DBName     string `toml:"db_name"`
+	DBName     string `toml:"dbName"`
 	Parameters string `toml:"parameters"`
 }
 
@@ -94,7 +95,7 @@ type Postgres struct {
 	Port     int    `toml:"port"`
 	User     string `toml:"user"`
 	Password string `toml:"password"`
-	DBName   string `toml:"db_name"`
+	DBName   string `toml:"dbName"`
 }
 
 //DSN Postgres-DSN 數據庫連接串
@@ -116,6 +117,6 @@ type Mycard struct {
 
 //Casino 配置參數
 type Casino struct {
-	Testip string `toml:"testip"`
+	Betaip string `toml:"betaip"`
 	Proip  string `toml:"proip"`
 }

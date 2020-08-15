@@ -18,7 +18,7 @@ func Checkrouter(c *gin.Context) {
 		//平台確認
 		if platformStatus == "1" {
 			//id  確認
-
+			c.JSON(200, resp(200, nil))
 		} else {
 			c.JSON(400, resp(1001, nil))
 		}

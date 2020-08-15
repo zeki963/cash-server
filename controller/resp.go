@@ -1,5 +1,7 @@
 package controller
 
+import "cash-server/pkg/util"
+
 //Resp 回覆結構
 type Resp struct {
 	Ecode int         `json:"ecode"`
@@ -17,15 +19,18 @@ func resp(code int, data interface{}) Resp {
 
 //MsgFlags errcode to string
 var MsgFlags = map[int]string{
-	200:  "ok",
+	//OK
+	200: "ok",
+	//1000 基本錯誤
 	1001: "請求參數短少或錯誤",
-	1002: "帳號重複",
-	1003: "帳號不存在 & 錯誤",
-	1005: "該文章不存在",
-	2003: "Token  異常錯誤",
-	2002: "Token 已超時",
-	2001: "Token 生成失敗",
-	2000: "Token錯誤",
+	1002: "Platform 帳號註冊失敗",
+	1003: "Platform 帳號不存在",
+	1004: "Platform 帳號未啟用相關服務",
+	//2000 GameGroup端錯誤
+	2001: "Casino 無此帳號",
+	//3000 第3方錯誤
+	3001: "MyCard Auth 錯誤",
+	//其他
 	8000: "資料庫錯誤",
 	9999: "未預期錯誤",
 	0000: "page not exists!,你想幹嘛ヽ(`Д´)ノ  ",
@@ -37,5 +42,6 @@ func getMsg(code int) string {
 	if ok {
 		return msg
 	}
+	util.Test("缺少正確錯誤碼")
 	return MsgFlags[9999]
 }

@@ -53,21 +53,24 @@ func InitRouter() *gin.Engine {
 	r.GET("/demo", controller.Demopage)
 
 	//Group mycard
-	rmycard := r.Group("mycard")
+	rmycard := r.Group("mycardsandbox")
 	{
 		//使用 mycard 建單 Add
-		rmycard.POST("/oder", controller.MycardOderAdd)
+		rmycard.POST("/order", controller.MycardSandOderAdd)
 		//查詢 mycard 查詢單筆交易
-		rmycard.GET("/oder/:key")
+		rmycard.GET("/order/:key")
 		//查詢 mycard 查詢交易清單
-		rmycard.GET("/oders")
-		//mycard link Call back!!
+		rmycard.GET("/orders")
+	}
+	//rmycardC  Mycard Call back!! 榜定白名單
+	rmycardCall := r.Group("mycardcall", MycardCallAuth())
+	{
 		//給Mycard廠商用ReturnURL 3.2
-		rmycard.POST("/odercallback", controller.CallbackMycard)
+		rmycardCall.POST("/odercallback", controller.CallbackMycard)
 		//給Mycard廠商用ReturnURL 3.6
-		rmycard.POST("/transactioncallback", controller.Transactioncallback)
+		rmycardCall.POST("/transactioncallback", controller.Transactioncallback)
 		//給Mycard廠商用ReturnURL 3.7
-		rmycard.POST("/transactioncheck", controller.TransactionCheck)
+		rmycardCall.POST("/transactioncheck", controller.TransactionCheck)
 	}
 
 	//Group casino
@@ -91,7 +94,7 @@ func InitRouter() *gin.Engine {
 	//Group radmin
 	radmin := r.Group("admin")
 	{
-		//register  提供註冊
+		radmin.GET("/platform/:Token", controller.PlatformGet)
 		radmin.POST("/platform", controller.PlatformRegisterServerAdd)
 	}
 
@@ -135,4 +138,26 @@ func loadTemplates(templatesDir string) multitemplate.Renderer {
 		r.AddFromFiles(filepath.Base(include), files...)
 	}
 	return r
+}
+
+//MycardCallAuth Mycard call 白名單
+func MycardCallAuth() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		whiteList := []string{
+			"127.0.0.1",
+			"218.32.37.148",
+			"220.130.127.125",
+		}
+		flag := false
+		for _, host := range whiteList {
+			if c.ClientIP() == host {
+				flag = true
+				break
+			}
+		}
+		if !flag {
+			c.JSON(511, "your ip is not trusted")
+			c.Abort()
+		}
+	}
 }

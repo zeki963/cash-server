@@ -1,6 +1,7 @@
 package util
 
 import (
+	"cash-server/configs"
 	"cash-server/pkg/notify"
 	"fmt"
 	"time"
@@ -12,7 +13,9 @@ const (
 	colorYellow
 	colorBlue
 	colorMagenta
+	colorCyan
 	info = "[INFO]"
+	test = "[TEST]"
 	trac = "[TRAC]"
 	erro = "[ERRO]"
 	warn = "[WARN]"
@@ -20,6 +23,14 @@ const (
 )
 
 // see complete color rules in document in https://en.wikipedia.org/wiki/ANSI_escape_code#cite_note-ecma48-13
+
+//Test log
+func Test(format string, a ...interface{}) {
+	prefix := cyan(test)
+	if configs.GetGlobalConfig().RunMode != "release" {
+		fmt.Println(formatLog(prefix), fmt.Sprintf(format, a...))
+	}
+}
 
 //Trace log
 func Trace(format string, a ...interface{}) {
@@ -72,6 +83,9 @@ func blue(s string) string {
 }
 func magenta(s string) string {
 	return fmt.Sprintf("\x1b[%dm%s\x1b[0m", colorMagenta, s)
+}
+func cyan(s string) string {
+	return fmt.Sprintf("\x1b[%dm%s\x1b[0m", colorCyan, s)
 }
 func formatLog(prefix string) string {
 	return time.Now().Format("2006/01/02 15:04:05") + " " + prefix + " "

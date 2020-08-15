@@ -1,6 +1,7 @@
 package casinogrpc
 
 import (
+	"cash-server/configs"
 	"cash-server/pkg/util"
 	"context"
 	"time"
@@ -26,6 +27,10 @@ func VetifyUserID(ID string) (msg string) {
 	var newids Ids
 	newids.MyID = ID
 	addr := "35.194.245.46:30001"
+	if configs.GetGlobalConfig().RunMode == "release" {
+		addr = configs.GetGlobalConfig().Casino.Proip
+	}
+
 	conn := GrpcCasinoCannot(addr)
 	c := NewMemberClient(conn)
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)

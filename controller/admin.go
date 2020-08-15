@@ -57,3 +57,15 @@ func PlatformRegisterServerAdd(c *gin.Context) {
 		c.JSON(411, resp(1001, nil))
 	}
 }
+
+//PlatformGet 要帳號拉幹
+func PlatformGet(c *gin.Context) {
+	var p db.PaymentPlatform
+	p.PlatformToken = c.Param("Token")
+	util.Info("查詢 PlatformGet ->", p.PlatformToken)
+	if service.PlatformQueryOne(p) {
+		c.JSON(200, resp(200, service.PaymentPlatformFind(p)))
+	} else {
+		c.JSON(411, resp(1003, nil))
+	}
+}

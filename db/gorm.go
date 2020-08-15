@@ -36,7 +36,7 @@ func Initgorm() error {
 	SQLDBX.DB().SetConnMaxLifetime(1 * time.Second)
 	SQLDBX.DB().SetMaxIdleConns(20)
 	SQLDBX.DB().SetMaxOpenConns(2000)
-	if configs.GetGlobalConfig().RunMode != "release" {
+	if configs.GetGlobalConfig().RunMode == "debug" {
 		SQLDBX.LogMode(true)
 	}
 	migratetable(SQLDBX)

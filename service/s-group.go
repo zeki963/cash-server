@@ -8,14 +8,17 @@ import (
 )
 
 //GroupOrderGet 查詢群組order  下筆 subid
-func GroupOrderGet(groupid int) string {
-	fid := model.GroupExist(groupid).GroupName
-	subid := fmt.Sprintf("%0*d", 10, model.GroupExist(groupid).GroupOrder+1)
+func GroupOrderGet(groupid int, StageType int) string {
 	GroupOrderUpdate(groupid)
+	fid := model.GroupExist(groupid).GroupName
+	subid := fmt.Sprintf("%0*d", 9, model.GroupExist(groupid).GroupOrder)
+	if StageType == 0 {
+		return fid + "_test_" + subid
+	}
 	return fid + "_" + subid
 }
 
-//GroupOrderUpdate 查詢群組order  下筆 subid
+//GroupOrderUpdate 更新群組order  subid
 func GroupOrderUpdate(groupid int) {
 	model.GroupOrderUpdate(groupid)
 }

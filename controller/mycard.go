@@ -27,7 +27,7 @@ type Mycardresp struct {
 	TradeSeq       string
 }
 
-// MycardOderAdd  application/json  application/x-www-form-urlencoded
+// MycardSandOderAdd  application/json  application/x-www-form-urlencoded
 // @Summary AuthMycard
 // @Tags MyCard
 // @Produce  json
@@ -40,15 +40,16 @@ type Mycardresp struct {
 // @success 200 {string} string "{"還沒寫好"}"
 // @success 400 {string} string "{"status":"FAIL",    "msg": "錯誤訊息"}"
 // @Router /mycard/CreateMycardOder [post]
-func MycardOderAdd(c *gin.Context) {
+func MycardSandOderAdd(c *gin.Context) {
 	var p db.PaymentPlatform
 	c.Bind(&p)
 	var o db.Order
 	c.Bind(&o)
+	o.StageType = 0
 	var guid string
 	if o.OrderClientID != "" && o.OrderItemID != "" && o.OrderItemPrice != "" {
 		util.Info("要求Mycard認証 -> token:", p.PlatformToken)
-		println(service.PlatformQueryStatus(p), service.PlatformGroupAuthQuery(p, "1"))
+		util.Test(fmt.Sprintln(service.PlatformQueryStatus(p), service.PlatformGroupAuthQuery(p, "1")))
 		//平台 Status確認  && GroupAuth確認
 		if service.PlatformQueryStatus(p) && service.PlatformGroupAuthQuery(p, "1") {
 			//解析 Token 依各group確認該遊戲帳戶是否存在
@@ -59,26 +60,25 @@ func MycardOderAdd(c *gin.Context) {
 			}
 			o.OrderDate = util.GETNowsqltime()
 			o.ReceivedCallbackDate = util.GETNowsqltime()
-			o.OrderSubID = service.GroupOrderGet(p.PlatformGroupID)
+			o.OrderSubID = service.GroupOrderGet(p.PlatformGroupID, o.StageType)
 			o.PaymentTypeID = p.PlatformGroupID
 			o.PlatformID = int(p.ID)
 			if guid != "NoAccount" {
 				//資料庫建單
 				fmt.Printf("%+v", o)
 				service.OrderAdd(o)
-
-				mycardAuthStatus := toMycardAuthGlobal(o.OrderClientID, o.OrderItemID, o.OrderItemPrice, strconv.Itoa(p.PlatformGroupID), o.OrderSubID)
-				if mycardAuthStatus {
-
+				nmycarderp := toMycardSandAuthGlobal(o.OrderClientID, o.OrderItemID, o.OrderItemPrice, strconv.Itoa(p.PlatformGroupID), o.OrderSubID)
+				if nmycarderp.ReturnCode == "1" {
 					//給前端3-2
-					c.Redirect(http.StatusMovedPermanently, "http://test.mycard520.com.tw/MyCardPay/?AuthCode=")
+					c.Redirect(http.StatusMovedPermanently, "http://test.mycard520.com.tw/MyCardPay/?AuthCode="+nmycarderp.AuthCode)
+				} else {
+					c.JSON(411, resp(3001, nmycarderp))
 				}
-				c.JSON(411, resp(9999, nil))
 			} else {
-				c.JSON(411, resp(1003, nil))
+				c.JSON(411, resp(2001, nil))
 			}
 		} else {
-			c.JSON(411, resp(2003, nil))
+			c.JSON(411, resp(1004, nil))
 		}
 	} else {
 		c.JSON(411, resp(1001, nil))
@@ -86,11 +86,9 @@ func MycardOderAdd(c *gin.Context) {
 }
 
 // authGlobal 向 MyCard 要求交易授權碼 (Server to Server) 3.1
-func toMycardAuthGlobal(userid string, itemid string, itemprice string, serverid string, subid string) (mycardAuthStatus bool) {
+func toMycardSandAuthGlobal(userid string, itemid string, itemprice string, serverid string, subid string) (Mresp Mycardresp) {
 	util.Info("toMycardAuthGlobal")
 	var (
-		//測試 http(s)://testb2b.mycard520.com.tw/MyBillingPay/v1.1/AuthGlobal
-		//正式 https://b2b.mycard520.com.tw/MyBillingPay/v1.1/AuthGlobal
 		authURL              = "https://testb2b.mycard520.com.tw/MyBillingPay/v1.1/AuthGlobal"
 		facServiceID  string = configs.GetGlobalConfig().Mycard.FacServiceID //廠商服務代碼
 		facTradeSeq   string = subid                                         //廠商交易序號 - 廠商自訂，每筆訂單編號不得重覆，為訂單資料 key 值(只能用英數、底線(_)及連字號(-))
@@ -105,18 +103,19 @@ func toMycardAuthGlobal(userid string, itemid string, itemprice string, serverid
 		sandBoxMode   string = "true"                                        //是否為測試環境
 		facReturnURL  string = "https://35.201.250.106/"                     //廠商回傳網址
 		facReturnURL2 string = "payCallback"
-		Key           string = "CQIGamesQ1FJR2FtZXM" //我們的KEY
 	)
-
+	const (
+		Key string = "CQIGamesQ1FJR2FtZXM" //我們的KEY
+	)
 	preHashValue := facServiceID + facTradeSeq + tradeType + serverID + customerID + paymentType + itemCode + productName + amount + currency + sandBoxMode + encryption.Urlencode(facReturnURL) + facReturnURL2 + Key //準備加密字串
-	//fmt.Println(preHashValue)
+	util.Test(preHashValue)
 	hash := (encryption.Sha256encode(preHashValue))
-	//fmt.Println(hash)
+	util.Test(hash)
 	toServerVal := "FacServiceId=" + facServiceID + "&FacTradeSeq=" + facTradeSeq + "&TradeType=" + tradeType +
 		"&ServerId=" + serverID + "&CustomerId=" + customerID + "&PaymentType=" + paymentType + "&ItemCode=" + itemCode +
 		"&ProductName=" + productName + "&Amount=" + amount + "&Currency=" + currency + "&SandBoxMode=" + sandBoxMode +
 		"&FacReturnURL=" + facReturnURL + facReturnURL2 + "&Hash=" + hash
-	//fmt.Println(toServerVal)
+	util.Test(toServerVal)
 	resp, err := http.Post(authURL,
 		"application/x-www-form-urlencoded",
 		strings.NewReader(toServerVal))
@@ -134,19 +133,15 @@ func toMycardAuthGlobal(userid string, itemid string, itemprice string, serverid
 	var nmycarderp Mycardresp
 	data := []byte(body)
 	json.Unmarshal(data, &nmycarderp)
-	if nmycarderp.ReturnCode != "1" {
-		return false
-	}
-	return true
+	return nmycarderp
 }
 
 //CreateOder  建立Oder
 func CreateOder(o db.Order) {
 	util.Info("CreateMycardOder")
-
 }
 
-// CallbackMycard  這是給Mycard 摳背專用的
+// CallbackMycard  這是給Mycard 摳背專用的 3.2
 func CallbackMycard(c *gin.Context) {
 	type CallbackMycardForm struct {
 		ReturnCode  string `form:"ReturnCode" binding:"required"`  //回傳結果代碼
@@ -193,7 +188,7 @@ func Transactioncallback(c *gin.Context) {
 	})
 }
 
-// TransactionCheck  這是給Mycard 摳背專用的 3.6
+// TransactionCheck  這是給Mycard 摳背專用的 3.7
 func TransactionCheck(c *gin.Context) {
 	type TransactionCheckForm struct {
 		StartDateTime string `form:"StartDateTime" binding:"required"` //※開始日期(UTC+8) yyyy-mm-ddThr:mi:se(24 )

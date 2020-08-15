@@ -6,6 +6,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+
+	"github.com/jinzhu/gorm"
 )
 
 //Platform struct
@@ -23,22 +25,27 @@ type Platform struct {
 	Updatedate          string `json:"update_date"`
 }
 
+//--------------------------- ALL 相關-------------------------------------
+
+func dbErrBool(dbrut *gorm.DB) bool {
+	if dbrut.Error != nil {
+		return false
+	}
+	return true
+}
+
 //---------------------------payment_platform  表單相關-------------------------------------
 
 //PaymentPlatformAdd Platform 註冊
-func PaymentPlatformAdd(p db.PaymentPlatform) error {
+func PaymentPlatformAdd(p db.PaymentPlatform) {
 	db.SQLDBX.Create(&p)
-	return nil
 }
 
 //PaymentPlatformCheck Platform 查詢
 func PaymentPlatformCheck(account string) bool {
 	model := &db.PaymentPlatform{}
-	a := db.SQLDBX.Where("platform_account = ?", account).First(&model)
-	if a.Error != nil {
-		return false
-	}
-	return true
+	dbrtu := db.SQLDBX.Where("platform_account = ?", account).First(&model)
+	return dbErrBool(dbrtu)
 }
 
 //PlatformQueryExist 查詢帳號存在
@@ -53,7 +60,9 @@ func PlatformQueryExist(data db.PaymentPlatform) db.PaymentPlatform {
 //PlatformQueryOne 查詢帳號存在
 func PlatformQueryOne(data db.PaymentPlatform) string {
 	model := &db.PaymentPlatform{}
-	db.SQLDBX.Where(data.DBFind()).First(&model)
+	k, v := data.DBFind()
+	db.SQLDBX.Where(k+"= ?", v).First(&model)
+	util.Test(model.PlatformAccount)
 	return model.PlatformAccount
 }
 
@@ -64,7 +73,7 @@ func PlatformQueryStatus(account string, password string) string {
 	if a.Error != nil {
 		return "err"
 	}
-	log.Println("PlatformQueryStatus 查詢帳號開通狀態 -> 帳號：", account, "狀態：", model.Status)
+	util.Test("PlatformQueryStatus 查詢帳號開通狀態 -> 帳號：", account, "狀態：", model.Status)
 	return model.Status
 }
 
@@ -96,7 +105,6 @@ func PlatformQueryInfoJSON(taskID string) string {
 	rows, err := db.GetJSON(sql, taskID)
 	fmt.Println("PlatformQueryInfo 查詢帳號資料 ", rows)
 	if err != nil {
-		//log.Fatal(err)
 		util.Error(err.Error())
 		return "err"
 	}
@@ -108,7 +116,6 @@ func PlatformQueryInfoAllJSON() {
 	var platforms []Platform
 	rows, err := db.SQLDB.Query("select * from payment_platform")
 	if err != nil {
-		//log.Fatal(err)
 		util.Error(err.Error())
 	}
 	for rows.Next() {
@@ -126,7 +133,6 @@ func PlatformQueryInfodataJSON(token string) Platform {
 	var platforms Platform
 	rows, err := db.SQLDB.Query("select * from payment_platform WHERE platform_token=? ", token)
 	if err != nil {
-		//log.Fatal(err)
 		util.Error(err.Error())
 	}
 	for rows.Next() {
@@ -139,6 +145,7 @@ func PlatformQueryInfodataJSON(token string) Platform {
 //   ---------------------------log_connect  表單相關-------------------------------------
 
 //LogConnectAdd 寫入紀錄
-func LogConnectAdd(p db.LogConnect) {
-	db.SQLDBX.Create(&p)
+func LogConnectAdd(p db.LogConnect) bool {
+	dbrut := db.SQLDBX.Create(&p)
+	return dbErrBool(dbrut)
 }

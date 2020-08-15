@@ -5,7 +5,6 @@ import (
 	"cash-server/db"
 	"cash-server/pkg/util"
 	"cash-server/router"
-	"cash-server/service"
 	"strconv"
 )
 
@@ -17,10 +16,7 @@ import (
 // @contact.email zor@cqiserv.com
 func main() {
 	// <== 測試CODE == >
-	util.Trace(" < - TEST  - > ")
-	var g db.PaymentPlatformGroup
-	g.GroupName = "123"
-	service.GroupAdd(g)
+	util.Test(" < - TEST  - > ")
 
 	// <== 測試CODE == >
 	// server start

@@ -48,6 +48,5 @@ func (i PaymentPlatform) DBFind() (string, string) {
 			columnName = k
 		}
 	}
-	//q := util.UnMarshal(columnName) + "=" + Str
 	return util.UnMarshal(columnName), Str
 }
