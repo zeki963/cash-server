@@ -12,23 +12,23 @@ func LogConnectAdd(p db.LogConnect) {
 	model.LogConnectAdd(p)
 }
 
-//PaymentPlatformAdd 新增平台帳號
-func PaymentPlatformAdd(p db.PaymentPlatform) bool {
-	if model.PaymentPlatformCheck(p.PlatformAccount) {
+//PlatformAdd 新增平台帳號
+func PlatformAdd(p db.Platform) bool {
+	if model.PlatformCheck(p.PlatformAccount) {
 		return false
 	}
-	model.PaymentPlatformAdd(p)
+	model.PlatformAdd(p)
 	return true
 }
 
-//PaymentPlatformFind 查整組資料
-func PaymentPlatformFind(p db.PaymentPlatform) (all db.PaymentPlatform) {
+//PlatformFind 查整組資料
+func PlatformFind(p db.Platform) (all db.Platform) {
 	all = model.PlatformQueryExist(p)
 	return all
 }
 
 //PlatformQueryOne 查詢存在
-func PlatformQueryOne(p db.PaymentPlatform) bool {
+func PlatformQueryOne(p db.Platform) bool {
 	if model.PlatformQueryOne(p) == "" {
 		util.Test("PlatformAccount 不存在")
 		return false
@@ -37,8 +37,32 @@ func PlatformQueryOne(p db.PaymentPlatform) bool {
 	return true
 }
 
+//PlatformStatusEnable 帳號狀態轉啟用
+func PlatformStatusEnable(p db.Platform) bool {
+	a := model.PlatformQueryExist(p)
+	if a.Status == "1" {
+		util.Test("PlatformStatusEnable 帳號狀態 啟用了")
+		return false
+	}
+	util.Test("PlatformStatusEnable 帳號狀態轉啟用")
+	model.PlatformStatusEnableUpdata(p)
+	return true
+}
+
+//PlatformStatusDisable 帳號狀態轉啟用
+func PlatformStatusDisable(p db.Platform) bool {
+	a := model.PlatformQueryExist(p)
+	if a.Status == "0" {
+		util.Test("PlatformStatusEnable 帳號狀態 關閉了")
+		return false
+	}
+	util.Test("PlatformStatusEnable 帳號狀態轉未啟用")
+	model.PlatformStatusDisableUpdata(p)
+	return true
+}
+
 //PlatformQueryStatus 查詢狀態
-func PlatformQueryStatus(p db.PaymentPlatform) bool {
+func PlatformQueryStatus(p db.Platform) bool {
 	a := model.PlatformQueryExist(p)
 	if a.Status != "1" {
 		return false
@@ -47,7 +71,7 @@ func PlatformQueryStatus(p db.PaymentPlatform) bool {
 }
 
 //PlatformGroupAuthQuery 查詢群組狀態
-func PlatformGroupAuthQuery(p db.PaymentPlatform, typeid string) bool {
+func PlatformGroupAuthQuery(p db.Platform, typeid string) bool {
 	p2 := model.PlatformQueryExist(p)
 	m := model.PlatformGroupAuthQuery(strconv.Itoa(p2.PlatformGroupID), typeid)
 	if m.GroupID != "" && m.TypeID != "" {

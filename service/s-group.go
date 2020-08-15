@@ -24,7 +24,7 @@ func GroupOrderUpdate(groupid int) {
 }
 
 //GroupAdd 群組新增
-func GroupAdd(g db.PaymentPlatformGroup) {
+func GroupAdd(g db.PlatformGroup) {
 	if match, _ := regexp.MatchString("([a-zA-Z0-9]+)", g.GroupName); match && model.GroupNameCheck(g.GroupName) {
 		model.GroupAdd(g)
 	}
@@ -32,6 +32,6 @@ func GroupAdd(g db.PaymentPlatformGroup) {
 }
 
 //GroupAuthAdd 群組權限新增
-func GroupAuthAdd(ga db.PaymentPlatformGroupsAuth) {
+func GroupAuthAdd(ga db.PlatformGroupsAuth) {
 	model.GroupAuthAdd(ga)
 }

@@ -6,8 +6,8 @@ import (
 	"reflect"
 )
 
-//PaymentPlatform PaymentPlatform
-type PaymentPlatform struct {
+//Platform Platform
+type Platform struct {
 	Model
 	PlatformAccount     string `gorm:"type:varchar(100) NOT NULL COMMENT '帳號'"`
 	PlatformPassword    string `gorm:"type:varchar(100) NOT NULL COMMENT '密碼'"`
@@ -26,19 +26,19 @@ type IPaymentPlatform interface {
 }
 
 //Echo 呼叫
-func (i PaymentPlatform) Echo() bool {
+func (i Platform) Echo() bool {
 	fmt.Println(i)
 	return true
 }
 
 //Add 新增
-func (i PaymentPlatform) Add() bool {
+func (i Platform) Add() bool {
 	SQLDBX.Create(&i)
 	return true
 }
 
 //DBFind 新增
-func (i PaymentPlatform) DBFind() (string, string) {
+func (i Platform) DBFind() (string, string) {
 	b := Struct2Map(i)
 	var Str string
 	var columnName string

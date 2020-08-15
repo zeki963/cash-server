@@ -36,30 +36,50 @@ func dbErrBool(dbrut *gorm.DB) bool {
 
 //---------------------------payment_platform  表單相關-------------------------------------
 
-//PaymentPlatformAdd Platform 註冊
-func PaymentPlatformAdd(p db.PaymentPlatform) {
+//PlatformAdd Platform 註冊
+func PlatformAdd(p db.Platform) {
 	db.SQLDBX.Create(&p)
 }
 
-//PaymentPlatformCheck Platform 查詢
-func PaymentPlatformCheck(account string) bool {
-	model := &db.PaymentPlatform{}
+//PlatformCheck Platform 查詢
+func PlatformCheck(account string) bool {
+	model := &db.Platform{}
 	dbrtu := db.SQLDBX.Where("platform_account = ?", account).First(&model)
 	return dbErrBool(dbrtu)
 }
 
 //PlatformQueryExist 查詢帳號存在
-func PlatformQueryExist(data db.PaymentPlatform) db.PaymentPlatform {
-	//model := &db.PaymentPlatform{}
-	var model db.PaymentPlatform
+func PlatformQueryExist(data db.Platform) db.Platform {
+	//model := &db.Platform{}
+	var model db.Platform
 	k, v := data.DBFind()
 	db.SQLDBX.Where(k+"= ?", v).First(&model)
 	return model
 }
 
+//PlatformStatusEnableUpdata 更新帳號 開狀態
+func PlatformStatusEnableUpdata(data db.Platform) bool {
+	var model db.Platform
+	k, v := data.DBFind()
+	db.SQLDBX.Where(k+"= ?", v).First(&model)
+	model.Status = "1"
+	dbrut := db.SQLDBX.Save(model)
+	return dbErrBool(dbrut)
+}
+
+//PlatformStatusDisableUpdata 更新帳號 關狀態
+func PlatformStatusDisableUpdata(data db.Platform) bool {
+	var model db.Platform
+	k, v := data.DBFind()
+	db.SQLDBX.Where(k+"= ?", v).First(&model)
+	model.Status = "0"
+	dbrut := db.SQLDBX.Save(model)
+	return dbErrBool(dbrut)
+}
+
 //PlatformQueryOne 查詢帳號存在
-func PlatformQueryOne(data db.PaymentPlatform) string {
-	model := &db.PaymentPlatform{}
+func PlatformQueryOne(data db.Platform) string {
+	model := &db.Platform{}
 	k, v := data.DBFind()
 	db.SQLDBX.Where(k+"= ?", v).First(&model)
 	util.Test(model.PlatformAccount)
@@ -68,7 +88,7 @@ func PlatformQueryOne(data db.PaymentPlatform) string {
 
 //PlatformQueryStatus 查詢帳號開通狀態
 func PlatformQueryStatus(account string, password string) string {
-	model := &db.PaymentPlatform{}
+	model := &db.Platform{}
 	a := db.SQLDBX.Where("platform_account = ?", account).First(&model)
 	if a.Error != nil {
 		return "err"
@@ -79,7 +99,7 @@ func PlatformQueryStatus(account string, password string) string {
 
 //PlatformTokenQueryStatus 查詢帳號開通狀態
 func PlatformTokenQueryStatus(token string) string {
-	model := &db.PaymentPlatform{}
+	model := &db.Platform{}
 	a := db.SQLDBX.Where("platform_token = ?", token).First(&model)
 	if a.Error != nil {
 		return "err"
@@ -90,7 +110,7 @@ func PlatformTokenQueryStatus(token string) string {
 
 //PlatformQueryStatusUseToken  查詢帳號STAUTS資料  用TOKEN
 func PlatformQueryStatusUseToken(token string) string {
-	model := &db.PaymentPlatform{}
+	model := &db.Platform{}
 	a := db.SQLDBX.Where("platform_token = ?", token).First(&model)
 	if a.Error != nil {
 		return "err"

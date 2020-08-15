@@ -52,54 +52,32 @@ func InitRouter() *gin.Engine {
 	r.Any("/", controller.Homepage)
 	r.GET("/demo", controller.Demopage)
 
-	//Group mycard
 	rmycard := r.Group("mycardsandbox")
 	{
-		//使用 mycard 建單 Add
-		rmycard.POST("/order", controller.MycardSandOderAdd)
-		//查詢 mycard 查詢單筆交易
-		rmycard.GET("/order/:key")
-		//查詢 mycard 查詢交易清單
-		rmycard.GET("/orders")
+		rmycard.POST("/order", controller.MycardSandOderAdd) //新增 mycard 建單 Add
+		rmycard.GET("/order/:key")                           //查詢 mycard 查詢單筆交易
+		rmycard.GET("/orders")                               //查詢 mycard 查詢交易清單
 	}
-	//rmycardC  Mycard Call back!! 榜定白名單
-	rmycardCall := r.Group("mycardcall", MycardCallAuth())
+	rmycardCall := r.Group("mycardcall", MycardCallAuth()) //rmycardC  Mycard Call back!! 榜定白名單
 	{
-		//給Mycard廠商用ReturnURL 3.2
-		rmycardCall.POST("/odercallback", controller.CallbackMycard)
-		//給Mycard廠商用ReturnURL 3.6
-		rmycardCall.POST("/transactioncallback", controller.Transactioncallback)
-		//給Mycard廠商用ReturnURL 3.7
-		rmycardCall.POST("/transactioncheck", controller.TransactionCheck)
+		rmycardCall.POST("/odercallback", controller.CallbackMycard)             //給Mycard廠商用ReturnURL 3.2
+		rmycardCall.POST("/transactioncallback", controller.Transactioncallback) //給Mycard廠商用ReturnURL 3.6
+		rmycardCall.POST("/transactioncheck", controller.TransactionCheck)       //給Mycard廠商用ReturnURL 3.7
 	}
-
-	//Group casino
-	casino := r.Group("casino")
+	rcasino := r.Group("casino")
 	{
-		//查詢 casino 查詢商品清單
-		casino.GET("/Shop")
+		rcasino.GET("/Shop") //查詢 casino 查詢商品清單
 	}
-
-	//Group testrouter
-	testrouter := r.Group("test")
-	{
-		testrouter.POST("/A", controller.UrlencodedPost)
-		testrouter.POST("/B", controller.JSONtestPost)
-		testrouter.GET("/putkey/:key", func(context *gin.Context) {
-			key = context.Param("key")
-			fmt.Printf("Hello, %s", key)
-		})
-	}
-
-	//Group radmin
 	radmin := r.Group("admin")
 	{
-		radmin.GET("/platform/:Token", controller.PlatformGet)
 		radmin.POST("/platform", controller.PlatformRegisterServerAdd)
+		radmin.GET("/platform/:Token", controller.PlatformGet)
+		radmin.GET("/platforms")
+		radmin.PUT("/platform/status/:Token", controller.PlatformStatusEnable)
+		radmin.DELETE("/platform/status/:Token", controller.PlatformStatusDisable)
 	}
 
-	//Swagger 相關
-	if configs.GetGlobalConfig().Swagger == true {
+	if configs.GetGlobalConfig().Swagger == true { //Swagger
 		r.Any("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	}
 	r.NoRoute(controller.NoResponse)

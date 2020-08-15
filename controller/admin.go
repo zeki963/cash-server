@@ -31,7 +31,7 @@ type AddRespMsg struct {
 // @success 411 {string} string "{"ecode":1001,"msg":"請求參數短少或錯誤","data":null}"
 // @Router /admin/platform [post]
 func PlatformRegisterServerAdd(c *gin.Context) {
-	var p db.PaymentPlatform
+	var p db.Platform
 	var resmsg AddRespMsg
 	c.Bind(&p)
 	if p.PlatformGroupID == 0 {
@@ -46,7 +46,7 @@ func PlatformRegisterServerAdd(c *gin.Context) {
 		resmsg.TokenSecret = p.PlatformTokenSecret
 		resmsg.Account = p.PlatformAccount
 		p.Status = "0"
-		add := service.PaymentPlatformAdd(p)
+		add := service.PlatformAdd(p)
 		println(add)
 		if add == true {
 			c.JSON(200, resp(200, resmsg))
@@ -60,11 +60,43 @@ func PlatformRegisterServerAdd(c *gin.Context) {
 
 //PlatformGet 要帳號拉幹
 func PlatformGet(c *gin.Context) {
-	var p db.PaymentPlatform
+	var p db.Platform
 	p.PlatformToken = c.Param("Token")
 	util.Info("查詢 PlatformGet ->", p.PlatformToken)
 	if service.PlatformQueryOne(p) {
-		c.JSON(200, resp(200, service.PaymentPlatformFind(p)))
+		c.JSON(200, resp(200, service.PlatformFind(p)))
+	} else {
+		c.JSON(411, resp(1003, nil))
+	}
+}
+
+//PlatformStatusEnable 啟用帳號
+func PlatformStatusEnable(c *gin.Context) {
+	var p db.Platform
+	p.PlatformToken = c.Param("Token")
+	util.Info("啟用帳號 PlatformStatusEnable ->", p.PlatformToken)
+	if service.PlatformQueryOne(p) {
+		if service.PlatformStatusEnable(p) {
+			c.JSON(200, resp(1101, nil))
+		} else {
+			c.JSON(200, resp(1102, nil))
+		}
+	} else {
+		c.JSON(411, resp(1003, nil))
+	}
+}
+
+//PlatformStatusDisable 停用帳號
+func PlatformStatusDisable(c *gin.Context) {
+	var p db.Platform
+	p.PlatformToken = c.Param("Token")
+	util.Info("停用帳號 PlatformStatusDisable ->", p.PlatformToken)
+	if service.PlatformQueryOne(p) {
+		if service.PlatformStatusDisable(p) {
+			c.JSON(200, resp(1102, nil))
+		} else {
+			c.JSON(200, resp(1101, nil))
+		}
 	} else {
 		c.JSON(411, resp(1003, nil))
 	}

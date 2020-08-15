@@ -48,18 +48,18 @@ func Initgorm() error {
 //migratetable 初始化表 自動建表
 func migratetable(gdb *gorm.DB) {
 	// Migrate the schema
-	gdb.AutoMigrate(&LogConnect{}, &PaymentPlatform{}, &PaymentPlatformGroupsAuth{}, &PaymentPlatformGroup{}, &PaymentType{}, &Order{})
-	model := &PaymentPlatformGroup{}
+	gdb.AutoMigrate(&LogConnect{}, &Platform{}, &PlatformGroupsAuth{}, &PlatformGroup{}, &PaymentType{}, &Order{})
+	model := &PlatformGroup{}
 	//檢查初始資料
 	if a := gdb.Where("id = ?", 1).First(&model); a.Error != nil {
-		var PaymentPlatformGroup1 PaymentPlatformGroup
-		PaymentPlatformGroup1.GroupName = "nil"
-		PaymentPlatformGroup1.GroupDescribe = "預設群組"
-		gdb.Create(&PaymentPlatformGroup1)
-		var PaymentPlatformGroup2 PaymentPlatformGroup
-		PaymentPlatformGroup2.GroupName = "casino"
-		PaymentPlatformGroup2.GroupDescribe = "歡樂賭爛城"
-		gdb.Create(&PaymentPlatformGroup2)
+		var PlatformGroup1 PlatformGroup
+		PlatformGroup1.GroupName = "nil"
+		PlatformGroup1.GroupDescribe = "預設群組"
+		gdb.Create(&PlatformGroup1)
+		var PlatformGroup2 PlatformGroup
+		PlatformGroup2.GroupName = "casino"
+		PlatformGroup2.GroupDescribe = "歡樂賭爛城"
+		gdb.Create(&PlatformGroup2)
 	}
 	model2 := &PaymentType{}
 	if b := gdb.Where("id = ?", 1).First(&model2); b.Error != nil {

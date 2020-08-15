@@ -32,7 +32,7 @@ import (
 // @success 400 {string} string "{"status":"FAIL",    "msg": "錯誤訊息"}"
 // @Router /mycard/CreateMycardOder [post]
 func MycardSandOderAdd(c *gin.Context) {
-	var p db.PaymentPlatform
+	var p db.Platform
 	c.Bind(&p)
 	var o db.Order
 	c.Bind(&o)
@@ -44,7 +44,7 @@ func MycardSandOderAdd(c *gin.Context) {
 		//平台 Status確認  && GroupAuth確認
 		if service.PlatformQueryStatus(p) && service.PlatformGroupAuthQuery(p, "1") {
 			//解析 Token 依各group確認該遊戲帳戶是否存在
-			p = service.PaymentPlatformFind(p)
+			p = service.PlatformFind(p)
 			switch p.PlatformGroupID {
 			case 2:
 				guid = casinogrpc.VetifyUserID(o.OrderClientID)

@@ -1,7 +1,7 @@
 package db
 
-//PaymentPlatformGroup PaymentPlatformGroup
-type PaymentPlatformGroup struct {
+//PlatformGroup PlatformGroup
+type PlatformGroup struct {
 	Model
 	GroupName     string `gorm:"type:varchar(20) NOT NULL  COMMENT '群組名稱'"`
 	GroupDescribe string `gorm:"type:varchar(45)  COMMENT '群組詳細'"`

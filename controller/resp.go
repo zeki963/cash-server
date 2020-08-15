@@ -26,6 +26,8 @@ var MsgFlags = map[int]string{
 	1002: "Platform 帳號註冊失敗",
 	1003: "Platform 帳號不存在",
 	1004: "Platform 帳號未啟用相關服務",
+	1101: "Platform 帳號已啟用",
+	1102: "Platform 帳號已停用",
 	//2000 GameGroup端錯誤
 	2001: "Casino 無此帳號",
 	//3000 第3方錯誤
