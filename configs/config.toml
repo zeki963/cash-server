@@ -7,7 +7,7 @@ swagger = true
 # 443 配置
 [http]
 https = false
-httpport = "8081"
+httpport = 8081
 
 # Logger 配置
 [Logconf]

@@ -1,6 +1,7 @@
 package util
 
 import (
+	"cash-server/pkg/notify"
 	"fmt"
 	"time"
 )
@@ -54,7 +55,9 @@ func Error(format string, a ...interface{}) {
 	prefix := red(erro)
 	fmt.Println(formatLog(prefix), fmt.Sprintf(format, a...))
 	Logger().Error(erro, format)
+	notify.Postnotifyslack(format)
 }
+
 func red(s string) string {
 	return fmt.Sprintf("\x1b[%dm%s\x1b[0m", colorRed, s)
 }

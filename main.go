@@ -5,10 +5,8 @@ import (
 	"cash-server/db"
 	"cash-server/pkg/util"
 	"cash-server/router"
-	"fmt"
-	"io/ioutil"
-	"net/http"
-	"strings"
+	"cash-server/service"
+	"strconv"
 )
 
 // @title  金流SERVER API
@@ -19,11 +17,11 @@ import (
 // @contact.email zor@cqiserv.com
 func main() {
 	// <== 測試CODE == >
-	util.Error(" < - TEST  - > ")
-	var a db.PaymentPlatform
-	a.PlatformToken = "mSwgzQ6SV5hasRvQ0uJwVg"
-	//postnotifyslack("test")
-	//fmt.Println(model.PlatformQueryExist(a))
+	util.Trace(" < - TEST  - > ")
+	var g db.PaymentPlatformGroup
+	g.GroupName = "123"
+	service.GroupAdd(g)
+
 	// <== 測試CODE == >
 	// server start
 	util.Info(" < - SERVER START - > ")
@@ -35,7 +33,7 @@ func main() {
 	if configs.GetGlobalConfig().HTTP.HTTPS == true {
 		r.RunTLS(":8443", "templates/server.crt", "templates/server.key")
 	} else {
-		if err := r.Run(":" + configs.GetGlobalConfig().HTTP.HTTPPort); err != nil {
+		if err := r.Run(":" + strconv.Itoa(configs.GetGlobalConfig().HTTP.HTTPPort)); err != nil {
 			util.Error(err.Error())
 		}
 	}
@@ -52,22 +50,4 @@ func init() {
 	} else {
 		util.Success("[DB Host] > " + configs.GetGlobalConfig().MySQL.Host)
 	}
-}
-
-//postnotifyslack 傳訊息到slack
-func postnotifyslack(text string) {
-	authURL := "https://hooks.slack.com/services/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"
-	toServerVal := "payload={\"text\": \"" + text + "\"}"
-	resp, err := http.Post(authURL,
-		"application/x-www-form-urlencoded",
-		strings.NewReader(toServerVal))
-	if err != nil {
-		fmt.Println(err)
-	}
-	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		util.Error(err.Error())
-	}
-	println(body)
 }

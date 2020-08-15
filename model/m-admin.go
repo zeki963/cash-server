@@ -79,7 +79,7 @@ func PlatformTokenQueryStatus(token string) string {
 	return model.Status
 }
 
-//PlatformQueryStatusUseToken  查詢帳號詳細資料  用TOKEN
+//PlatformQueryStatusUseToken  查詢帳號STAUTS資料  用TOKEN
 func PlatformQueryStatusUseToken(token string) string {
 	model := &db.PaymentPlatform{}
 	a := db.SQLDBX.Where("platform_token = ?", token).First(&model)
@@ -134,30 +134,6 @@ func PlatformQueryInfodataJSON(token string) Platform {
 		//fmt.Printf("%+v", platforms)
 	}
 	return platforms
-}
-
-//   ---------------------------payment_platform_group_auth  表單相關-------------------------------------
-
-//PlatformQueryGroupAuth 查詢帳號資料
-//[typeid 1=mycard]
-// func PlatformQueryGroupAuth(typeid string, groupid string) bool {
-// 	rows, err := db.SQLDB.Query("select * from payment_platform_group_auth WHERE group_id=? and type_id=? ", groupid, typeid)
-// 	if err != nil {
-// 		//log.Fatal(err)
-// 		util.Error(err.Error())
-// 		return false
-// 	}
-// 	for rows.Next() {
-// 		//fmt.Printf("%+v", platforms)
-// 	}
-// 	return true
-// }
-
-//PlatformGroupAuthQuery 查詢帳號權限開通狀態
-func PlatformGroupAuthQuery(groupid string, typeid string) db.PaymentPlatformGroupsAuth {
-	var model db.PaymentPlatformGroupsAuth
-	db.SQLDBX.Where(" group_id= ? AND type_id=?", groupid, typeid).First(&model)
-	return model
 }
 
 //   ---------------------------log_connect  表單相關-------------------------------------

@@ -46,7 +46,7 @@ func Initgorm() error {
 //migratetable 初始化表 自動建表
 func migratetable(gdb *gorm.DB) {
 	// Migrate the schema
-	gdb.AutoMigrate(&LogConnect{}, &PaymentPlatform{}, &PaymentPlatformGroupsAuth{}, &PaymentPlatformGroup{}, &PaymentType{}, &Oder{})
+	gdb.AutoMigrate(&LogConnect{}, &PaymentPlatform{}, &PaymentPlatformGroupsAuth{}, &PaymentPlatformGroup{}, &PaymentType{}, &Order{})
 	model := &PaymentPlatformGroup{}
 	//檢查初始資料
 	if a := gdb.Where("id = ?", 1).First(&model); a.Error != nil {
@@ -63,7 +63,6 @@ func migratetable(gdb *gorm.DB) {
 	if b := gdb.Where("id = ?", 1).First(&model2); b.Error != nil {
 		var dfmycad PaymentType
 		dfmycad.TypeName = "mycard"
-		dfmycad.PaymentMemberID = "CQIG"
 		dfmycad.Status = "1"
 		gdb.Create(&dfmycad)
 	}

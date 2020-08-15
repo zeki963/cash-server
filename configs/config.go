@@ -61,8 +61,8 @@ type Config struct {
 
 //HTTP 網路接口
 type HTTP struct {
-	HTTPS    bool   `toml:"https"`
-	HTTPPort string `toml:"httpport"`
+	HTTPS    bool `toml:"https"`
+	HTTPPort int  `toml:"httpport"`
 }
 
 //Redis 配置參數
