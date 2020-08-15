@@ -13,7 +13,7 @@ func GroupOrderGet(groupid int, StageType int) string {
 	fid := model.GroupExist(groupid).GroupName
 	subid := fmt.Sprintf("%0*d", 9, model.GroupExist(groupid).GroupOrder)
 	if StageType == 0 {
-		return fid + "_test_" + subid
+		return fid + "x" + subid
 	}
 	return fid + "_" + subid
 }

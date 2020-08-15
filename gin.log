@@ -1,2 +1,2 @@
-[GIN] 2020/08/15 - 20:44:46 | 411 |  1.001938019s |       127.0.0.1 | POST     "/mycardsandbox/order"
-[GIN] 2020/08/15 - 20:44:46 | 411 |  1.088760927s |       127.0.0.1 | POST     "/mycardsandbox/order"
+[GIN] 2020/08/15 - 22:48:20 | 411 |  1.102115463s |       127.0.0.1 | POST     "/mycardsandbox/order"
+[GIN] 2020/08/15 - 22:48:21 | 411 |  1.234220255s |       127.0.0.1 | POST     "/mycardsandbox/order"

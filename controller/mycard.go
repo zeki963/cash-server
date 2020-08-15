@@ -18,15 +18,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-//Mycardresp Mycardresp 格式
-type Mycardresp struct {
-	InGameSaveType int
-	ReturnCode     string
-	ReturnMsg      string
-	AuthCode       string
-	TradeSeq       string
-}
-
 // MycardSandOderAdd  application/json  application/x-www-form-urlencoded
 // @Summary AuthMycard
 // @Tags MyCard
@@ -58,8 +49,8 @@ func MycardSandOderAdd(c *gin.Context) {
 			case 2:
 				guid = casinogrpc.VetifyUserID(o.OrderClientID)
 			}
-			o.OrderDate = util.GETNowsqltime()
-			o.ReceivedCallbackDate = util.GETNowsqltime()
+			o.OrderDate = util.GetUTCTime()
+			o.ReceivedCallbackDate = util.GetUTCTime()
 			o.OrderSubID = service.GroupOrderGet(p.PlatformGroupID, o.StageType)
 			o.PaymentTypeID = p.PlatformGroupID
 			o.PlatformID = int(p.ID)
@@ -68,6 +59,8 @@ func MycardSandOderAdd(c *gin.Context) {
 				fmt.Printf("%+v", o)
 				service.OrderAdd(o)
 				nmycarderp := toMycardSandAuthGlobal(o.OrderClientID, o.OrderItemID, o.OrderItemPrice, strconv.Itoa(p.PlatformGroupID), o.OrderSubID)
+
+				service.OrderSave(o, nmycarderp)
 				if nmycarderp.ReturnCode == "1" {
 					//給前端3-2
 					c.Redirect(http.StatusMovedPermanently, "http://test.mycard520.com.tw/MyCardPay/?AuthCode="+nmycarderp.AuthCode)
@@ -86,7 +79,7 @@ func MycardSandOderAdd(c *gin.Context) {
 }
 
 // authGlobal 向 MyCard 要求交易授權碼 (Server to Server) 3.1
-func toMycardSandAuthGlobal(userid string, itemid string, itemprice string, serverid string, subid string) (Mresp Mycardresp) {
+func toMycardSandAuthGlobal(userid string, itemid string, itemprice string, serverid string, subid string) (Mresp db.Mycardresp) {
 	util.Info("toMycardAuthGlobal")
 	var (
 		authURL              = "https://testb2b.mycard520.com.tw/MyBillingPay/v1.1/AuthGlobal"
@@ -130,7 +123,7 @@ func toMycardSandAuthGlobal(userid string, itemid string, itemprice string, serv
 	//Resp
 	util.Trace("[Mycard Resp] >> " + string(body))
 	//JSON
-	var nmycarderp Mycardresp
+	var nmycarderp db.Mycardresp
 	data := []byte(body)
 	json.Unmarshal(data, &nmycarderp)
 	return nmycarderp

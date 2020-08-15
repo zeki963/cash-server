@@ -2,6 +2,8 @@ package db
 
 import (
 	"cash-server/configs"
+	"encoding/json"
+	"fmt"
 	"reflect"
 	"time"
 
@@ -78,4 +80,14 @@ func Struct2Map(obj interface{}) map[string]interface{} {
 		data[t.Field(i).Name] = v.Field(i).Interface()
 	}
 	return data
+}
+
+//Struct2JSON Struct2JSON
+func Struct2JSON(obj interface{}) string {
+	j, err := json.Marshal(obj)
+	if err != nil {
+		fmt.Println(err)
+		return err.Error()
+	}
+	return string(j)
 }

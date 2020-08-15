@@ -7,10 +7,14 @@ import (
 
 //OrderAdd 新增Oder
 func OrderAdd(o db.Order) {
+	o.Status = "1"
 	model.OrderAdd(o)
 }
 
-//OrderUpdate 更新Oder
-func OrderUpdate(o db.Order) {
-	model.OrderAdd(o)
+//OrderSave 更新Oder
+func OrderSave(o db.Order, Mrep db.Mycardresp) {
+	if Mrep.ReturnCode == "1" {
+		model.OrderCallbackTSave(o, Mrep)
+	}
+	model.OrderCallbackFSave(o, Mrep)
 }
