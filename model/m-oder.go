@@ -23,8 +23,8 @@ func OrderSubidQuery(o db.Order) db.Order {
 //OrderAuthTSave Order 更新認証成功
 func OrderAuthTSave(o db.Order, Mrep db.Mycardresp) bool {
 	db.SQLDBX.First(&o, OrderSubidQuery(o))
-	fmt.Printf("%+v", o)
-	o.PaymentID = Mrep.AuthCode
+	util.Test(fmt.Sprintf("交易單明細 : %+v", o))
+	o.PaymentID = Mrep.TradeSeq
 	o.CallbackURL = "http://test.mycard520.com.tw/MyCardPay/?AuthCode=" + Mrep.AuthCode
 	o.ReceivedCallbackDate = util.GetUTCTime()
 	o.CallbackOriginalData = db.Struct2JSON(Mrep)

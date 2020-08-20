@@ -16,8 +16,9 @@ func OrderAdd(o db.Order) {
 func OrderSave(o db.Order, Mresp db.Mycardresp) {
 	if Mresp.ReturnCode == "1" {
 		model.OrderAuthTSave(o, Mresp)
+	} else {
+		model.OrderAuthFSave(o, Mresp)
 	}
-	model.OrderAuthFSave(o, Mresp)
 }
 
 //OrderCallbackSave 回應更新Order(子單號,交易結果,回應訊息)
