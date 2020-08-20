@@ -66,7 +66,10 @@ func Error(format string, a ...interface{}) {
 	prefix := red(erro)
 	fmt.Println(formatLog(prefix), fmt.Sprintf(format, a...))
 	Logger().Error(erro, format)
-	notify.Postnotifyslack(format)
+	if configs.GetGlobalConfig().RunMode == "release" {
+		notify.Postnotifyslack(format)
+	}
+
 }
 
 func red(s string) string {

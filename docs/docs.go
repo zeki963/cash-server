@@ -29,6 +29,68 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/admin/order/{OrderSubID}": {
+            "get": {
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin-Order"
+                ],
+                "summary": "OrderGet 查詢交易單",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "交易單子單號",
+                        "name": "OrderSubID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controller.Resp"
+                        }
+                    },
+                    "411": {
+                        "description": "Error",
+                        "schema": {
+                            "$ref": "#/definitions/controller.Resp"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/orders": {
+            "get": {
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin-Order"
+                ],
+                "summary": "OrderGetAll 查詢ALL帳號",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/db.Order"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/admin/platform": {
             "post": {
                 "consumes": [
@@ -38,7 +100,7 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Admin"
+                    "Admin-Platform"
                 ],
                 "summary": "PlatformRegisterServer 新增平台帳號",
                 "parameters": [
@@ -70,7 +132,7 @@ var doc = `{
                         "in": "formData"
                     },
                     {
-                        "type": "string",
+                        "type": "integer",
                         "description": "群組代號 - 預設為1",
                         "name": "PlatformGroupID",
                         "in": "formData"
@@ -78,63 +140,214 @@ var doc = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "{\"ecode\":200,\"msg\":\"ok\",\"data\":{\"Account\":\"test123\",\"Token\":\"7z7cxTyljnCXAyOLd/sOTw\",\"TokenSecret\":\"wFwTezBIL0oElVXC\",\"Time\":\"2020-08-06 15:53:36\"}}",
+                        "description": "OK",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/controller.Resp"
                         }
                     },
                     "411": {
-                        "description": "{\"ecode\":1001,\"msg\":\"請求參數短少或錯誤\",\"data\":null}",
+                        "description": "Error",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/controller.Resp"
                         }
                     }
                 }
             }
         },
-        "/json_post": {
-            "post": {
+        "/admin/platform/status/{PlatformAccount}": {
+            "put": {
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "Test"
+                    "Admin-Platform"
                 ],
-                "summary": "JSONtestPost",
+                "summary": "PlatformStatusEnable 啟用帳號",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Name 名稱",
-                        "name": "name",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Message",
-                        "name": "message",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Num",
-                        "name": "num",
-                        "in": "query",
+                        "description": "平台帳號",
+                        "name": "PlatformAccount",
+                        "in": "path",
                         "required": true
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "{\"code\":\"200\",\"message\":\"\",\"name\":\"\",\"num\":\"\",\"status\":\"SUCCESS\"}",
+                        "description": "OK",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/controller.Resp"
+                        }
+                    },
+                    "411": {
+                        "description": "Error",
+                        "schema": {
+                            "$ref": "#/definitions/controller.Resp"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin-Platform"
+                ],
+                "summary": "PlatformStatusDisable 停用帳號",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "平台帳號",
+                        "name": "PlatformAccount",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controller.Resp"
+                        }
+                    },
+                    "411": {
+                        "description": "Error",
+                        "schema": {
+                            "$ref": "#/definitions/controller.Resp"
                         }
                     }
                 }
             }
         },
-        "/mycard/CreateMycardOder": {
+        "/admin/platform/{PlatformAccount}": {
+            "get": {
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin-Platform"
+                ],
+                "summary": "PlatformGet 查詢帳號",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "平台帳號",
+                        "name": "PlatformAccount",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controller.Resp"
+                        }
+                    },
+                    "411": {
+                        "description": "Error",
+                        "schema": {
+                            "$ref": "#/definitions/controller.Resp"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/platforms": {
+            "get": {
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin-Platform"
+                ],
+                "summary": "PlatformGetAll 查詢ALL帳號",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/db.Platform"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/casino/shop/": {
+            "get": {
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Casino"
+                ],
+                "summary": "GetItem 查詢casino商品清單",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/casinogrpc.CasinoItem"
+                        }
+                    }
+                }
+            }
+        },
+        "/casino/user/{UserID}": {
+            "get": {
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Casino"
+                ],
+                "summary": "GetItem 查詢casino用戶",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "CASINO角色帳號",
+                        "name": "UserID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controller.Resp"
+                        }
+                    },
+                    "411": {
+                        "description": "Error",
+                        "schema": {
+                            "$ref": "#/definitions/controller.Resp"
+                        }
+                    }
+                }
+            }
+        },
+        "/mycardsandbox/order": {
             "post": {
                 "consumes": [
                     "application/x-www-form-urlencoded"
@@ -143,59 +356,185 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "MyCard"
+                    "MyCard-SandBox"
                 ],
-                "summary": "AuthMycard",
+                "summary": "新增 mycard 交易單",
                 "parameters": [
                     {
                         "type": "string",
                         "description": "玩家帳號ID",
-                        "name": "userid",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "遊戲GroupID",
-                        "name": "groupid",
+                        "name": "OrderClientID",
                         "in": "formData",
                         "required": true
                     },
                     {
                         "type": "string",
                         "description": "商品代號",
-                        "name": "itemid",
+                        "name": "OrderItemID",
                         "in": "formData",
                         "required": true
                     },
                     {
                         "type": "string",
                         "description": "商品價格",
-                        "name": "itemprice",
+                        "name": "OrderItemPrice",
                         "in": "formData",
                         "required": true
                     },
                     {
                         "type": "string",
                         "description": "平台token代號",
-                        "name": "token",
+                        "name": "PlatformToken",
                         "in": "formData",
                         "required": true
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "{\"還沒寫好\"}",
+                        "description": "OK",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/controller.Resp"
                         }
                     },
-                    "400": {
-                        "description": "{\"status\":\"FAIL\",    \"msg\": \"錯誤訊息\"}",
+                    "411": {
+                        "description": "Error",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/controller.Resp"
                         }
                     }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "casinogrpc.CasinoItem": {
+            "type": "object",
+            "properties": {
+                "itemName": {
+                    "type": "string"
+                },
+                "itemType": {
+                    "type": "integer"
+                },
+                "platform": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "integer"
+                },
+                "productID": {
+                    "type": "string"
+                }
+            }
+        },
+        "controller.Resp": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "object"
+                },
+                "ecode": {
+                    "type": "integer"
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
+        "db.Order": {
+            "type": "object",
+            "properties": {
+                "callbackOriginalData": {
+                    "type": "string"
+                },
+                "callbackURL": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "orderClientID": {
+                    "type": "string"
+                },
+                "orderDate": {
+                    "type": "string"
+                },
+                "orderGameSubID": {
+                    "type": "string"
+                },
+                "orderItemID": {
+                    "type": "string"
+                },
+                "orderItemPrice": {
+                    "type": "string"
+                },
+                "orderOriginalData": {
+                    "type": "string"
+                },
+                "orderSubID": {
+                    "type": "string"
+                },
+                "paymentID": {
+                    "type": "string"
+                },
+                "paymentTypeID": {
+                    "type": "integer"
+                },
+                "platformID": {
+                    "type": "integer"
+                },
+                "receivedCallbackDate": {
+                    "type": "string"
+                },
+                "stageType": {
+                    "type": "integer"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "db.Platform": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "platformAccount": {
+                    "type": "string"
+                },
+                "platformEmail": {
+                    "type": "string"
+                },
+                "platformGroupID": {
+                    "type": "integer"
+                },
+                "platformName": {
+                    "type": "string"
+                },
+                "platformPassword": {
+                    "type": "string"
+                },
+                "platformToken": {
+                    "type": "string"
+                },
+                "platformTokenSecret": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
                 }
             }
         }
@@ -213,7 +552,7 @@ type swaggerInfo struct {
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = swaggerInfo{
-	Version:     "2020.07",
+	Version:     "2020.08",
 	Host:        "",
 	BasePath:    "",
 	Schemes:     []string{},

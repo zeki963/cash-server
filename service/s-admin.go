@@ -37,6 +37,11 @@ func PlatformQueryOne(p db.Platform) bool {
 	return true
 }
 
+//PlatformQueryAll 查詢存在
+func PlatformQueryAll(p db.Platform) []db.Platform {
+	return model.PlatformQueryInfoAllJSON()
+}
+
 //PlatformStatusEnable 帳號狀態轉啟用
 func PlatformStatusEnable(p db.Platform) bool {
 	a := model.PlatformQueryExist(p)

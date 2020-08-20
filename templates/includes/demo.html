@@ -1,51 +1,48 @@
 {{define "content1"}}
 <div class="container-margin col-auto ">
-    <div >
-        <div >
+    <div>
+        <div>
             <div class="container" style=" max-width: 400px; ">
                 <div class="modal-header">
                     <h4 class="modal-title" id="add-version"> {{.title}} Add date ! </h4>
                 </div>
                 <div class="modal-body">
-                    <input type="token" class="form-control" aria-describedby="basic-addon2" id="idtoken" VALUE="mSwgzQ6SV5hasRvQ0uJwVg">
-                    <br>
-                    <br>
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
-                            <span class="input-group-text" >User ID</span>
+                            <span class="input-group-text">PlatformToken :</span>
                         </div>
-                        <input type="text" class="form-control" aria-describedby="basic-addon2" id="id1" VALUE="49312425">
-                    </div>
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text" >groupid</span>
-                        </div>
-                        <input type="text" class="form-control" aria-describedby="basic-addon2" id="idg" VALUE="2">
+                        <input type="token" class="form-control" aria-describedby="basic-addon2" id="idtoken"
+                            VALUE="JvaKxCVi4o5elJf0NmQTDg">
                     </div>
                     <br>
-                    itemprice  :
+                    <hr>
+                    <br>
+                    <div class="input-group-prepend">
+                        OrderItemID :
+                    </div>
+                    <input type="text" class="form-control" aria-describedby="basic-addon2" id="id1" VALUE="20312543">
+                    <br> <br> 
+                    OrderItemPrice :
                     <select class="custom-select mb-3" id="id2">
-                        <option selected>0</option>
-                        <option value="1">10</option>
-                        <option value="2">500</option>
-                        <option value="3">999</option>
+                        <option selected>Price</option>
+                        <option value="33">33</option>
+                        <option value="170">170</option>
+                        <option value="330">330</option>
                     </select>
-                    <br>
-                    <br>                    <br>
-                    item :
+                    <br><br> <br>
+                    OrderItemID :
                     <br>
                     <select class="custom-select mb-3" id="id3">
                         <option selected>Item</option>
-                        <option value="1">A</option>
-                        <option value="2">B</option>
+                        <option value="com.cqicasino.happycity.tier1">com.cqicasino.happycity.tier1</option>
+                        <option value="com.cqicasino.happycity.tier5">com.cqicasino.happycity.tier5</option>
+                        <option value="com.cqicasino.happycity.tier10">com.cqicasino.happycity.tier10</option>
                     </select>
-                    <div class="form-group">
-                        <!-- <div class="form-group">
-                            <label>日期：</label>
-                            <input type="date" id="id4" class="form-control" onchange="show_value(this)">
-                        </div> -->
-                    </div>
                     <div class="modal-footer">
+                        安安 這畫面只是功能示範跟實際畫面不同: <br><br>
+                        > 選33就選tier1<br><br>
+                        > 選170就選tier5<br><br>
+                        不然系統會炸掉 ：）
                         <button type="button" onclick="posttest()" class="btn btn-primary">Add</button>
                     </div>
                     <h4>response</h4>
@@ -54,8 +51,6 @@
             </div>
         </div>
     </div>
-
-
     </body>
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"
@@ -64,21 +59,16 @@
         function posttest() {
             $("#rep").text("NO");
             $.post({
-                url: "http://127.0.0.1:8081/mycard/oder",
+                url: "http://127.0.0.1:8081/mycardsandbox/order",
                 data: {
-                    userid: $("#id1").val(),groupid: $("#idg").val(), itemid: $("#id2").val(), itemprice: $("#id3").val(),PlatformToken: $("#idtoken").val()
+                    OrderClientID: $("#id1").val(), OrderItemID: $("#id3").val(), OrderItemPrice: $("#id2").val(), PlatformToken: $("#idtoken").val()
                 },
                 success: function (result) {
                     $("#weather-temp").html("<strong>" + result + "</strong> degrees");
                     $("#rep").text("IsOK");
                     console.log(result);
                 }
-                
-                
             });
         }
-
     </script>
-
-
     {{end}}

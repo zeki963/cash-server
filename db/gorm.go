@@ -48,7 +48,7 @@ func Initgorm() error {
 //migratetable 初始化表 自動建表
 func migratetable(gdb *gorm.DB) {
 	// Migrate the schema
-	gdb.AutoMigrate(&LogConnect{}, &Platform{}, &PlatformGroupsAuth{}, &PlatformGroup{}, &PaymentType{}, &Order{})
+	gdb.AutoMigrate(&LogConnect{}, &Platform{}, &PlatformGroupsAuth{}, &PlatformGroup{}, &PaymentType{}, &Order{}, &OrderMycard{})
 	model := &PlatformGroup{}
 	//檢查初始資料
 	if a := gdb.Where("id = ?", 1).First(&model); a.Error != nil {

@@ -23,6 +23,7 @@ type Platform struct {
 type IPaymentPlatform interface {
 	Echo() bool
 	Add() error
+	DBFind() (string, string)
 }
 
 //Echo 呼叫

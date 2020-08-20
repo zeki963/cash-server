@@ -3,6 +3,7 @@ package main
 import (
 	"cash-server/configs"
 	"cash-server/db"
+	casinogrpc "cash-server/grpc/casino"
 	"cash-server/pkg/util"
 	"cash-server/router"
 	"strconv"
@@ -17,7 +18,8 @@ import (
 func main() {
 	// <== 測試CODE == >
 	util.Test(" < - TEST  - > ")
-
+	casinogrpc.VetifyItem("com.cqicasino.happycity.tier1", 300)
+	//casinogrpc.SendItemResult("70ccafc9-0c66-47a1-af93-a075a9f08ce9", "com.cqicasino.happycity.tier1")
 	// <== 測試CODE == >
 	// server start
 	util.Info(" < - SERVER START - > ")

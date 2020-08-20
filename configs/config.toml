@@ -1,5 +1,5 @@
 # 運行模式 (debug:調試,test:測試,release:正式)
-runMode = "debug"
+runMode = "test"
 
 # swagger 配置
 swagger = true

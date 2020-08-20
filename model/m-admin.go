@@ -3,9 +3,7 @@ package model
 import (
 	"cash-server/db"
 	"cash-server/pkg/util"
-	"encoding/json"
 	"fmt"
-	"log"
 
 	"github.com/jinzhu/gorm"
 )
@@ -93,7 +91,7 @@ func PlatformQueryStatus(account string, password string) string {
 	if a.Error != nil {
 		return "err"
 	}
-	util.Test("PlatformQueryStatus 查詢帳號開通狀態 -> 帳號：", account, "狀態：", model.Status)
+	util.Test(fmt.Sprint("PlatformQueryStatus 查詢帳號開通狀態 -> 帳號：", account, "狀態：", model.Status))
 	return model.Status
 }
 
@@ -104,7 +102,7 @@ func PlatformTokenQueryStatus(token string) string {
 	if a.Error != nil {
 		return "err"
 	}
-	log.Println("PlatformTokenQueryStatus 查詢帳號狀態 -> token：", token)
+	util.Test(fmt.Sprint("PlatformTokenQueryStatus 查詢帳號狀態 -> token：", token))
 	return model.Status
 }
 
@@ -115,7 +113,7 @@ func PlatformQueryStatusUseToken(token string) string {
 	if a.Error != nil {
 		return "err"
 	}
-	log.Println("PlatformQueryStatus 查詢帳號開通狀態 -> 帳號：", token, "狀態：", model.Status)
+	util.Test(fmt.Sprint("PlatformQueryStatus 查詢帳號開通狀態 -> 帳號：", token, "狀態：", model.Status))
 	return model.Status
 }
 
@@ -123,7 +121,7 @@ func PlatformQueryStatusUseToken(token string) string {
 func PlatformQueryInfoJSON(taskID string) string {
 	sql := "SELECT * FROM payment_platform where platform_id =?"
 	rows, err := db.GetJSON(sql, taskID)
-	fmt.Println("PlatformQueryInfo 查詢帳號資料 ", rows)
+	util.Test(fmt.Sprint("PlatformQueryInfo 查詢帳號資料 ", rows))
 	if err != nil {
 		util.Error(err.Error())
 		return "err"
@@ -132,20 +130,12 @@ func PlatformQueryInfoJSON(taskID string) string {
 }
 
 //PlatformQueryInfoAllJSON  查詢ALL帳號資料
-func PlatformQueryInfoAllJSON() {
-	var platforms []Platform
-	rows, err := db.SQLDB.Query("select * from payment_platform")
-	if err != nil {
-		util.Error(err.Error())
-	}
-	for rows.Next() {
-		var platformid int
-		var platformaccount, platformpassword, platformname, platformgroupid, platformemail, platformtoken, platformtokensecret, status, createdate, updatedate string
-		rows.Scan(&platformid, &platformaccount, &platformpassword, &platformname, &platformgroupid, &platformemail, &platformtoken, &platformtokensecret, &status, &createdate, &updatedate)
-		platforms = append(platforms, Platform{platformid, platformaccount, platformpassword, platformname, platformgroupid, platformemail, platformtoken, platformtokensecret, status, createdate, updatedate})
-	}
-	platformsBytes, _ := json.Marshal(&platforms)
-	fmt.Println(string(platformsBytes))
+func PlatformQueryInfoAllJSON() []db.Platform {
+	var platforms []db.Platform
+	db.SQLDBX.Find(&platforms)
+	util.Test(fmt.Sprint((&platforms)))
+	//platformsBytes, _ := json.Marshal(&platforms)
+	return platforms
 }
 
 //PlatformQueryInfodataJSON   查詢帳號資料

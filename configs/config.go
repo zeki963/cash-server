@@ -100,7 +100,7 @@ type Postgres struct {
 
 //DSN Postgres-DSN 數據庫連接串
 func (a Postgres) DSN() string {
-	return fmt.Sprintf("host=%s port=%d user=%s dbname=%s password=%s",
+	return fmt.Sprintf("host=%s port=%d user=%s dbname=%s password=%s sslmode=disable",
 		a.Host, a.Port, a.User, a.DBName, a.Password)
 }
 

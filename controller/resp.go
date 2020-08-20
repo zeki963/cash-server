@@ -24,12 +24,15 @@ var MsgFlags = map[int]string{
 	//1000 基本錯誤
 	1001: "請求參數短少或錯誤",
 	1002: "Platform 帳號註冊失敗",
-	1003: "Platform 帳號不存在",
+	1003: "Platform 資料不存在",
 	1004: "Platform 帳號未啟用相關服務",
+	1005: "資料不符合規定格式",
 	1101: "Platform 帳號已啟用",
 	1102: "Platform 帳號已停用",
+	1201: "Order 資料不存在",
+	1202: "Order ",
 	//2000 GameGroup端錯誤
-	2001: "Casino 無此帳號",
+	2001: "Casino 無此帳號或建單異常",
 	//3000 第3方錯誤
 	3001: "MyCard Auth 錯誤",
 	//其他
