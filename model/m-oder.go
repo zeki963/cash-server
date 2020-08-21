@@ -15,16 +15,18 @@ func OrderAdd(o db.Order) {
 
 //OrderSubidQuery Order subid查詢
 func OrderSubidQuery(o db.Order) db.Order {
+	util.Test(fmt.Sprintf("交易單subid查詢 : %+v", o.OrderSubID))
 	var model db.Order
 	db.SQLDBX.Where("order_sub_id = ?", o.OrderSubID).First(&model)
 	return model
 }
 
 //OrderAuthTSave Order 更新認証成功
-func OrderAuthTSave(o db.Order, Mrep db.Mycardresp) bool {
+func OrderAuthTSave(o db.Order, Mrep db.Mycardresp, toServerVal string) bool {
 	db.SQLDBX.First(&o, OrderSubidQuery(o))
 	util.Test(fmt.Sprintf("交易單明細 : %+v", o))
 	o.PaymentID = Mrep.TradeSeq
+	o.OrderOriginalData = toServerVal
 	o.CallbackURL = "http://test.mycard520.com.tw/MyCardPay/?AuthCode=" + Mrep.AuthCode
 	o.ReceivedCallbackDate = util.GetUTCTime()
 	o.CallbackOriginalData = db.Struct2JSON(Mrep)
@@ -33,10 +35,11 @@ func OrderAuthTSave(o db.Order, Mrep db.Mycardresp) bool {
 }
 
 //OrderAuthFSave Order 更新認証失敗
-func OrderAuthFSave(o db.Order, Mrep db.Mycardresp) bool {
+func OrderAuthFSave(o db.Order, Mrep db.Mycardresp, toServerVal string) bool {
 	db.SQLDBX.First(&o, OrderSubidQuery(o))
 	util.Test(fmt.Sprintf("交易單明細 : %+v", o))
 	o.PaymentID = "FAIL"
+	o.OrderOriginalData = toServerVal
 	o.ReceivedCallbackDate = util.GetUTCTime()
 	o.CallbackOriginalData = db.Struct2JSON(Mrep)
 	dbrut := db.SQLDBX.Save(o)
@@ -44,10 +47,11 @@ func OrderAuthFSave(o db.Order, Mrep db.Mycardresp) bool {
 }
 
 //OrderCallbackTSave Order 更新 回應成功
-func OrderCallbackTSave(o db.Order, callbackstring string) bool {
+func OrderCallbackTSave(o db.Order, callbackform *db.OrderMycard) bool {
 	db.SQLDBX.First(&o, OrderSubidQuery(o))
-	util.Test(fmt.Sprintf("交易單明細 : %+v", o))
+	util.Test(fmt.Sprintf("OrderCallbackTSave Order 更新 回應成功 交易單明細 : %+v", o))
 	o.ReceivedCallbackDate = util.GetUTCTime()
+	o.MycardTradeNo = callbackform.MyCardTradeNo
 	dbrut := db.SQLDBX.Save(o)
 	return dbErrBool(dbrut)
 }
@@ -65,6 +69,6 @@ func OrderQueryExist(data db.Order) db.Order {
 func OrderQueryInfoAllJSON() []db.Order {
 	var Orders []db.Order
 	db.SQLDBX.Find(&Orders)
-	util.Test(fmt.Sprint((&Orders)))
+	util.Test(fmt.Sprintln("All 交易單明細 : ", Orders))
 	return Orders
 }

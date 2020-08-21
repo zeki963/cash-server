@@ -45,6 +45,7 @@ func init() {
 	if err := db.Initgorm(); err != nil {
 		util.Error("! DB Connect ERROR !")
 		util.Error(err.Error())
+		panic("error!")
 	} else {
 		util.Success("[DB Host] > " + configs.GetGlobalConfig().MySQL.Host)
 	}

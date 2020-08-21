@@ -133,7 +133,7 @@ func PlatformQueryInfoJSON(taskID string) string {
 func PlatformQueryInfoAllJSON() []db.Platform {
 	var platforms []db.Platform
 	db.SQLDBX.Find(&platforms)
-	util.Test(fmt.Sprint((&platforms)))
+	util.Test(fmt.Sprint("All 帳號資料 : ", platforms))
 	//platformsBytes, _ := json.Marshal(&platforms)
 	return platforms
 }

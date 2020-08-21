@@ -65,8 +65,9 @@ func MycardSandOrderAdd(c *gin.Context) {
 				service.OrderAdd(o)
 				//資料庫建單
 				util.Test(fmt.Sprintf("Order 資料： %+v", o))
-				nmycarderp := toMycardSandAuthGlobal(o.OrderClientID, o.OrderItemID, o.OrderItemPrice, strconv.Itoa(p.PlatformGroupID), o.OrderSubID)
-				service.OrderSave(o, nmycarderp)
+				nmycarderp, toServerVal := toMycardSandAuthGlobal(o.OrderClientID, o.OrderItemID, o.OrderItemPrice, strconv.Itoa(p.PlatformGroupID), o.OrderSubID)
+				fmt.Println("123123", o.OrderOriginalData)
+				service.OrderSave(o, nmycarderp, toServerVal)
 				if nmycarderp.ReturnCode == "1" {
 					//給前端3-2
 					c.Redirect(http.StatusMovedPermanently, "http://test.mycard520.com.tw/MyCardPay/?AuthCode="+nmycarderp.AuthCode)
@@ -85,7 +86,7 @@ func MycardSandOrderAdd(c *gin.Context) {
 }
 
 // authGlobal 向 MyCard 要求交易授權碼 (Server to Server) 3.1
-func toMycardSandAuthGlobal(userid string, itemid string, itemprice string, serverid string, subid string) (Mresp db.Mycardresp) {
+func toMycardSandAuthGlobal(userid string, itemid string, itemprice string, serverid string, subid string) (Mresp db.Mycardresp, toServerVal string) {
 	util.Info("<< ToMycardAuthGlobal 向 MyCard 要求交易授權碼 >>")
 	var (
 		authURL              = "https://testb2b.mycard520.com.tw/MyBillingPay/v1.1/AuthGlobal"
@@ -110,7 +111,7 @@ func toMycardSandAuthGlobal(userid string, itemid string, itemprice string, serv
 	util.Test(fmt.Sprint("preHashValue : ", preHashValue))
 	hash := (encryption.Sha256encode(preHashValue))
 	util.Test(fmt.Sprint("hash : ", hash))
-	toServerVal := "FacServiceId=" + facServiceID + "&FacTradeSeq=" + facTradeSeq + "&TradeType=" + tradeType +
+	toServerVal = "FacServiceId=" + facServiceID + "&FacTradeSeq=" + facTradeSeq + "&TradeType=" + tradeType +
 		"&ServerId=" + serverID + "&CustomerId=" + customerID + "&PaymentType=" + paymentType + "&ItemCode=" + itemCode +
 		"&ProductName=" + productName + "&Amount=" + amount + "&Currency=" + currency + "&SandBoxMode=" + sandBoxMode +
 		"&FacReturnURL=" + facReturnURL + facReturnURL2 + "&Hash=" + hash
@@ -132,7 +133,7 @@ func toMycardSandAuthGlobal(userid string, itemid string, itemprice string, serv
 	var nmycarderp db.Mycardresp
 	data := []byte(body)
 	json.Unmarshal(data, &nmycarderp)
-	return nmycarderp
+	return nmycarderp, toServerVal
 }
 
 //CreateOrder  建立Order
@@ -143,11 +144,18 @@ func CreateOrder(o db.Order) {
 // CallbackMycard  這是給Mycard 摳背專用的 3.2
 func CallbackMycard(c *gin.Context) {
 	util.Info("<< Mycard 摳背專用的 3.2 >>")
+
 	form := &db.OrderMycard{}
 	if err := c.BindJSON(form); err != nil {
 		util.Error(err.Error())
 	}
-	service.OrderCallbackSave(form.FacTradeSeq, form.PayResult, db.Struct2JSON(form))
+	service.OrderCallbackSave(form)
+	if form.PayResult == "3" {
+		c.JSON(200, resp(200, nil))
+	} else {
+		c.JSON(200, resp(411, form.ReturnMsg))
+	}
+
 }
 
 // toMycardTradeQuery 驗證 MyCard 交易結果 (Server to Server) 3.3

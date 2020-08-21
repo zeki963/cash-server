@@ -25,6 +25,7 @@ type Order struct {
 	PaymentID            string    `gorm:"type:varchar(1000) NOT NULL COMMENT '支付端訂單編號'"`
 	StageType            int       `gorm:"type:int DEFAULT NULL COMMENT '1正式，0測試'"`
 	Status               string    `gorm:"type:varchar(1) DEFAULT '1' NOT NULL COMMENT '狀態，0為禁用，1為啟用'"`
+	MycardTradeNo        string    `gorm:"type:varchar(1000) DEFAULT  NULL COMMENT '通路編號'"`
 }
 
 //IOrder IOrder
