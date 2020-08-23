@@ -152,14 +152,13 @@ func removeDuplicateElement(orig []*DbIAPItem) []*DbIAPItem {
 	return result
 }
 
-//SendItemBuy 購買 - 送出購買要求
+//SendItemBuy 購買 - 送出訂單要求
 func SendItemBuy(userid string, prodid string) (bool, int32) {
-	util.Test("[GRPC-Casino] 送出購買要求")
+	util.Test("[GRPC-Casino] 送出訂單要求")
 	var dbIAPBuyInput DbIAPBuyInput
 	dbIAPBuyInput.Platform = "mycard"
 	dbIAPBuyInput.Quantity = 1
 	util.Test(fmt.Sprint("[GRPC-Casino] Userid : ", userid))
-
 	dbIAPBuyInput.GUID = userid
 	dbIAPBuyInput.ProductID = prodid
 	conn := GrpcCasinoCannot()
@@ -170,28 +169,31 @@ func SendItemBuy(userid string, prodid string) (bool, int32) {
 	if err != nil {
 		util.Error("[GRPC-Casino] Could not get nonce: %v", err)
 	}
-	util.Test(fmt.Sprint("[GRPC-Casino] Game 資料庫建單 :", a.Success, " / Game 資料庫單號 :", a.Value))
+	util.Test(fmt.Sprint("[GRPC-Casino] Game 資料庫結果 :", a.Success, " / Game 資料庫單號 :", a.Value))
 	return a.GetSuccess(), a.GetValue()
 }
 
-//SendItemResult 購買 - 送出購買要求(回傳訂單序號)
-func SendItemResult(userid string, prodid string) bool {
+//SendItemResult 購買 - 回傳訂單序號
+func SendItemResult(o db.Order) bool {
 	util.Test("[GRPC-Casino] 回傳訂單序號")
-	var cq DbIAPBuyResultInput
-	cq.Platform = "mycard"
-	cq.Quantity = 1
-	cq.GUID = userid
-	cq.ProductID = prodid
-	cq.Status = 1
-	cq.Content = "11122233"
+	var casinoResu DbIAPBuyResultInput
+	casinoResu.No = o.OrderGameSubID
+	casinoResu.Platform = "mycard"
+	casinoResu.Quantity = 1
+	casinoResu.GUID = VetifyUserGUID(o.OrderClientID)
+	casinoResu.OrderID = o.OrderSubID
+	casinoResu.ProductID = o.OrderItemID
+	casinoResu.Status = 1
+	casinoResu.Content = o.OrderOriginalData
+	casinoResu.Receipt = o.MycardTradeNo
 	conn := GrpcCasinoCannot()
 	c := NewMemberClient(conn)
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
-	a, err := c.DbIAPBuyResult(ctx, &cq)
+	a, err := c.DbIAPBuyResult(ctx, &casinoResu)
 	if err != nil {
 		util.Error("[GRPC-Casino] Could not get nonce: %v", err)
 	}
-	util.Test(fmt.Sprint(a))
+	util.Test(fmt.Sprint("[GRPC-Casino] Game 資料庫結果 :", a.Success))
 	return true
 }

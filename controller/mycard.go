@@ -55,7 +55,7 @@ func MycardSandOrderAdd(c *gin.Context) {
 					var gameOrderSubID int32
 					casinoUser := casinogrpc.VetifyUserGUID(o.OrderClientID)
 					gameOrderStatus, gameOrderSubID = casinogrpc.SendItemBuy(casinoUser, o.OrderItemID)
-					o.OrderGameSubID = strconv.FormatInt(int64(gameOrderSubID), 10)
+					o.OrderGameSubID = gameOrderSubID
 					o.OrderSubID = service.GroupOrderGet(p.PlatformGroupID, o.StageType)
 					o.PaymentTypeID = p.PlatformGroupID
 					o.PlatformID = int(p.ID)
@@ -157,10 +157,14 @@ func CallbackMycard(c *gin.Context) {
 //{"ReturnCode":"1","ReturnMsg":"QueryOK","FacServiceId":"MyCardSDK","TotalNum":2,"FacTradeSeq":["FacTradeSeq0001","FacTradeSeq0002"]}
 func Transactioncallback(c *gin.Context) {
 	util.Info("<< Mycard 摳背專用的 3.6 >>")
-	form := &db.TransactioncallbackForm{}
-	c.Bind(&form)
-	util.Test(fmt.Sprintf("%+v", *form))
-	service.Transactioncallback(form)
+	transactioncallbackForm := &db.TransactioncallbackForm{}
+	form := &db.MycardData{}
+	if err := c.Bind(form); err != nil {
+		util.Error(err.Error())
+	}
+	json.Unmarshal([]byte(form.DATA), &transactioncallbackForm)
+	service.Transactioncallback(transactioncallbackForm)
+
 	c.JSON(200, resp(200, form))
 }
 

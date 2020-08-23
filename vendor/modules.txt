@@ -23,8 +23,6 @@ github.com/danilopolani/gocialite/structs
 # github.com/dgrijalva/jwt-go v3.2.0+incompatible
 ## explicit
 github.com/dgrijalva/jwt-go
-# github.com/gin-contrib/cors v1.3.1
-## explicit
 # github.com/gin-contrib/multitemplate v0.0.0-20200514145638-4955c9347179
 ## explicit
 github.com/gin-contrib/multitemplate

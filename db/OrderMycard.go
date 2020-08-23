@@ -21,11 +21,16 @@ type OrderMycard struct {
 
 //TransactioncallbackForm TransactioncallbackForm
 type TransactioncallbackForm struct {
-	ReturnCode   string   `form:"ReturnCode" binding:"required"`   //回傳結果代碼
-	ReturnMsg    string   `form:"ReturnMsg" binding:"required"`    //ReturnCode 訊息描述
-	FacTradeSeq  []string `form:"FacTradeSeq" binding:"required"`  //廠商交易序號
-	FacServiceID string   `form:"FacServiceID" binding:"required"` //廠商服務代碼
-	TotalNum     string   `form:"TotalNum" binding:"required"`     //交易筆數
+	ReturnCode   string   `json:"ReturnCode"`   //回傳結果代碼
+	ReturnMsg    string   `json:"ReturnMsg"`    //ReturnCode 訊息描述
+	FacServiceID string   `json:"FacServiceId"` //廠商服務代碼
+	TotalNum     int      `json:"TotalNum"`     //交易筆數
+	FacTradeSeq  []string `json:"FacTradeSeq"`  //廠商交易序號
+}
+
+//MycardData MycardData
+type MycardData struct {
+	DATA string `json:"DATA"`
 }
 
 //ToMycardTradeQueryForm 3.3

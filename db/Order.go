@@ -18,7 +18,7 @@ type Order struct {
 	OrderItemPrice       string    `gorm:"type:decimal(10,2) NOT NULL COMMENT '訂商品價格'"`
 	OrderSubID           string    `gorm:"type:varchar(100) NOT NULL COMMENT '商品子流水編號'"`
 	OrderOriginalData    string    `gorm:"type:varchar(1000) DEFAULT NULL COMMENT '訂單資料'"`
-	OrderGameSubID       string    `gorm:"type:varchar(100) DEFAULT NULL COMMENT '遊戲資料庫編號'"`
+	OrderGameSubID       int32     `gorm:"type:varchar(100) DEFAULT NULL COMMENT '遊戲資料庫編號'"`
 	CallbackOriginalData string    `gorm:"type:varchar(1000) DEFAULT NULL COMMENT '收到原始資料'"`
 	ReceivedCallbackDate time.Time `gorm:"type:timestamp COMMENT '收到時間'"`
 	PaymentAuth          string    `gorm:"type:varchar(1000) DEFAULT NULL COMMENT '交易認証編號'"`
