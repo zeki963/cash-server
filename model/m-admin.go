@@ -131,15 +131,15 @@ func PlatformQueryInfoJSON(taskID string) string {
 
 //PlatformQueryInfoAllJSON  查詢ALL帳號資料
 func PlatformQueryInfoAllJSON() []db.Platform {
+	util.Test(fmt.Sprint("查詢All Platform帳號資料 "))
 	var platforms []db.Platform
 	db.SQLDBX.Find(&platforms)
-	util.Test(fmt.Sprint("All 帳號資料 : ", platforms))
-	//platformsBytes, _ := json.Marshal(&platforms)
 	return platforms
 }
 
 //PlatformQueryInfodataJSON   查詢帳號資料
 func PlatformQueryInfodataJSON(token string) Platform {
+	util.Test(fmt.Sprint("查詢Platform帳號資料 :", token))
 	var platforms Platform
 	rows, err := db.SQLDB.Query("select * from payment_platform WHERE platform_token=? ", token)
 	if err != nil {
@@ -150,12 +150,4 @@ func PlatformQueryInfodataJSON(token string) Platform {
 		//fmt.Printf("%+v", platforms)
 	}
 	return platforms
-}
-
-//   ---------------------------log_connect  表單相關-------------------------------------
-
-//LogConnectAdd 寫入紀錄
-func LogConnectAdd(p db.LogConnect) bool {
-	dbrut := db.SQLDBX.Create(&p)
-	return dbErrBool(dbrut)
 }

@@ -6,6 +6,7 @@ import (
 	casinogrpc "cash-server/grpc/casino"
 	"cash-server/pkg/util"
 	"cash-server/router"
+	"cash-server/service"
 	"strconv"
 )
 
@@ -19,6 +20,7 @@ func main() {
 	// <== 測試CODE == >
 	util.Test(" < - TEST  - > ")
 	casinogrpc.VetifyItem("com.cqicasino.happycity.tier1", 300)
+	service.ToMycardPaymentConfirm("1DE47C4EBEF939A786FD72D7D70029F41B4BCBA1FADD7340E73205BAB41A71E0F1FC373CE074339BE0D18F15F5C4B8E7B6EDDFC8F61DF6BE9A2592AD96B5198D")
 	//casinogrpc.SendItemResult("70ccafc9-0c66-47a1-af93-a075a9f08ce9", "com.cqicasino.happycity.tier1")
 	// <== 測試CODE == >
 	// server start

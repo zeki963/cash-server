@@ -21,11 +21,12 @@ type Order struct {
 	OrderGameSubID       string    `gorm:"type:varchar(100) DEFAULT NULL COMMENT '遊戲資料庫編號'"`
 	CallbackOriginalData string    `gorm:"type:varchar(1000) DEFAULT NULL COMMENT '收到原始資料'"`
 	ReceivedCallbackDate time.Time `gorm:"type:timestamp COMMENT '收到時間'"`
-	CallbackURL          string    `gorm:"type:varchar(1000) DEFAULT NULL COMMENT '回調網址'"`
+	PaymentAuth          string    `gorm:"type:varchar(1000) DEFAULT NULL COMMENT '交易認証編號'"`
 	PaymentID            string    `gorm:"type:varchar(1000) NOT NULL COMMENT '支付端訂單編號'"`
 	StageType            int       `gorm:"type:int DEFAULT NULL COMMENT '1正式，0測試'"`
-	Status               string    `gorm:"type:varchar(1) DEFAULT '1' NOT NULL COMMENT '狀態，0為禁用，1為啟用'"`
+	Status               string    `gorm:"type:varchar(1) DEFAULT '0' NOT NULL COMMENT '狀態，0為禁用，1為啟用'"`
 	MycardTradeNo        string    `gorm:"type:varchar(1000) DEFAULT  NULL COMMENT '通路編號'"`
+	PaymentConfirm       string    `gorm:"type:varchar(1) DEFAULT '0' NOT NULL COMMENT '狀態，0為禁用，1為啟用'"`
 }
 
 //IOrder IOrder

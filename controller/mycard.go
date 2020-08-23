@@ -70,7 +70,8 @@ func MycardSandOrderAdd(c *gin.Context) {
 				service.OrderSave(o, nmycarderp, toServerVal)
 				if nmycarderp.ReturnCode == "1" {
 					//給前端3-2
-					c.Redirect(http.StatusMovedPermanently, "http://test.mycard520.com.tw/MyCardPay/?AuthCode="+nmycarderp.AuthCode)
+					util.Test("Redirect mycard page")
+					c.Redirect(301, "http://test.mycard520.com.tw/MyCardPay/?AuthCode="+nmycarderp.AuthCode)
 				} else {
 					c.JSON(411, resp(3001, nmycarderp))
 				}
@@ -144,114 +145,22 @@ func CreateOrder(o db.Order) {
 // CallbackMycard  這是給Mycard 摳背專用的 3.2
 func CallbackMycard(c *gin.Context) {
 	util.Info("<< Mycard 摳背專用的 3.2 >>")
-
 	form := &db.OrderMycard{}
 	if err := c.BindJSON(form); err != nil {
 		util.Error(err.Error())
 	}
 	service.OrderCallbackSave(form)
-	if form.PayResult == "3" {
-		c.JSON(200, resp(200, nil))
-	} else {
-		c.JSON(200, resp(411, form.ReturnMsg))
-	}
-
-}
-
-// toMycardTradeQuery 驗證 MyCard 交易結果 (Server to Server) 3.3
-func toMycardTradeQuery(AuthCode string) {
-	type toMycardTradeQueryForm struct {
-		ReturnCode    string //查詢結果代碼
-		ReturnMsg     string //ReturnCode 訊息描述
-		PayResult     string //交易結果代碼
-		FacTradeSeq   string //※廠商交易序號
-		PaymentType   string //付費方式
-		Amount        string //※金額
-		Currency      string //※幣別
-		MyCardTradeNo string //※交易成功時間
-		MyCardType    string //※通路代碼
-		PromoCode     string //※活動代碼
-		SerialID      string //※連續扣款序號
-	}
-	authURL := "https://testb2b.mycard520.com.tw/MyBillingPay/v1.1/TradeQuery"
-	toServerVal := "AuthCode=" + AuthCode
-	util.Test(fmt.Sprint("toServerVal : ", toServerVal))
-	resp, err := http.Post(authURL,
-		"application/x-www-form-urlencoded",
-		strings.NewReader(toServerVal))
-	if err != nil {
-		util.Error(err.Error())
-	}
-	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		util.Error(err.Error())
-	}
-	//Resp
-	util.Trace("[Mycard Resp] >> " + string(body))
-	//假資料
-	body = []byte(`{"ReturnCode":"1","ReturnMsg":"查詢成功","PayResult":"3","FacTradeSeq":"FacTradeSeq0001","PaymentType":"INGAME","Amount":"150","Currency":"TWD", "MyCardTradeNo":"MAAAAA0000000001","MyCardType":"1","PromoCode":"A0000","SerialId":"1"}`)
-	var Form toMycardTradeQueryForm
-	json.Unmarshal(body, &Form)
-	util.Test(fmt.Sprint(Form))
-	if Form.PayResult == "3" {
-		util.Test("交易成功")
-	} else {
-		util.Test("交易失敗")
-	}
-}
-
-// toMycardPaymentConfirm 確認 MyCard 交易，並進行請款 (Server to Server) 3.4
-func toMycardPaymentConfirm(AuthCode string) {
-	type toMycardPaymentConfirmForm struct {
-		ReturnCode  string `json:"ReturnCode"`  //請款結果代碼 Payment Result
-		ReturnMsg   string `json:"ReturnMsg"`   //※ReturnCode 訊息描述
-		FacTradeSeq string `json:"FacTradeSeq"` //※廠商交易序號
-		TradeSeq    string `json:"TradeSeq"`    //※MyCard 交易序號
-		SerialID    string `json:"SerialId"`    //※連續扣款序號
-	}
-	authURL := "https://testb2b.mycard520.com.tw/MyBillingPay/v1.1/TradeQuery"
-	toServerVal := "AuthCode=" + AuthCode
-	util.Test(fmt.Sprint("toServerVal : ", toServerVal))
-	resp, err := http.Post(authURL,
-		"application/x-www-form-urlencoded",
-		strings.NewReader(toServerVal))
-	if err != nil {
-		util.Error(err.Error())
-	}
-	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		util.Error(err.Error())
-	}
-	//Resp
-	util.Trace("[Mycard Resp] >> " + string(body))
-	//假資料
-	body = []byte(`{"ReturnCode":"1","ReturnMsg":"請款成功","FacTradeSeq":"FacTradeSeq0001","TradeSeq":"KDS1512080000050","SerialId":""}`)
-	var Form toMycardPaymentConfirmForm
-	json.Unmarshal(body, &Form)
-	util.Test(fmt.Sprint(Form))
-	if Form.ReturnCode == "1" {
-		util.Test("交易成功")
-	} else {
-		util.Test("交易失敗")
-	}
+	c.JSON(200, resp(200, form))
 }
 
 // Transactioncallback  這是給Mycard 摳背專用的 3.6
 //{"ReturnCode":"1","ReturnMsg":"QueryOK","FacServiceId":"MyCardSDK","TotalNum":2,"FacTradeSeq":["FacTradeSeq0001","FacTradeSeq0002"]}
 func Transactioncallback(c *gin.Context) {
 	util.Info("<< Mycard 摳背專用的 3.6 >>")
-	type TransactioncallbackForm struct {
-		ReturnCode   string   `form:"ReturnCode" binding:"required"`   //回傳結果代碼
-		ReturnMsg    string   `form:"ReturnMsg" binding:"required"`    //ReturnCode 訊息描述
-		FacTradeSeq  []string `form:"FacTradeSeq" binding:"required"`  //廠商交易序號
-		FacServiceID string   `form:"FacServiceID" binding:"required"` //廠商服務代碼
-		TotalNum     string   `form:"TotalNum" binding:"required"`     //交易筆數
-	}
-	form := &TransactioncallbackForm{}
-	c.BindJSON(form)
-	util.Test(fmt.Sprint(form))
+	form := &db.TransactioncallbackForm{}
+	c.Bind(&form)
+	util.Test(fmt.Sprintf("%+v", *form))
+	service.Transactioncallback(form)
 	c.JSON(200, resp(200, form))
 }
 

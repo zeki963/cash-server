@@ -4,14 +4,10 @@ import (
 	"cash-server/configs"
 	"path/filepath"
 
-	// cash-server/docs swag DOC
 	"cash-server/controller"
+	// cash-server/docs swag DOC
 	_ "cash-server/docs"
 	"cash-server/pkg/util"
-
-	"fmt"
-	"io"
-	"os"
 
 	"github.com/gin-contrib/multitemplate"
 	"github.com/gin-gonic/gin"
@@ -37,13 +33,14 @@ func InitRouter() *gin.Engine {
 		gin.SetMode(gin.DebugMode)
 	}
 	r := gin.Default()
+	r.Use(Cors())
 	if configs.GetGlobalConfig().Logconf.LoggerToFile {
 		r.Use(util.LoggerToFile())
 	}
 	if configs.GetGlobalConfig().Logconf.LoggerToDB {
 		r.Use(controller.LoggerToDB())
 	}
-	r.Use(gin.Logger())
+	//r.Use(gin.Logger())
 	r.Use(gin.Recovery())
 	r.StaticFile("/favicon.ico", "./favicon.ico")
 
@@ -52,7 +49,6 @@ func InitRouter() *gin.Engine {
 	r.HTMLRender = loadTemplates("./templates")
 	r.Any("/", controller.Homepage)
 	r.GET("/demo", controller.Demopage)
-
 	rMycardSand := r.Group("mycardsandbox")
 	{
 		rMycardSand.POST("/order", controller.MycardSandOrderAdd) //新增 mycard 建單 Add
@@ -87,19 +83,6 @@ func InitRouter() *gin.Engine {
 	return r
 }
 
-//ginlogmode  server logs
-func ginlogmode() {
-	// Disable log's color
-	gin.DisableConsoleColor()
-	// Force log's color
-	//gin.ForceConsoleColor()
-	f, err := os.Create("gin.log")
-	if err != nil {
-		fmt.Println("Open Log File Failed", err)
-	}
-	gin.DefaultWriter = io.MultiWriter(f)
-}
-
 //loadTemplates 前端DEMO用
 func loadTemplates(templatesDir string) multitemplate.Renderer {
 	r := multitemplate.NewRenderer()
@@ -119,26 +102,4 @@ func loadTemplates(templatesDir string) multitemplate.Renderer {
 		r.AddFromFiles(filepath.Base(include), files...)
 	}
 	return r
-}
-
-//MycardCallAuth Mycard call 白名單
-func MycardCallAuth() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		whiteList := []string{
-			"127.0.0.1",
-			"218.32.37.148",
-			"220.130.127.125",
-		}
-		flag := false
-		for _, host := range whiteList {
-			if c.ClientIP() == host {
-				flag = true
-				break
-			}
-		}
-		if !flag {
-			c.JSON(511, "your ip is not trusted")
-			c.Abort()
-		}
-	}
 }
