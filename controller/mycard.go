@@ -143,12 +143,15 @@ func CreateOrder(o db.Order) {
 // CallbackMycard  這是給Mycard 摳背專用的 3.2
 func CallbackMycard(c *gin.Context) {
 	util.Info("<< Mycard 摳背專用的 3.2 >>")
-	form := &db.OrderMycard{}
+	OrderMycard := &db.OrderMycard{}
+	form := &db.MycardData{}
 	if err := c.BindJSON(form); err != nil {
 		util.Error(err.Error())
 	}
-	service.OrderCallbackSave(form)
-	c.JSON(200, resp(200, form))
+	json.Unmarshal([]byte(form.DATA), &OrderMycard)
+	service.OrderCallbackSave(OrderMycard)
+	//TODO  Redirect  網址要換
+	c.Redirect(301, "http://google.com")
 }
 
 // Transactioncallback  這是給Mycard 摳背專用的 3.6
