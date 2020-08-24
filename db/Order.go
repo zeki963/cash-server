@@ -26,6 +26,7 @@ type Order struct {
 	StageType            int       `gorm:"type:int DEFAULT NULL COMMENT '1正式，0測試'"`
 	Status               string    `gorm:"type:varchar(1) DEFAULT '0' NOT NULL COMMENT '狀態，0為禁用，1為啟用'"`
 	MycardTradeNo        string    `gorm:"type:varchar(1000) DEFAULT  NULL COMMENT '通路編號'"`
+	PaymentType          string    `gorm:"type:varchar(1000) DEFAULT  NULL COMMENT '通路代碼'"`
 	PaymentConfirm       string    `gorm:"type:varchar(1) DEFAULT '0' NOT NULL COMMENT '狀態，0為禁用，1為啟用'"`
 }
 

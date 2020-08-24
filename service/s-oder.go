@@ -28,6 +28,7 @@ func OrderSave(o db.Order, Mresp db.Mycardresp, toServerVal string) {
 
 //OrderCallbackSave 回應更新Order(子單號,交易結果,回應訊息) 3-2
 func OrderCallbackSave(callbackform *db.OrderMycard) {
+	util.Test("OrderCallbackSave ")
 	//交易成功為 3; 交易失敗為 0
 	if callbackform.PayResult == "3" {
 		model.MycardOrderCallbackSave(db.Order{OrderSubID: callbackform.FacTradeSeq}, callbackform)

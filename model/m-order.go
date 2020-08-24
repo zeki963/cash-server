@@ -68,6 +68,7 @@ func MycardTradeQuery(o db.Order, callbackform *db.ToMycardTradeQueryForm) bool 
 	db.SQLDBX.First(&o, OrderSubidQuery(o))
 	util.Test(fmt.Sprintf("MycardTradeQuery Order 驗證 3.3 交易單明細 : %+v", o))
 	o.ReceivedCallbackDate = util.GetUTCTime()
+	o.PaymentType = callbackform.PaymentType
 	o.MycardTradeNo = callbackform.MyCardTradeNo
 	o.Status = "1"
 	dbrut := db.SQLDBX.Save(o)
@@ -103,10 +104,18 @@ func OrderQueryExist(data db.Order) db.Order {
 	return model
 }
 
-//OrderQueryInfoAllJSON  查詢ALL帳號資料
+//OrderQueryInfoAllJSON  查詢ALL交易單明細
 func OrderQueryInfoAllJSON() []db.Order {
 	var Orders []db.Order
 	db.SQLDBX.Find(&Orders)
+	util.Test(fmt.Sprintln("All 交易單明細 : ", Orders))
+	return Orders
+}
+
+//OrderQueryInfoMoreJSON  查詢部份交易單明細
+func OrderQueryInfoMoreJSON(StartDateTime string, EndDateTime string) []db.Order {
+	var Orders []db.Order
+	db.SQLDBX.Where("created_at > ? AND created_at < ", StartDateTime, EndDateTime).Find(&Orders)
 	util.Test(fmt.Sprintln("All 交易單明細 : ", Orders))
 	return Orders
 }

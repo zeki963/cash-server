@@ -4,6 +4,7 @@ import (
 	"cash-server/configs"
 	"cash-server/db"
 	casinogrpc "cash-server/grpc/casino"
+	"cash-server/model"
 	"cash-server/pkg/encryption"
 	"cash-server/pkg/util"
 	"cash-server/service"
@@ -144,11 +145,10 @@ func CreateOrder(o db.Order) {
 func CallbackMycard(c *gin.Context) {
 	util.Info("<< Mycard 摳背專用的 3.2 >>")
 	OrderMycard := &db.OrderMycard{}
-	form := &db.MycardData{}
-	if err := c.Bind(form); err != nil {
+	if err := c.Bind(&OrderMycard); err != nil {
 		util.Error(err.Error())
 	}
-	json.Unmarshal([]byte(form.DATA), &OrderMycard)
+	util.Test(fmt.Sprintf("%+v", OrderMycard))
 	service.OrderCallbackSave(OrderMycard)
 	//TODO  Redirect  網址要換
 	c.Redirect(301, "http://google.com")
@@ -165,13 +165,13 @@ func Transactioncallback(c *gin.Context) {
 	}
 	json.Unmarshal([]byte(form.DATA), &transactioncallbackForm)
 	service.Transactioncallback(transactioncallbackForm)
-
 	c.JSON(200, resp(200, form))
 }
 
 // TransactionCheck  這是給Mycard 摳背專用的 3.7
 func TransactionCheck(c *gin.Context) {
 	util.Info("<< Mycard 摳背專用的 3.7 >>")
+	var retu interface{}
 	type TransactionCheckForm struct {
 		StartDateTime string `form:"StartDateTime" binding:"required"` //※開始日期(UTC+8) yyyy-mm-ddThr:mi:se(24 )
 		EndDateTime   string `form:"EndDateTime" binding:"required"`   // ※結束日期(UTC+8) 2014-12-01T00:00:00
@@ -189,28 +189,34 @@ func TransactionCheck(c *gin.Context) {
 	}
 	var backform TransactionCheckBackForm
 	form := &TransactionCheckForm{}
-	c.BindJSON(form)
-	fmt.Println(form)
-	if form.MyCardTradeNo != "" {
-		util.Test("多筆查詢")
+	c.Bind(&form)
+	fmt.Printf("%+v", form)
+	if form.MyCardTradeNo != "" || form.StartDateTime != "" {
+		if form.StartDateTime != "" {
+			util.Test("多筆查詢")
+			retu = model.OrderQueryInfoMoreJSON(form.StartDateTime, form.EndDateTime)
+		} else {
+			util.Test("單筆查詢")
+			var o db.Order
+			o.MycardTradeNo = form.MyCardTradeNo
+			service.OrderQueryOne(o)
+			backform.Amount = o.OrderItemPrice
+			backform.TradeSeq = o.PaymentID
+			backform.PaymentType = o.PaymentType
+			backform.MyCardTradeNo = o.MycardTradeNo
+			backform.FacTradeSeq = o.OrderSubID
+			backform.CustomerID = o.OrderClientID
+			backform.Currency = "NTD"
+			backform.TradeDateTime = o.OrderOriginalData
+			retu = backform
+		}
+		jsonbackform, err := json.Marshal(retu)
+		if err != nil {
+			log.Fatal(err)
+		}
+		c.JSON(200, resp(200, jsonbackform))
 	} else {
-		util.Test("單筆查詢")
-		var o db.Order
-		o.OrderSubID = form.MyCardTradeNo
-		service.OrderQueryOne(o)
-		backform.Amount = o.OrderItemPrice
-		backform.PaymentType = "PaymentType"
-		backform.TradeSeq = "KDS1512080000050"
-		backform.MyCardTradeNo = "MyCardTradeNo"
-		backform.FacTradeSeq = o.OrderSubID
-		backform.CustomerID = o.OrderClientID
-		backform.Currency = "NTD"
-		backform.TradeDateTime = o.OrderOriginalData
+		c.JSON(200, resp(1001, nil))
 	}
 
-	jsonbackform, err := json.Marshal(backform)
-	if err != nil {
-		log.Fatal(err)
-	}
-	c.JSON(200, resp(200, jsonbackform))
 }
