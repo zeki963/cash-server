@@ -22,7 +22,7 @@ func main() {
 	if configs.GetGlobalConfig().RunMode == "test" {
 		//casinoUser := casinogrpc.VetifyUserGUID("20312543")
 		//casinogrpc.SendItemBuy(casinoUser, "com.cqicasino.happycity.tier1")
-		casinogrpc.SendItemResult(service.OrderFind(db.Order{OrderSubID: "casinox000000111"}))
+		casinogrpc.SendItemResult(service.OrderFind(db.Order{OrderSubID: "casinox000000117"}))
 		casinogrpc.VetifyItem("com.cqicasino.happycity.tier1", 300)
 		//casinogrpc.SendItemResult("70ccafc9-0c66-47a1-af93-a075a9f08ce9", "com.cqicasino.happycity.tier1")
 	}

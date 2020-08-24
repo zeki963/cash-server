@@ -97,9 +97,9 @@ func ToMycardPaymentConfirm(AuthCode string) bool {
 //Transactioncallback 回應更新Order(子單號,交易結果,回應訊息) 3-6
 func Transactioncallback(callbackform *db.TransactioncallbackForm) {
 	for _, keyword := range callbackform.FacTradeSeq {
-		util.Test(fmt.Sprintf("%+v", keyword))
+		util.Test(fmt.Sprintf("SubID =>  %+v", keyword))
 		if callbackform.FacServiceID == "CQIG" {
-			model.TransactionCallBackTSave(db.Order{MycardTradeNo: keyword}, callbackform)
+			model.TransactionCallBackTSave(db.Order{OrderSubID: keyword}, callbackform)
 			// -> 3.3 -> 3.4
 			ToMycardTradeQuery(model.MycardOrderAuthGet(db.Order{MycardTradeNo: keyword}))
 		}
