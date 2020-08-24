@@ -66,7 +66,6 @@ func MycardSandOrderAdd(c *gin.Context) {
 				//資料庫建單
 				util.Test(fmt.Sprintf("Order 資料： %+v", o))
 				nmycarderp, toServerVal := toMycardSandAuthGlobal(o.OrderClientID, o.OrderItemID, o.OrderItemPrice, strconv.Itoa(p.PlatformGroupID), o.OrderSubID)
-				fmt.Println("123123", o.OrderOriginalData)
 				service.OrderSave(o, nmycarderp, toServerVal)
 				if nmycarderp.ReturnCode == "1" {
 					//給前端3-2
