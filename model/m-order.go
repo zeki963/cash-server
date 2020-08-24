@@ -21,6 +21,14 @@ func OrderSubidQuery(o db.Order) db.Order {
 	return model
 }
 
+//OrderSubidQueryMyCardTradeNo Order MyCardTradeNo查詢
+func OrderSubidQueryMyCardTradeNo(o db.Order) db.Order {
+	util.Test(fmt.Sprintf("交易單 MyCardTradeNo 查詢 : %+v", o.MycardTradeNo))
+	var model db.Order
+	db.SQLDBX.Where("mycard_trade_no = ?", o.MycardTradeNo).First(&model)
+	return model
+}
+
 //OrderAuthTSave Order 更新認証成功
 func OrderAuthTSave(o db.Order, Mrep db.Mycardresp, toServerVal string) bool {
 	db.SQLDBX.First(&o, OrderSubidQuery(o))
@@ -115,7 +123,7 @@ func OrderQueryInfoAllJSON() []db.Order {
 //OrderQueryInfoMoreJSON  查詢部份交易單明細
 func OrderQueryInfoMoreJSON(StartDateTime string, EndDateTime string) []db.Order {
 	var Orders []db.Order
-	db.SQLDBX.Where("created_at > ? AND created_at < ", StartDateTime, EndDateTime).Find(&Orders)
+	db.SQLDBX.Where("created_at > ? AND created_at <  ?", StartDateTime, EndDateTime).Find(&Orders)
 	util.Test(fmt.Sprintln("All 交易單明細 : ", Orders))
 	return Orders
 }

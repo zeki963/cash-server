@@ -11,7 +11,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -199,22 +198,20 @@ func TransactionCheck(c *gin.Context) {
 			util.Test("單筆查詢")
 			var o db.Order
 			o.MycardTradeNo = form.MyCardTradeNo
-			service.OrderQueryOne(o)
-			backform.Amount = o.OrderItemPrice
-			backform.TradeSeq = o.PaymentID
-			backform.PaymentType = o.PaymentType
-			backform.MyCardTradeNo = o.MycardTradeNo
-			backform.FacTradeSeq = o.OrderSubID
-			backform.CustomerID = o.OrderClientID
+			newo := service.OrderQueryOneMyCardTradeNo(o)
+			backform.Amount = newo.OrderItemPrice
+			backform.TradeSeq = newo.PaymentID
+			backform.PaymentType = newo.PaymentType
+			backform.MyCardTradeNo = newo.MycardTradeNo
+			backform.FacTradeSeq = newo.OrderSubID
+			backform.CustomerID = newo.OrderClientID
 			backform.Currency = "NTD"
-			backform.TradeDateTime = o.OrderOriginalData
+			backform.TradeDateTime = newo.OrderOriginalData
 			retu = backform
 		}
-		jsonbackform, err := json.Marshal(retu)
-		if err != nil {
-			log.Fatal(err)
-		}
-		c.JSON(200, resp(200, jsonbackform))
+		//jsonbackform, err := json.Marshal(retu)
+
+		c.JSON(200, resp(200, retu))
 	} else {
 		c.JSON(200, resp(1001, nil))
 	}

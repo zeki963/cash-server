@@ -117,6 +117,17 @@ func OrderQueryOne(o db.Order) bool {
 	return true
 }
 
+//OrderQueryOneMyCardTradeNo 查詢存在 MyCardTradeNo
+func OrderQueryOneMyCardTradeNo(o db.Order) db.Order {
+	newo := model.OrderSubidQueryMyCardTradeNo(o)
+	if newo.OrderClientID == "" {
+		util.Test("MyCardTradeNo 不存在")
+		return newo
+	}
+	util.Test("MyCardTradeNo 存在")
+	return newo
+}
+
 //OrderFind 查整組資料
 func OrderFind(o db.Order) (all db.Order) {
 	all = model.OrderQueryExist(o)
