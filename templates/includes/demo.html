@@ -59,7 +59,7 @@
         function posttest() {
             $("#rep").text("NO");
             $.post({
-                url: "http://127.0.0.1:8081/mycardsandbox/order",
+                url: "https://test-cash.cqiserv.com/mycardsandbox/order",
                 data: {
                     OrderClientID: $("#id1").val(), OrderItemID: $("#id3").val(), OrderItemPrice: $("#id2").val(), PlatformToken: $("#idtoken").val()
                 },

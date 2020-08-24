@@ -89,32 +89,31 @@ func MycardSandOrderAdd(c *gin.Context) {
 func toMycardSandAuthGlobal(userid string, itemid string, itemprice string, serverid string, subid string) (Mresp db.Mycardresp, toServerVal string) {
 	util.Info("<< ToMycardAuthGlobal 向 MyCard 要求交易授權碼 >>")
 	var (
-		authURL              = "https://testb2b.mycard520.com.tw/MyBillingPay/v1.1/AuthGlobal"
-		facServiceID  string = configs.GetGlobalConfig().Mycard.FacServiceID //廠商服務代碼
-		facTradeSeq   string = subid                                         //廠商交易序號 - 廠商自訂，每筆訂單編號不得重覆，為訂單資料 key 值(只能用英數、底線(_)及連字號(-))
-		tradeType     string = "2"                                           //交易模式 - 1:Android SDK (手遊適用) 2:WEB
-		serverID      string = serverid                                      //伺服器代號 - 用戶在廠商端的伺服器編號(僅允許 0-9 a-z A-Z . _ - )
-		customerID    string = userid                                        //會員代號 - 用戶在廠商端的會員唯一識別編號(僅允許 0-9 a-z A-Z . _ -# $ % & * ~ : / ^ ! + @)
-		paymentType   string                                                 //付費方式 / 付費方式群組代碼 - 參閱 4.1 付費方式和品項代碼查詢 可不填**
-		itemCode      string                                                 //品項代碼  - 參閱 4.1 付費方式和品項代碼查詢 可不填**
-		productName   string = itemid                                        //產品名稱 - 用戶購買的產品名稱(不可以輸入 ' < > 其他皆可)
-		amount        string = itemprice                                     //交易金額 - 可以為整數，若有小數點最多 2 位
-		currency      string = "TWD"                                         //幣別
-		sandBoxMode   string = "true"                                        //是否為測試環境
-		facReturnURL  string = "https://35.201.250.106/"                     //廠商回傳網址
-		facReturnURL2 string = "payCallback"
+		authURL             = "https://testb2b.mycard520.com.tw/MyBillingPay/v1.1/AuthGlobal"
+		facServiceID string = configs.GetGlobalConfig().Mycard.FacServiceID            //廠商服務代碼
+		facTradeSeq  string = subid                                                    //廠商交易序號 - 廠商自訂，每筆訂單編號不得重覆，為訂單資料 key 值(只能用英數、底線(_)及連字號(-))
+		tradeType    string = "2"                                                      //交易模式 - 1:Android SDK (手遊適用) 2:WEB
+		serverID     string = serverid                                                 //伺服器代號 - 用戶在廠商端的伺服器編號(僅允許 0-9 a-z A-Z . _ - )
+		customerID   string = userid                                                   //會員代號 - 用戶在廠商端的會員唯一識別編號(僅允許 0-9 a-z A-Z . _ -# $ % & * ~ : / ^ ! + @)
+		paymentType  string                                                            //付費方式 / 付費方式群組代碼 - 參閱 4.1 付費方式和品項代碼查詢 可不填**
+		itemCode     string                                                            //品項代碼  - 參閱 4.1 付費方式和品項代碼查詢 可不填**
+		productName  string = itemid                                                   //產品名稱 - 用戶購買的產品名稱(不可以輸入 ' < > 其他皆可)
+		amount       string = itemprice                                                //交易金額 - 可以為整數，若有小數點最多 2 位
+		currency     string = "TWD"                                                    //幣別
+		sandBoxMode  string = "true"                                                   //是否為測試環境
+		facReturnURL string = "https://test-cash.cqiserv.com/mycardcall/ordercallback" //廠商回傳網址
 	)
 	const (
 		Key string = "CQIGamesQ1FJR2FtZXM" //我們的KEY
 	)
-	preHashValue := facServiceID + facTradeSeq + tradeType + serverID + customerID + paymentType + itemCode + productName + amount + currency + sandBoxMode + encryption.Urlencode(facReturnURL) + facReturnURL2 + Key //準備加密字串
+	preHashValue := facServiceID + facTradeSeq + tradeType + serverID + customerID + paymentType + itemCode + productName + amount + currency + sandBoxMode + encryption.Urlencode(facReturnURL) + Key //準備加密字串
 	util.Test(fmt.Sprint("preHashValue : ", preHashValue))
 	hash := (encryption.Sha256encode(preHashValue))
 	util.Test(fmt.Sprint("hash : ", hash))
 	toServerVal = "FacServiceId=" + facServiceID + "&FacTradeSeq=" + facTradeSeq + "&TradeType=" + tradeType +
 		"&ServerId=" + serverID + "&CustomerId=" + customerID + "&PaymentType=" + paymentType + "&ItemCode=" + itemCode +
 		"&ProductName=" + productName + "&Amount=" + amount + "&Currency=" + currency + "&SandBoxMode=" + sandBoxMode +
-		"&FacReturnURL=" + facReturnURL + facReturnURL2 + "&Hash=" + hash
+		"&FacReturnURL=" + facReturnURL + "&Hash=" + hash
 	util.Test(fmt.Sprint("toServerVal : ", toServerVal))
 	resp, err := http.Post(authURL,
 		"application/x-www-form-urlencoded",

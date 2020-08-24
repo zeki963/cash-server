@@ -101,7 +101,7 @@ func Transactioncallback(callbackform *db.TransactioncallbackForm) {
 		if callbackform.FacServiceID == "CQIG" {
 			model.TransactionCallBackTSave(db.Order{OrderSubID: keyword}, callbackform)
 			// -> 3.3 -> 3.4
-			ToMycardTradeQuery(model.MycardOrderAuthGet(db.Order{MycardTradeNo: keyword}))
+			ToMycardTradeQuery(model.MycardOrderAuthGet(db.Order{OrderSubID: keyword}))
 		}
 	}
 
