@@ -1,6 +1,7 @@
 package casinogrpc
 
 import (
+	"cash-server/configs"
 	"cash-server/db"
 	"cash-server/pkg/util"
 	"context"
@@ -25,12 +26,10 @@ var GrpcCasino *grpc.ClientConn
 
 //GrpcCasinoCannot 連線
 func GrpcCasinoCannot() grpc.ClientConnInterface {
-	addr := "34.92.237.98:30001"
-	//TODO
-	// 正式環境
-	// if configs.GetGlobalConfig().RunMode == "release" {
-	// 	addr = configs.GetGlobalConfig().Casino.Proip
-	// }
+	addr := configs.GetGlobalConfig().Casino.Alphaip
+	if configs.GetGlobalConfig().RunMode == "release" {
+		addr = configs.GetGlobalConfig().Casino.Proip
+	}
 	GrpcCasino, err := grpc.Dial(addr, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
 		util.Error("[GRPC-Casino] Can not connect to gRPC server: %v", err)

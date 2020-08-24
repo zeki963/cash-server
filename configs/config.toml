@@ -23,12 +23,6 @@ user = "root"
 password = "cqig7777"
 dbname = "zor"
 parameters = "parseTime=true"
-# host = ""
-# port= 3306
-# user = "cqig"
-# password = "E1f1ee0cfcbb93EA"
-# db_name = "marbles"
-# parameters = "parseTime=true"
 
 # Postgres 
 [Postgres]
@@ -42,6 +36,8 @@ dbName = "test"
 facServiceID = "CQIG"
 
 [casino]
-betaip =  "35.194.245.46:30001"
-proip =   "35.194.245.46:30001"
-# proip =  "35.187.151.133:30001"
+# TODO 要切換環境
+# proip =  "35.187.151.133:30001" // betaip =  "35.194.245.46:30001"  //   alphaip ="34.92.237.98:30001"
+alphaip ="34.92.237.98:30001"
+betaip = "34.92.237.98:30001"
+proip =  "34.92.237.98:30001"

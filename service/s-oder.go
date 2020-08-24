@@ -13,7 +13,7 @@ import (
 
 //OrderAdd 新增Order(order單)
 func OrderAdd(o db.Order) {
-	o.Status = "1"
+	o.Status = "0"
 	model.OrderAdd(o)
 }
 
@@ -31,7 +31,7 @@ func OrderCallbackSave(callbackform *db.OrderMycard) {
 	//交易成功為 3; 交易失敗為 0
 	if callbackform.PayResult == "3" {
 		model.MycardOrderCallbackSave(db.Order{OrderSubID: callbackform.FacTradeSeq}, callbackform)
-		ToMycardTradeQuery("Auth")
+		ToMycardTradeQuery(model.MycardOrderAuthGet(db.Order{OrderSubID: callbackform.FacTradeSeq}))
 	}
 }
 
@@ -58,6 +58,7 @@ func ToMycardTradeQuery(AuthCode string) bool {
 	//交易成功為 3; 交易失敗為 0
 	if Form.PayResult == "3" {
 		model.MycardTradeQuery(db.Order{OrderSubID: Form.FacTradeSeq}, &Form)
+		// -> 3.4
 		ToMycardPaymentConfirm(AuthCode)
 		return true
 	}
@@ -99,6 +100,8 @@ func Transactioncallback(callbackform *db.TransactioncallbackForm) {
 		util.Test(fmt.Sprintf("%+v", keyword))
 		if callbackform.FacServiceID == "CQIG" {
 			model.TransactionCallBackTSave(db.Order{MycardTradeNo: keyword}, callbackform)
+			// -> 3.3 -> 3.4
+			ToMycardTradeQuery(model.MycardOrderAuthGet(db.Order{MycardTradeNo: keyword}))
 		}
 	}
 

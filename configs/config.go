@@ -117,6 +117,7 @@ type Mycard struct {
 
 //Casino 配置參數
 type Casino struct {
-	Betaip string `toml:"betaip"`
-	Proip  string `toml:"proip"`
+	Alphaip string `toml:"alphaip"`
+	Betaip  string `toml:"betaip"`
+	Proip   string `toml:"proip"`
 }
