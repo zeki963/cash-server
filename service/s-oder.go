@@ -104,7 +104,6 @@ func Transactioncallback(callbackform *db.TransactioncallbackForm) {
 			ToMycardTradeQuery(model.MycardOrderAuthGet(db.Order{OrderSubID: keyword}))
 		}
 	}
-
 }
 
 //OrderQueryOne 查詢存在
