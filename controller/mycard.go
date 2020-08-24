@@ -148,13 +148,16 @@ func CallbackMycard(c *gin.Context) {
 		util.Error(err.Error())
 	}
 	util.Test(fmt.Sprintf("%+v", OrderMycard))
-	service.OrderCallbackSave(OrderMycard)
-	//TODO  Redirect  網址要換
-	c.Redirect(301, "http://google.com")
+	if OrderMycard.PayResult == "3" {
+		service.OrderCallbackSave(OrderMycard)
+		//TODO  Redirect  網址要換
+		c.Redirect(301, "http://google.com")
+	} else {
+		c.JSON(411, resp(411, fmt.Sprint(encryption.Urldecrypt(OrderMycard.ReturnMsg))))
+	}
 }
 
 // Transactioncallback  這是給Mycard 摳背專用的 3.6
-//{"ReturnCode":"1","ReturnMsg":"QueryOK","FacServiceId":"MyCardSDK","TotalNum":2,"FacTradeSeq":["FacTradeSeq0001","FacTradeSeq0002"]}
 func Transactioncallback(c *gin.Context) {
 	util.Info("<< Mycard 摳背專用的 3.6 >>")
 	transactioncallbackForm := &db.TransactioncallbackForm{}
@@ -209,11 +212,8 @@ func TransactionCheck(c *gin.Context) {
 			backform.TradeDateTime = newo.OrderOriginalData
 			retu = backform
 		}
-		//jsonbackform, err := json.Marshal(retu)
-
 		c.JSON(200, resp(200, retu))
 	} else {
 		c.JSON(200, resp(1001, nil))
 	}
-
 }

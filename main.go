@@ -3,10 +3,8 @@ package main
 import (
 	"cash-server/configs"
 	"cash-server/db"
-	casinogrpc "cash-server/grpc/casino"
 	"cash-server/pkg/util"
 	"cash-server/router"
-	"cash-server/service"
 	"strconv"
 )
 
@@ -17,15 +15,6 @@ import (
 // @contact.url https://www.cqiserv.com/
 // @contact.email zor@cqiserv.com
 func main() {
-	// <== 測試CODE == >
-	util.Test(" < - TEST  - > ")
-	if configs.GetGlobalConfig().RunMode == "test" {
-		//casinoUser := casinogrpc.VetifyUserGUID("20312543")
-		//casinogrpc.SendItemBuy(casinoUser, "com.cqicasino.happycity.tier1")
-		casinogrpc.SendItemResult(service.OrderFind(db.Order{OrderSubID: "casinox000000117"}))
-		casinogrpc.VetifyItem("com.cqicasino.happycity.tier1", 300)
-		//casinogrpc.SendItemResult("70ccafc9-0c66-47a1-af93-a075a9f08ce9", "com.cqicasino.happycity.tier1")
-	}
 	// server start
 	util.Info(" < - SERVER START - > ")
 	//DB 連線關閉
