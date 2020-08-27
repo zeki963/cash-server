@@ -8,6 +8,7 @@ require (
 	github.com/boj/redistore v0.0.0-20180917114910-cd5dcc76aeff // indirect
 	github.com/danilopolani/gocialite v1.0.2 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+	github.com/gin-contrib/cors v1.3.1
 	github.com/gin-contrib/multitemplate v0.0.0-20200514145638-4955c9347179
 	github.com/gin-gonic/contrib v0.0.0-20191209060500-d6e26eeaa607
 	github.com/gin-gonic/gin v1.6.3
@@ -30,7 +31,7 @@ require (
 	golang.org/x/text v0.3.3 // indirect
 	golang.org/x/tools v0.0.0-20200713011307-fd294ab11aed // indirect
 	google.golang.org/genproto v0.0.0-20200722002428-88e341933a54 // indirect
-	google.golang.org/grpc v1.30.0
+	google.golang.org/grpc v1.31.1
 	google.golang.org/protobuf v1.25.0
 	gopkg.in/danilopolani/gocialite.v1 v1.0.2
 	gopkg.in/oleiade/reflections.v1 v1.0.0 // indirect

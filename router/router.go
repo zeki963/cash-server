@@ -9,6 +9,7 @@ import (
 	_ "cash-server/docs"
 	"cash-server/pkg/util"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/multitemplate"
 	"github.com/gin-gonic/gin"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -33,7 +34,13 @@ func InitRouter() *gin.Engine {
 		gin.SetMode(gin.DebugMode)
 	}
 	r := gin.Default()
-	r.Use(Cors())
+	config := cors.DefaultConfig()
+	config.AllowAllOrigins = true
+	config.AllowCredentials = true
+	config.AddAllowHeaders("authorization")
+	r.Use(cors.New(config))
+	//r.Use(Cors())
+
 	if configs.GetGlobalConfig().Logconf.LoggerToFile {
 		r.Use(util.LoggerToFile())
 	}
@@ -61,7 +68,7 @@ func InitRouter() *gin.Engine {
 	}
 	rCasino := r.Group("casino")
 	{
-		rCasino.GET("/shop", controller.CasinoGetItem)      //查詢 casino 查詢商品清單
+		rCasino.Any("/shop", controller.CasinoGetItem)      //查詢 casino 查詢商品清單
 		rCasino.GET("/user/:Acc", controller.CasinoGetUser) //查詢 casino 查詢商品清單
 	}
 	rAdmin := r.Group("admin")

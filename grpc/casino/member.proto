@@ -29,16 +29,16 @@ service Member {
   rpc TakeMoney (DbTakeMoneyInput) returns (LogReply);  
   rpc StoredMoney (DbStoredMoneyInput) returns (LogReply);    
   rpc DbLoginLog (DbLoginLogInput) returns (LogReply);  // Login ,Logout 以及進入各遊戲的Log
-  rpc DbMailBox (DbGUIDInput) returns (DbMailBoxReply); // 郵件列表
+  rpc DbMailBox (DbMyIDInput) returns (DbMailBoxReply); // 郵件列表
   rpc DbMailReceive (DbIntInput) returns (LogReply); // 郵件領取
   rpc DbMailSend (DbMailBoxData) returns (LogReply); // 郵件 寄送
   rpc DbSetSystemMail (DbSystemMailInput) returns (LogReply); // 郵件 寄送   
   rpc DbSetCheater (DbCheaterInfo) returns (LogReply); // 設定 玩家必贏
   rpc DbDoCheater (DbCheaterInfo) returns (LogReply); // 使用 玩家必贏
-  rpc DbGetCheater (DbGUIDInput) returns (DbCheaterInfoReply); // 查詢 玩家必贏  
+  rpc DbGetCheater (DbMyIDInput) returns (DbCheaterInfoReply); // 查詢 玩家必贏  
   rpc DbSystemCheat (DbSystemCheatInput) returns (LogReply);    // 記錄 系統作弊  
   rpc DbGetLeaderboard (DbIntWithStringInput) returns (DbLeaderboardReply); // 查詢 排行榜 本周=0，上周=-1
-  rpc DbGetBankCard (DbGUIDInput) returns (DbBankCardInput); // 銀行卡資訊
+  rpc DbGetBankCard (DbMyIDInput) returns (DbBankCardInput); // 銀行卡資訊
   rpc DbBankCard (DbBankCardInput) returns (LogReply); // 銀行卡資訊
   rpc SetPromoteOK(PromoteData) returns (LogReply);  // 填寫 推廣完成
   rpc GetPromoteInfo (Ids) returns (PromoteInfoReply); // 查詢推廣資訊
@@ -54,14 +54,14 @@ service Member {
   rpc DbIAPBuyResult (DbIAPBuyResultInput) returns (LogReply); // 購買 - 發送購物結果
   rpc DbIAPBuyCN (DbIAPBuyCNInput) returns (StringReply); // 購買 - 送出購買要求(回傳訂單序號)
   rpc DbIAPBuyResultCN (DbIAPBuyResultCNInput) returns (LogReply); // 購買 - 發送購物結果
-  rpc DbOrderRecordCN (DbGUIDInput) returns (DbOrderRecordCNReply); // 大陸版 - 查詢 - 儲值紀錄
-  rpc DbOrderRecord (DbGUIDInput) returns (DbOrderRecordReply); // 台灣版 - 查詢 - 儲值紀錄
+  rpc DbOrderRecordCN (DbMyIDInput) returns (DbOrderRecordCNReply); // 大陸版 - 查詢 - 儲值紀錄
+  rpc DbOrderRecord (DbMyIDInput) returns (DbOrderRecordReply); // 台灣版 - 查詢 - 儲值紀錄
   rpc DbSignUpReimburse (EmptyInput) returns (LogReply);    // 檢查上莊預扣，並且退還 
   rpc DBSMSLog(SMSLogInput) returns (LogReply); // 手機簡訊紀錄
   
     
   
-  rpc DbTakeMoneyRecord (DbGUIDInput) returns (DbTakeMoneyRecordReply);  
+  rpc DbTakeMoneyRecord (DbMyIDInput) returns (DbTakeMoneyRecordReply);  
   rpc DbGetGameStock(EmptyInput) returns (DbGameStockReply); // 查詢 - 全部遊戲庫存相關數據
   rpc DbDelAccount(Ids) returns (LogReply); // 刪除遊戲帳號
   
@@ -73,7 +73,7 @@ service Member {
   rpc QueryTopUpList(QueryConditions) returns (DbTopUpListReply);
   rpc SaveAccount (ProtoAccount) returns (LogReply);  
   rpc SetPW (DbStringInput) returns (LogReply);
-  rpc ResetPW (DbGUIDInput) returns (LogReply);    
+  rpc ResetPW (DbMyIDInput) returns (LogReply);    
   rpc DbMailEdit (DbMailBoxData) returns (LogReply);                // 郵件 修改
   rpc DbMailDel (DbIntInput) returns (LogReply);                    // 郵件 刪除
   rpc DbSetSystemMailEdit (DbSystemMailInput) returns (LogReply);   // 系統郵件 修改
@@ -127,6 +127,7 @@ message DbGameConfigData {
     int32 IsNew = 6 ;
     int32 IsComingSoon = 7 ;
     int32 Priority = 8 ;
+    string Name = 9 ;
 }
 
 message EmptyInput {}
@@ -154,7 +155,7 @@ message DbIntInput
 
 // 已經驗證完畢，寫入資料庫
 message DbStringInput {
-  string GUID = 1;
+  string ID = 1;
   string Value = 2;  
 }
 
@@ -191,46 +192,45 @@ message LoginInput
 }
 
 message Ids {
-  string DeviceID = 1;
-  string GUID = 2;
-  string PhoneID = 3;  
-  string MyID = 4;
+  string DeviceID = 1;  
+  string PhoneID = 2;  
+  string MyID = 3;
 }
 
 message IncreaseInput {
-  string GUID = 1;
+  string ID = 1;
   string Type = 2; 
   string Value = 3;
   bool UpdateDBRightNow = 4;
 }
 
 message ChangeAvatarInput{
-	string GUID = 1;
+	string ID = 1;
 	int32 AvatarIndex = 2;
 }
 
 message ChangeNameInput{
-	string GUID = 1;
+	string ID = 1;
 	string Name = 2;
 }
 
 // 已經驗證完畢，寫入資料庫
 message BindPhoneInput {
-  string GUID = 1;
+  string ID = 1;
   string PhoneID = 2;  
   string PW = 3;
 }
 
 // 填寫 提現單
 message DbTakeMoneyInput {
-  string GUID = 1;
+  string ID = 1;
   string OrderID  = 2;
   int32 Cash = 3;  
 }
 
 message DbPlayerBanInput
 {
-  string GUID = 1;
+  string ID = 1;
   bool IsBan = 2;
 }
 
@@ -242,10 +242,10 @@ message DbStoredMoneyInput
   double Money = 4;   
 }
 
-//LoginLogSet(player.GUID,player.Name,"Login",false);
+//LoginLogSet(player.ID,player.Name,"Login",false);
 message DbLoginLogInput
 {
-  string GUID = 1;
+  string ID = 1;
   string Name = 2;
   string ActionType = 3;    // 例如 Login,Logout,DZP,DZPout ... 等等進入個遊戲
   bool IsAI = 4;
@@ -264,7 +264,7 @@ message QueryConditions{
 
 ///紀錄下注
 message BetInput {
-  string GUID = 1;
+  string ID = 1;
   string Name = 2;
   int32 TableID = 3;
   string RoundID = 4;
@@ -289,7 +289,7 @@ message ProtoDTFGameResult {
   int32 WinDraw = 9;
   string StockGold = 10;
   string WaterGold =11;  
-  string BankerGUID = 12; 
+  string BankerID = 12; 
 }
 
 // 紀錄牌局結果
@@ -311,7 +311,7 @@ message ProtoBMWGameResult {
   int32  WinToyota   = 15;
   string StockGold = 16;
   string WaterGold =17;  
-  string BankerGUID = 18; 
+  string BankerID = 18; 
 }
 
 // 紀錄牌局結果
@@ -333,7 +333,7 @@ message ProtoHDWGameResult {
   string WinCenterBack    = 15;
   string StockGold = 16;
   string WaterGold =17;  
-  string BankerGUID = 18; 
+  string BankerID = 18; 
 }
 
 // 紀錄牌局結果
@@ -349,7 +349,7 @@ message ProtoRBFGameResult {
   int32 WinSpecial    = 9;
   string StockGold = 10;
   string WaterGold =11;  
-  string BankerGUID = 12; 
+  string BankerID = 12; 
 }
 
 // 紀錄牌局結果
@@ -369,7 +369,7 @@ message ProtoBCRGameResult {
   int32 WinPlayerPair      = 13;  
   string StockGold = 14;
   string WaterGold = 15;
-  string BankerGUID = 16; 
+  string BankerID = 16; 
 }
 
 // 紀錄牌局結果
@@ -393,7 +393,7 @@ message ProtoREDGameResult {
   int32 BombGoldPlayer = 17; //中炸彈金額(真人)
   string StockGold = 18; //庫存增減
   string WaterGold = 19; //水錢增加
-  string BankerGUID = 20; 
+  string BankerID = 20; 
 }
 
 // 紀錄牌局結果
@@ -415,7 +415,7 @@ message ProtoREDGameResult {
    int32 WinSoldier   = 15;
    string StockGold = 16;
    string WaterGold =17;  
-   string BankerGUID = 18; 
+   string BankerID = 18; 
  }
  
  // 紀錄牌局結果
@@ -443,7 +443,7 @@ message ProtoREDGameResult {
    int32 WinPoint6     = 21;        
    string StockGold      = 22;
    string WaterGold      =24;  
-   string BankerGUID = 25; 
+   string BankerID = 25; 
  }
  
  // 紀錄牌局結果
@@ -465,7 +465,7 @@ message ProtoREDGameResult {
 
   message ProtoDZPGameLogDetail {
     string RoundID = 1;     // 回合編號 
-    string GUID = 2;
+    string ID = 2;
     string Name = 3;
     int32 SeatID = 4;
     string Poket = 5;       // 玩家手牌
@@ -494,7 +494,7 @@ message ProtoREDGameResult {
   }
   message ProtoBGFGameLogDetail {
       string RoundID = 1;   // 回合編號 
-      string GUID = 2;
+      string ID = 2;
       string Name = 3;
       int32 SeatID = 4;
       string Poket = 5;     // 玩家手牌
@@ -523,7 +523,7 @@ message ProtoREDGameResult {
 
   message ProtoKMJGameLogDetail {
     string RoundID = 1;     // 回合編號 
-    string GUID = 2;        // 玩家GUID
+    string ID = 2;        // 玩家ID
     string Name = 3;        // 玩家名子
     int32 SeatID = 4;       // 座位編號
     string AddGold  = 5;     // 金幣異動 
@@ -557,7 +557,7 @@ message ProtoREDGameResult {
 
   message ProtoRNNGameLogDetail {
     string RoundID = 1;     // 回合編號 
-    string GUID = 2;        // 玩家GUID
+    string ID = 2;        // 玩家ID
     string Name = 3;        // 玩家名子
     int32 SeatID = 4;       // 座位編號
     string AddGold  = 5;     // 金幣異動 
@@ -595,7 +595,7 @@ message ProtoREDGameResult {
 
   message ProtoDDZGameLogDetail {
     string RoundID = 1;         // 回合編號 
-    string GUID = 2;            // 玩家GUID
+    string ID = 2;            // 玩家ID
     string Name = 3;            // 玩家名子
     int32 SeatID = 4;           // 座位編號
     string AddGold  = 5;        // 金幣異動 
@@ -608,7 +608,7 @@ message ProtoREDGameResult {
 //-------------------
 
 message ProtoAccount{  
-  string GUID = 1;
+  string ID = 1;
   string DeviceID = 2;  
   int32 Avatar = 3;
   string Name = 4;
@@ -618,12 +618,11 @@ message ProtoAccount{
   string PhoneID = 8;
   bool IsBan = 9;
   string UpID = 10;
-  string BankCard = 11;  
-  string ID = 12;
-  string CreateDate = 13;
-  string FirstPurchaseDate = 14;
-  string LastLoginTime = 15;
-  string LastLogoutTime = 16;  
+  string BankCard = 11;    
+  string CreateDate = 12;
+  string FirstPurchaseDate = 13;
+  string LastLoginTime = 14;
+  string LastLogoutTime = 15;  
 }
 
 //------------------------
@@ -700,7 +699,7 @@ message DbIntReply {
 message DbTakeMoneyData{
   string CreateDate = 1;
   string OrderID = 2;
-  string PlayerGUID = 3;
+  string PlayerID = 3;
   string PlayerName = 4;
   int32 Cash = 5;               // 提現金額
   int32 Status = 6;             // Status = 0 unknown,1 審核中,2 審核通過,3 付款完成,4 拒絕,5 取消 
@@ -742,8 +741,8 @@ message DbMailBoxReply
 message DbMailBoxData
 {
   int32 MailID = 1;
-  string ToWhoGUID = 2;
-  string FromWhoGUID = 3;
+  string ToWhoID = 2;
+  string FromWhoID = 3;
   int32 Avatar = 4;
   string FromWhoName = 5;
   int32 ItemID = 6;
@@ -758,7 +757,7 @@ message DbMailBoxData
 message DbSystemMailInput
 {
   int32 ID = 1;
-  string FromWhoGUID = 2;   // 信件發信人 例如 
+  string FromWhoID = 2;   // 信件發信人 例如 
   int32 Avatar = 3;         // 信件頭像 預設 0 
   string FromWhoName = 4;   // 信件的標題欄位
   int32 ItemID = 5;         // 金幣 1
@@ -772,7 +771,7 @@ message DbSystemMailInput
 
 message DbCheaterInfo
 {
-  string GUID = 1;
+  string ID = 1;
   string Name = 2;
   int32 WinCount =3;
   int32 WinLv = 4;          // 權重 0~999
@@ -815,7 +814,7 @@ message DbLeaderboardReply
 
 message DbLeaderboardData
 {
-    string GUID = 1;
+    string ID = 1;
     int32 Avatar = 2; 
     string Name = 3; 
     string WinSum = 4; // 總計贏錢
@@ -823,7 +822,7 @@ message DbLeaderboardData
 
 message DbBankCardInput
 {
-    string GUID = 1;
+    string ID = 1;
     string Name = 2; 
     string CardNo = 3; 
     string Bank = 4;
@@ -1001,7 +1000,7 @@ message DbIAPItem
 /// 商城購買  Platform=apple,goole
 message DbIAPBuyInput
 {        
-    string GUID = 1;
+    string ID = 1;
     string Platform = 2;
     string ProductID = 3;
     int32 Quantity = 4;
@@ -1011,7 +1010,7 @@ message DbIAPBuyInput
 message DbIAPBuyResultInput
 {   
     int32 No = 1;           // 我們自己的訂單編號
-    string GUID = 2;        // 玩家身分證
+    string ID = 2;        // 玩家身分證
     string Platform = 3;    // 平台
     string ProductID = 4;   // 產品編號
     int32 Quantity = 5;     // 數量
@@ -1026,7 +1025,7 @@ message DbIAPBuyResultInput
 message DbIAPBuyCNInput
 {        
     string No = 1;
-    string GUID = 2;
+    string ID = 2;
     string Platform = 3;
     string MemberID = 4;
     int32 Class = 5;

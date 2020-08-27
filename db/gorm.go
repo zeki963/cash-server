@@ -17,6 +17,7 @@ type Model struct {
 	ID        uint      `gorm:"primary_key; AUTO_INCREMENT"`
 	CreatedAt time.Time `gorm:"type:timestamp;NOT NULL"`
 	UpdatedAt time.Time `gorm:"type:timestamp;NOT NULL"`
+	Editor    string    `gorm:"type:varchar(200) COMMENT 'Last Editor'"`
 }
 
 //SQLDBX  供外部呼叫

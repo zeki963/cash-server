@@ -48,6 +48,7 @@ func PlatformAdd(c *gin.Context) {
 			//p.PlatformTokenSecret = encryption.Rand16()
 			//p.PlatformToken = encryption.PswEncrypt(p.PlatformAccount, p.PlatformTokenSecret)
 			p.PlatformTokenSecret, p.PlatformToken = tokenCreate(p.PlatformAccount)
+			p.PlatformPassword = pw2epw(p.PlatformPassword, p.PlatformTokenSecret)
 			resmsg.Time = util.GETNowsqltime()
 			resmsg.Token = p.PlatformToken
 			resmsg.TokenSecret = p.PlatformTokenSecret
@@ -77,8 +78,17 @@ func tokenCreate(Account string) (tokenSe string, token string) {
 			break
 		}
 	}
-
 	return tokenSe, token
+}
+
+//pw2epw 密碼轉加密密碼
+func pw2epw(Pw string, tokenSe string) (NewPw string) {
+	return encryption.PswEncrypt(Pw, tokenSe)
+}
+
+//epw2pw 加密密碼轉密碼
+func epw2pw(NewPw string, tokenSe string) (Pw string) {
+	return encryption.PswDecrypt(NewPw, tokenSe)
 }
 
 //PlatformGet 要帳號拉幹

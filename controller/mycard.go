@@ -53,7 +53,7 @@ func MycardSandOrderAdd(c *gin.Context) {
 				if casinogrpc.VetifyItem(o.OrderItemID, int32(s2iPrice)) {
 					//casino資料庫建單
 					var gameOrderSubID int32
-					casinoUser := casinogrpc.VetifyUserGUID(o.OrderClientID)
+					casinoUser := casinogrpc.VetifyUserID(o.OrderClientID)
 					gameOrderStatus, gameOrderSubID = casinogrpc.SendItemBuy(casinoUser, o.OrderItemID)
 					o.OrderGameSubID = gameOrderSubID
 					o.OrderSubID = service.GroupOrderGet(p.PlatformGroupID, o.StageType)
@@ -153,7 +153,7 @@ func CallbackMycard(c *gin.Context) {
 		//TODO  Redirect  網址要換
 		c.Redirect(301, "http://google.com")
 	} else {
-		c.JSON(411, resp(411, fmt.Sprint(encryption.Urldecrypt(OrderMycard.ReturnMsg))))
+		c.JSON(411, resp(3002, fmt.Sprint(encryption.Urldecrypt(OrderMycard.ReturnMsg))))
 	}
 }
 

@@ -1,0 +1,1129 @@
+﻿// 說明
+// https://docs.microsoft.com/zh-tw/dotnet/architecture/grpc-for-wcf-developers/protobuf-data-types
+
+syntax = "proto3";
+
+option csharp_namespace = "DBService";
+
+package Member;
+
+// The greeting service definition.
+service Member {
+  // Sends a greeting
+  rpc CreateAccountByPhone (CreateAccountByPhoneInput) returns (LoginReply);  
+  rpc LoginbyPhoneIDPW (LoginbyPhoneIDPWInput) returns (LoginReply);
+  rpc CheckLoginbyPhoneIDPW (LoginbyPhoneIDPWInput) returns (LogReply);
+  rpc PhoneChangePassword (DBPhoneChangePasswordInput) returns (LogReply);
+  
+  rpc Login (LoginInput) returns (LoginReply);
+  rpc LoginAI (Ids) returns (LoginReply);
+  rpc GetAccountByID (Ids) returns (AccountReply);  
+  
+  rpc GetGameConfig (EmptyInput) returns (DbGameConfigs);
+  rpc Increase (IncreaseInput) returns (IncreaseReply);
+  rpc ChangeAvatar (ChangeAvatarInput) returns (ChangeAvatarReply);
+  rpc ChangeName (ChangeNameInput) returns (ChangeNameReply);
+  rpc BindPhone (BindPhoneInput) returns (StringReply);  
+  rpc SetUpLine (DbStringInput) returns (StringReply);
+  rpc BanPlayer (DbPlayerBanInput) returns (LogReply);
+  rpc TakeMoney (DbTakeMoneyInput) returns (LogReply);  
+  rpc StoredMoney (DbStoredMoneyInput) returns (LogReply);    
+  rpc DbLoginLog (DbLoginLogInput) returns (LogReply);  // Login ,Logout 以及進入各遊戲的Log
+  rpc DbMailBox (DbGUIDInput) returns (DbMailBoxReply); // 郵件列表
+  rpc DbMailReceive (DbIntInput) returns (LogReply); // 郵件領取
+  rpc DbMailSend (DbMailBoxData) returns (LogReply); // 郵件 寄送
+  rpc DbSetSystemMail (DbSystemMailInput) returns (LogReply); // 郵件 寄送   
+  rpc DbSetCheater (DbCheaterInfo) returns (LogReply); // 設定 玩家必贏
+  rpc DbDoCheater (DbCheaterInfo) returns (LogReply); // 使用 玩家必贏
+  rpc DbGetCheater (DbGUIDInput) returns (DbCheaterInfoReply); // 查詢 玩家必贏  
+  rpc DbSystemCheat (DbSystemCheatInput) returns (LogReply);    // 記錄 系統作弊  
+  rpc DbGetLeaderboard (DbIntWithStringInput) returns (DbLeaderboardReply); // 查詢 排行榜 本周=0，上周=-1
+  rpc DbGetBankCard (DbGUIDInput) returns (DbBankCardInput); // 銀行卡資訊
+  rpc DbBankCard (DbBankCardInput) returns (LogReply); // 銀行卡資訊
+  rpc SetPromoteOK(PromoteData) returns (LogReply);  // 填寫 推廣完成
+  rpc GetPromoteInfo (Ids) returns (PromoteInfoReply); // 查詢推廣資訊
+  rpc GetPromoteMyPlayerInfo (Ids) returns (PromoteMyPlayerInfoReply); // 查詢我的玩家
+  rpc GetPromoteMyPerformanceInfo (Ids) returns (PromoteMyPerformanceInfoReply); // 查詢我的業績
+  rpc DbTakeCommission (DbTakeCommissionInput) returns (LogReply); // 傭金領取
+  rpc GetSignInList (DbSignInInput) returns (DbSignInReply); // 每日簽到
+  rpc GetPromoteIDbyIP (DbStrInput) returns (StringReply); // 檢查是否有推薦編號 
+  rpc SendGift (DbSendGiftInput) returns (LogReply); // 送禮 - 贈送金幣
+  rpc GetSendGiftRecord (DbMyIDInput) returns (DBSendGiftRecordReply); // 送禮紀錄
+  rpc DbGetIAPItem (DbStrInput) returns (DbIAPItemReply); // 取得 - 商品表格 
+  rpc DbIAPBuy (DbIAPBuyInput) returns (DbIntReply); // 購買 - 送出購買要求(回傳訂單序號)
+  rpc DbIAPBuyResult (DbIAPBuyResultInput) returns (LogReply); // 購買 - 發送購物結果
+  rpc DbIAPBuyCN (DbIAPBuyCNInput) returns (StringReply); // 購買 - 送出購買要求(回傳訂單序號)
+  rpc DbIAPBuyResultCN (DbIAPBuyResultCNInput) returns (LogReply); // 購買 - 發送購物結果
+  rpc DbOrderRecordCN (DbGUIDInput) returns (DbOrderRecordCNReply); // 大陸版 - 查詢 - 儲值紀錄
+  rpc DbOrderRecord (DbGUIDInput) returns (DbOrderRecordReply); // 台灣版 - 查詢 - 儲值紀錄
+  rpc DbSignUpReimburse (EmptyInput) returns (LogReply);    // 檢查上莊預扣，並且退還 
+  rpc DBSMSLog(SMSLogInput) returns (LogReply); // 手機簡訊紀錄
+  
+    
+  
+  rpc DbTakeMoneyRecord (DbGUIDInput) returns (DbTakeMoneyRecordReply);  
+  rpc DbGetGameStock(EmptyInput) returns (DbGameStockReply); // 查詢 - 全部遊戲庫存相關數據
+  rpc DbDelAccount(Ids) returns (LogReply); // 刪除遊戲帳號
+  
+  
+  // WebManager
+  rpc listMemberByQuery (QueryConditions) returns (MembersReply);
+  rpc QueryTakeMoneyList(QueryConditions) returns (DbTakeMoneyListReply);
+  rpc SetTakeMoneyStatus(SetTakeMoneyStatusInput) returns (LogReply);
+  rpc QueryTopUpList(QueryConditions) returns (DbTopUpListReply);
+  rpc SaveAccount (ProtoAccount) returns (LogReply);  
+  rpc SetPW (DbStringInput) returns (LogReply);
+  rpc ResetPW (DbGUIDInput) returns (LogReply);    
+  rpc DbMailEdit (DbMailBoxData) returns (LogReply);                // 郵件 修改
+  rpc DbMailDel (DbIntInput) returns (LogReply);                    // 郵件 刪除
+  rpc DbSetSystemMailEdit (DbSystemMailInput) returns (LogReply);   // 系統郵件 修改
+  rpc DbSetSystemMailDel (DbIntInput) returns (LogReply);           // 系統郵件 刪除
+  rpc DbSetGameConfig (DbGameConfigData) returns (LogReply);        // 遊戲排序
+  
+  // GameLog
+  rpc BetLog (BetInput) returns (LogReply);  
+  rpc DTFGameLog (ProtoDTFGameResult) returns (GameLogReply);
+  rpc BMWGameLog (ProtoBMWGameResult) returns (GameLogReply);
+  rpc HDWGameLog (ProtoHDWGameResult) returns (GameLogReply);
+  rpc RBFGameLog (ProtoRBFGameResult) returns (GameLogReply);
+  rpc BCRGameLog (ProtoBCRGameResult) returns (GameLogReply);
+  rpc REDGameLog (ProtoREDGameResult) returns (GameLogReply);
+  rpc WCRGameLog (ProtoWCRGameResult) returns (GameLogReply);
+  rpc FTSGameLog (ProtoFTSGameResult) returns (GameLogReply);
+  rpc DZPGameLog (ProtoDZPGameResult) returns (GameLogReply);
+  rpc BGFGameLog (ProtoBGFGameResult) returns (GameLogReply);
+  rpc KMJGameLog (ProtoKMJGameResult) returns (GameLogReply);
+  rpc RNNGameLog (ProtoRNNGameResult) returns (GameLogReply);
+  rpc DDZGameLog (ProtoDDZGameResult) returns (GameLogReply);
+    
+  rpc ModifyProfitGold (DbIntWithStringInput) returns (LogReply);
+  rpc ModifyGameStock (DbIntWithStringInput) returns (LogReply);
+  rpc ModifyGameWater (DbIntWithStringInput) returns (LogReply);
+  // rpc GetGameStock (DbIntInput) returns (DbIntReply);
+  rpc ModifyGameProfitRate (DbIntWithStringInput) returns (LogReply);
+  rpc ModifyGameWaterRate (DbIntWithStringInput) returns (LogReply);
+  rpc ModifyGameGroupID (DbEOpCodeInput) returns (LogReply);
+  rpc ModifyAIPlay(DbAIPlayInput) returns (LogReply);                   // 異動 AI參數
+  rpc ModifyGameCheatRate (DbEOpCodeInput) returns (LogReply);          // 異動 作弊機率
+  rpc ModifyGameRecordAmount (DbEOpCodeInput) returns (LogReply);       // 異動 遊戲紀錄保存上限  
+  
+}
+
+service MiniGame {
+    // Sends a greeting
+    //rpc DTFBetLog (ProtoDTFBet) returns (LogReply);  
+}
+
+message DbGameConfigs {
+    repeated DbGameConfigData list = 1;
+}
+  
+message DbGameConfigData {
+    int32 OpCode = 1 ;
+    string EOpName = 2 ;
+    int32 IsEnable = 3;
+    int32 IsGame = 4 ;
+    int32 IsHot = 5 ;
+    int32 IsNew = 6 ;
+    int32 IsComingSoon = 7 ;
+    int32 Priority = 8 ;
+}
+
+message EmptyInput {}
+
+// 這個之後要取代 DbStringInput
+message DbStrInput {  
+  string Value = 1;  
+}
+
+message DbMyIDInput
+{
+    string Key = 1;
+}
+
+message DbGUIDInput
+{
+    string Key = 1;
+}
+
+message DbIntInput
+{
+  int32 Key = 1;
+}
+
+
+// 已經驗證完畢，寫入資料庫
+message DbStringInput {
+  string GUID = 1;
+  string Value = 2;  
+}
+
+
+message DbEOpCodeInput
+{
+  int32 Key = 1;
+  int32 Value = 2;
+}
+
+message DbIntWithFloatInput
+{
+  int32 Key = 1;
+  float Value = 2;
+}
+
+message DbIntWithStringInput
+{
+  int32 Key = 1;
+  string Value = 2;
+}
+
+message SetTakeMoneyStatusInput
+{
+  string OrderID = 1;
+  int32 Status = 2;
+  string Memo = 3;
+}
+
+message LoginInput
+{
+    Ids ids = 1;
+    string IP = 2;
+}
+
+message Ids {
+  string DeviceID = 1;
+  string GUID = 2;
+  string PhoneID = 3;  
+  string MyID = 4;
+}
+
+message IncreaseInput {
+  string GUID = 1;
+  string Type = 2; 
+  string Value = 3;
+  bool UpdateDBRightNow = 4;
+}
+
+message ChangeAvatarInput{
+	string GUID = 1;
+	int32 AvatarIndex = 2;
+}
+
+message ChangeNameInput{
+	string GUID = 1;
+	string Name = 2;
+}
+
+// 已經驗證完畢，寫入資料庫
+message BindPhoneInput {
+  string GUID = 1;
+  string PhoneID = 2;  
+  string PW = 3;
+}
+
+// 填寫 提現單
+message DbTakeMoneyInput {
+  string GUID = 1;
+  string OrderID  = 2;
+  int32 Cash = 3;  
+}
+
+message DbPlayerBanInput
+{
+  string GUID = 1;
+  bool IsBan = 2;
+}
+
+message DbStoredMoneyInput
+{
+  string OrderId = 1;
+  string BuyerId = 2;
+  string Date = 3;
+  double Money = 4;   
+}
+
+//LoginLogSet(player.GUID,player.Name,"Login",false);
+message DbLoginLogInput
+{
+  string GUID = 1;
+  string Name = 2;
+  string ActionType = 3;    // 例如 Login,Logout,DZP,DZPout ... 等等進入個遊戲
+  bool IsAI = 4;
+  string IP = 5;
+  string ActiveDate = 6;    // 發生時間(Client)
+  int32 Delay = 7;          // 延遲毫秒數  
+  string UserDeviceID = 8;  // 登入時使用的機器
+}
+
+/// 後台查詢
+message QueryConditions{
+  int32 DisplayStart= 1;  //資料開始的index
+  int32 DisplayLength= 2; //資料長度
+  string Search=3;      //拿來做模糊查詢
+}
+
+///紀錄下注
+message BetInput {
+  string GUID = 1;
+  string Name = 2;
+  int32 TableID = 3;
+  string RoundID = 4;
+  string BetType = 5;
+  string AddGold = 6;
+  string Gold = 7;
+  bool IsAI = 8;      
+  int32 EOpCode = 9;
+  string WaterGold = 10;
+}
+    
+// 紀錄牌局結果
+message ProtoDTFGameResult {
+  string RoundID = 1;
+  int32 TableID = 2;  
+  string RoundResult = 3;
+  int32 StakeDragon = 4;
+  int32 StakeTiger = 5;
+  int32 StakeDraw = 6;
+  int32 WinDragon = 7;
+  int32 WinTiger = 8;
+  int32 WinDraw = 9;
+  string StockGold = 10;
+  string WaterGold =11;  
+  string BankerGUID = 12; 
+}
+
+// 紀錄牌局結果
+message ProtoBMWGameResult {
+  string RoundID = 1;
+  int32 TableID = 2;  
+  string RoundResult = 3;
+  int32 StakeFerrari  = 4;
+  int32 StakeBenz     = 5;
+  int32 StakeBMW      = 6;
+  int32 StakeAudi     = 7;
+  int32 StakeVW       = 8;
+  int32 StakeToyota   = 9;
+  int32 WinFerrari  = 10;
+  int32 WinBenz     = 11;
+  int32 WinBMW      = 12;
+  int32 WinAudi     = 13;
+  int32 WinVW       = 14;
+  int32  WinToyota   = 15;
+  string StockGold = 16;
+  string WaterGold =17;  
+  string BankerGUID = 18; 
+}
+
+// 紀錄牌局結果
+message ProtoHDWGameResult {
+  string RoundID = 1;
+  int32 TableID = 2;  
+  string RoundResult = 3;
+  int32 StakeFront   = 4;
+  int32 StakeCenter      = 5;
+  int32 StakeBack       = 6;
+  int32 StakeSpecial      = 7;
+  int32 StakeFrontCenter        = 8;
+  int32 StakeCenterBack    = 9;
+  string WinFront   = 10;
+  string WinCenter      = 11;
+  string WinBack       = 12;
+  string WinSpecial      = 13;
+  string WinFrontCenter        = 14;
+  string WinCenterBack    = 15;
+  string StockGold = 16;
+  string WaterGold =17;  
+  string BankerGUID = 18; 
+}
+
+// 紀錄牌局結果
+message ProtoRBFGameResult {
+  string RoundID = 1;
+  int32 TableID = 2;  
+  string RoundResult = 3;
+  int32 StakeRed   = 4;
+  int32 StakeBlack      = 5;
+  int32 StakeSpecial       = 6;
+  int32 WinRed      = 7;
+  int32 WinBlack        = 8;
+  int32 WinSpecial    = 9;
+  string StockGold = 10;
+  string WaterGold =11;  
+  string BankerGUID = 12; 
+}
+
+// 紀錄牌局結果
+message ProtoBCRGameResult {
+  string RoundID = 1;
+  int32 TableID = 2;  
+  string RoundResult = 3;  
+  int32 StakeBanker   = 4;
+  int32 StakePlayer      = 5;
+  int32 StakeDraw       = 6;
+  int32 StakeBankerPair      = 7;
+  int32 StakePlayerPair        = 8;
+  int32 WinBanker    = 9;
+  int32 WinPlayer   = 10;
+  int32 WinDraw      = 11;
+  int32 WinBankerPair       = 12;
+  int32 WinPlayerPair      = 13;  
+  string StockGold = 14;
+  string WaterGold = 15;
+  string BankerGUID = 16; 
+}
+
+// 紀錄牌局結果
+message ProtoREDGameResult {
+  string RoundID = 1;
+  int32 TableID = 2;  
+  string RoundResult = 3;  
+  int32 BombNum = 4; //MineNumber // 炸彈號碼
+  int32 BankerRedGold = 5; //紅包金額
+  int32 RedCount = 6;  //紅包數量
+  int32 BankerGold = 7; //Banker 莊家輸贏
+  int32 ReceiveCount = 8; //被領走的紅包數量
+  int32 ReceiveGold = 9; //被領走的紅包金額
+  int32 BombCount = 10; //中炸彈數量
+  int32 BombGold = 11; //中炸彈金額
+  int32 StakeBanker = 12; //(BankerRedGold) 紅包金額(真人)
+  int32 WinBanker = 13; //莊家輸贏(真人)
+  int32 ReceiveCountPlayer = 14; //被領走的紅包數量(真人)
+  int32 ReceiveGoldPlayer = 15; //被領走的紅包金額(真人)
+  int32 BombCountPlayer = 16; //中炸彈數量(真人)
+  int32 BombGoldPlayer = 17; //中炸彈金額(真人)
+  string StockGold = 18; //庫存增減
+  string WaterGold = 19; //水錢增加
+  string BankerGUID = 20; 
+}
+
+// 紀錄牌局結果
+ message ProtoWCRGameResult {
+   string RoundID = 1;
+   int32 TableID = 2;  
+   string RoundResult = 3;
+   int32 StakeKing  = 4;
+   int32 StakeQueen     = 5;
+   int32 StakeCastle      = 6;
+   int32 StakeBishop     = 7;
+   int32 StakeKnight       = 8;
+   int32 StakeSoldier   = 9;
+   int32 WinKing  = 10;
+   int32 WinQueen     = 11;
+   int32 WinCastle      = 12;
+   int32 WinBishop     = 13;
+   int32 WinKnight       = 14;
+   int32 WinSoldier   = 15;
+   string StockGold = 16;
+   string WaterGold =17;  
+   string BankerGUID = 18; 
+ }
+ 
+ // 紀錄牌局結果
+ message ProtoFTSGameResult {
+   string RoundID =     1;
+   int32 TableID =      2;  
+   string RoundResult = 3;
+   int32 StakeBig  =    4;
+   int32 StakeSmall   = 5;
+   int32 StakeTriple  = 6;
+   int32 StakePoint1  = 7;
+   int32 StakePoint2  = 8;
+   int32 StakePoint3  = 9;
+   int32 StakePoint4  = 10;
+   int32 StakePoint5  = 11;
+   int32 StakePoint6  = 12;            
+   int32 WinBig       = 13;
+   int32 WinSmall     = 14;
+   int32 WinTriple      = 15;
+   int32 WinPoint1     = 16;
+   int32 WinPoint2     = 17;
+   int32 WinPoint3     = 18;
+   int32 WinPoint4     = 19;
+   int32 WinPoint5     = 20;
+   int32 WinPoint6     = 21;        
+   string StockGold      = 22;
+   string WaterGold      =24;  
+   string BankerGUID = 25; 
+ }
+ 
+ // 紀錄牌局結果
+  message ProtoDZPGameResult {
+      ProtoDZPGameLog Gamelog = 1;
+      repeated ProtoDZPGameLogDetail List = 2;
+  }
+
+  message ProtoDZPGameLog {
+    string RoundID = 1;  //回合編號 
+    int32 TableID = 2;
+    string PublicPoker = 3; // 公牌
+    int32 BigBlind = 4;     // 大盲錢
+    int32 SmallBlind = 5;   // 小盲錢
+    int32 DealerSeatID = 6; // 莊家位
+    string StockGold = 7;    // 庫存異動
+    string WaterGold  = 8;   // 水錢
+  }
+
+  message ProtoDZPGameLogDetail {
+    string RoundID = 1;     // 回合編號 
+    string GUID = 2;
+    string Name = 3;
+    int32 SeatID = 4;
+    string Poket = 5;       // 玩家手牌
+    string PublicPoker = 6; // 公牌
+    string Combine = 7; 
+    int32 Rank  = 8;        // 名次  
+    string AddGold  = 9;     // 金幣異動 
+    string WaterGold  = 10;  // 水錢    
+  }
+  
+  // 紀錄牌局結果
+  message ProtoBGFGameResult {
+      ProtoBGFGameLog Gamelog = 1;
+      repeated ProtoBGFGameLogDetail List = 2;
+  }
+
+  message ProtoBGFGameLog {
+    string RoundID = 1;     // 回合編號 
+    int32 TableID = 2;      // 桌號
+    int32 BaseStake = 3;    // 底注
+    int32 TopStake = 4;     // 頂注
+    int32 TopRound = 5;     // 頂局
+    int32 DealerSeatID = 6; // 莊家位
+    string StockGold = 7;    // 庫存異動
+    string WaterGold  = 8;   // 水錢
+  }
+  message ProtoBGFGameLogDetail {
+      string RoundID = 1;   // 回合編號 
+      string GUID = 2;
+      string Name = 3;
+      int32 SeatID = 4;
+      string Poket = 5;     // 玩家手牌
+      string Combine = 6;   // 牌型
+      int32 Rank  = 7;      // 名次  
+      string AddGold  = 8;   // 金幣異動 
+      string WaterGold  = 9; // 水錢    
+  }
+  
+ // 紀錄牌局結果
+  message ProtoKMJGameResult {
+      ProtoKMJGameLog Gamelog = 1;              // 總表
+      repeated ProtoKMJGameLogDetail List = 2;  // 個人名細
+  }
+
+  message ProtoKMJGameLog {
+    string RoundID = 1;     // 回合編號 
+    int32 TableID = 2;      // 房間號碼
+    int32 DealerSeatID = 3; // 莊家位
+    string StockGold = 4;    // 庫存異動
+    string WaterGold  = 5;   // 水錢  
+    int32 BasePoint = 6;    // 底分
+    int32 TopPointCount = 7;// 頂番
+    string RoomSetting = 8; // 房間設定
+  }
+
+  message ProtoKMJGameLogDetail {
+    string RoundID = 1;     // 回合編號 
+    string GUID = 2;        // 玩家GUID
+    string Name = 3;        // 玩家名子
+    int32 SeatID = 4;       // 座位編號
+    string AddGold  = 5;     // 金幣異動 
+    string WaterGold  = 6;   // 水錢  
+    int32 Rank  = 7;        // 名次
+    bool IsWin  = 8;        // 是否獲勝
+    bool IsReady  = 9;      // 是否聽牌
+    string PlayerWinGold =10;// 贏錢
+    string PlayerWaterGold=11;// 抽水
+    string PlayerLoseGold=12;// 輸錢    
+    string WinTypes = 13;    // 牌型
+    string Hand = 14;        // 手上的牌
+    string Exposed = 15;     // 碰在外面的牌
+  }  
+ 
+ // 紀錄牌局結果 - 搶莊牛牛
+  message ProtoRNNGameResult {
+      ProtoRNNGameLog Gamelog = 1;              // 總表
+      repeated ProtoRNNGameLogDetail List = 2;  // 個人名細
+  }
+
+  message ProtoRNNGameLog {
+    string RoundID = 1;     // 回合編號 
+    int32 TableID = 2;      // 房間號碼
+    int32 DealerSeatID = 3; // 莊家位
+    string StockGold = 4;    // 庫存異動
+    string WaterGold  = 5;   // 水錢      
+    int32 BasePoint = 6;    // 底分
+    string RoomSetting = 7; // 房間設定
+  }
+
+  message ProtoRNNGameLogDetail {
+    string RoundID = 1;     // 回合編號 
+    string GUID = 2;        // 玩家GUID
+    string Name = 3;        // 玩家名子
+    int32 SeatID = 4;       // 座位編號
+    string AddGold  = 5;     // 金幣異動 
+    string WaterGold  = 6;   // 水錢  
+    int32 Rank  = 7;        // 名次
+    bool IsWin  = 8;        // 是否獲勝    
+    string TwoCard = 9;     // 牌型
+    string ThreeCard = 10;  // 牌型
+    string Hand = 11;       // 牌型    
+    int32 Combine= 12;      // 牌型
+    int32 RobMulti= 13;      // 搶莊倍率
+    int32 BetMulti= 14;      // 下注倍率    
+  }  
+  
+ 
+ // 鬥地主 紀錄牌局結果
+  message ProtoDDZGameResult {
+      ProtoDDZGameLog Gamelog = 1;              // 總表
+      repeated ProtoDDZGameLogDetail List = 2;  // 個人名細
+  }
+
+  message ProtoDDZGameLog {
+    string RoundID = 1;         // 回合編號 
+    int32 TableID = 2;          // 房間號碼
+    int32 DealerSeatID = 3;     // 莊家位
+    int32 WinnerID = 4;         // 贏家座位編號
+    string SpecialWinType =5;    
+    string StockGold = 6;       // 庫存異動
+    string WaterGold  = 7;      // 水錢
+    int32 BasePoint = 8;        // 底分
+    int32 TopMultiple = 9;  
+    int32 SettleMultiple = 10;    
+    string RoomSetting = 11;    // 房間設定
+  }
+
+  message ProtoDDZGameLogDetail {
+    string RoundID = 1;         // 回合編號 
+    string GUID = 2;            // 玩家GUID
+    string Name = 3;            // 玩家名子
+    int32 SeatID = 4;           // 座位編號
+    string AddGold  = 5;        // 金幣異動 
+    string WaterGold  = 6;      // 水錢  
+    string Hand = 7;            // 手上的牌
+    string HandOri = 8;        // 原始手牌    
+  }    
+  
+  
+//-------------------
+
+message ProtoAccount{  
+  string GUID = 1;
+  string DeviceID = 2;  
+  int32 Avatar = 3;
+  string Name = 4;
+  string Gold = 5;       // 錢包金幣
+  string BoxGold = 6;    // 保險箱金幣
+  bool IsAI = 7;
+  string PhoneID = 8;
+  bool IsBan = 9;
+  string UpID = 10;
+  string BankCard = 11;  
+  string ID = 12;
+  string CreateDate = 13;
+  string FirstPurchaseDate = 14;
+  string LastLoginTime = 15;
+  string LastLogoutTime = 16;  
+}
+
+//------------------------
+
+// The response message containing the greetings.
+message LoginReply {
+  bool Success = 1;
+  string message = 2;
+  ProtoAccount account = 3;
+}
+
+message AccountReply {
+  bool Success = 1;
+  string message = 2;
+  ProtoAccount account = 3;
+}
+
+// The response message containing the greetings.
+message IncreaseReply {
+  bool Success = 1;
+  string message = 2;
+  ProtoAccount account = 3;
+}
+
+// The response message containing the greetings.
+message ChangeAvatarReply {
+  bool Success = 1;
+  string message = 2;
+  ProtoAccount account = 3;
+}
+
+// The response message containing the greetings.
+message ChangeNameReply {
+  bool Success = 1;
+  string message = 2;
+  ProtoAccount account = 3;
+}
+
+message MembersReply{
+ bool Success = 1;
+ string message = 2;
+ repeated ProtoAccount accounts = 3;
+}
+
+
+/// 回傳 - 寫入牌局結果
+message GameLogReply {
+  bool Success = 1;
+  string message = 2;
+  string StockGold = 3;      // 當前遊戲庫存
+}
+
+// 回傳
+message LogReply {
+  bool Success = 1;
+  string message = 2;
+}
+
+// 通用回傳 字串格式
+message StringReply {
+  bool Success = 1;
+  string message = 2;
+  string Value = 3;
+}
+
+// 通用回傳 INT格式
+message DbIntReply {
+  bool Success = 1;
+  string message = 2;
+  int32 Value = 3;
+}
+
+// 請款 資料表
+message DbTakeMoneyData{
+  string CreateDate = 1;
+  string OrderID = 2;
+  string PlayerGUID = 3;
+  string PlayerName = 4;
+  int32 Cash = 5;               // 提現金額
+  int32 Status = 6;             // Status = 0 unknown,1 審核中,2 審核通過,3 付款完成,4 拒絕,5 取消 
+  string CompleteDate =7;       // 付款完成日期
+  string Memo =8;               // 備忘錄
+  int32 Fee = 9;                // 手續費
+  int32 Pay = 10;               // 撥款金額
+  string Bank = 11;             // 銀行名稱，或支付系統名稱
+  string CardNo = 12;           // 卡號，或帳號  
+}
+
+message DbTakeMoneyListReply
+{
+  repeated DbTakeMoneyData List = 1;
+}
+
+message DbTopUpData
+{
+  string OrderId = 1;
+  string BuyerId = 2;
+  string DateTime = 3;
+  double Money =4; 
+}
+
+message DbTopUpListReply
+{
+  bool Success = 1;
+  string message = 2;
+  repeated DbTopUpData List = 3;
+}
+
+message DbMailBoxReply
+{
+  bool Success = 1;
+  string message = 2;
+  repeated DbMailBoxData List = 3;
+}
+
+message DbMailBoxData
+{
+  int32 MailID = 1;
+  string ToWhoGUID = 2;
+  string FromWhoGUID = 3;
+  int32 Avatar = 4;
+  string FromWhoName = 5;
+  int32 ItemID = 6;
+  string ItemNumber = 7;     // 數量(金額)
+  string Information = 8;
+  string MailTime = 9 ;
+  string Deadline = 10 ;
+  string ReceiveTime = 11;  // 領取時間 (之後如果需要做領取紀錄會需要)
+  int32 MailType = 12;      // 郵件類型
+}
+
+message DbSystemMailInput
+{
+  int32 ID = 1;
+  string FromWhoGUID = 2;   // 信件發信人 例如 
+  int32 Avatar = 3;         // 信件頭像 預設 0 
+  string FromWhoName = 4;   // 信件的標題欄位
+  int32 ItemID = 5;         // 金幣 1
+  string ItemNumber = 6;     // 數量
+  string Information = 7;   // 內文
+  string CreateDate = 8;    // 設定時間(DB 生成)
+  int32 LimitDays = 9 ;     // 領取期限
+  string StartDate = 10 ;   // 生效時間 - 開始
+  string EndDate = 11;      // 生效時間 - 結束
+}
+
+message DbCheaterInfo
+{
+  string GUID = 1;
+  string Name = 2;
+  int32 WinCount =3;
+  int32 WinLv = 4;          // 權重 0~999
+  int32 LimitGain =5;       // 贏錢上限(如果超過這上限 則不會發動)
+  int32 EOpCode = 6;
+  string RoundID = 7;
+  string ActiveDate = 8;
+  int32 Gain =9;            // 因為這個作牌放了多少金幣給玩家
+}
+
+message DbCheaterInfoReply
+{
+  bool Success = 1;
+  string message = 2;
+  DbCheaterInfo Cheat = 3;
+}
+
+message DbSystemCheatInput
+{
+  string RoundID = 1;       // 遊戲局號 
+  int32 Type = 2;           // 作弊類型 1=玩家必勝， 2 =系統必勝 
+  int32 EOpCode =3;         // 遊戲編號
+  int32 StockGroupID = 4;   // 庫存群組編號
+  string AddStockBefore =5;  // 調整前庫存異動(沒有作弊時的輸贏)
+  string AddStockAfter = 6;  // 調整後庫存異動(作弊後的輸贏)
+  string Stock = 7;          // 異動後當前庫存
+  string StockGroup = 8;     // 異動後當前群組合計庫存
+  int32 CheatRate = 9;      // 當前觸發作弊的機率
+  string RoundResult =10;   // 描述作弊內容
+}
+
+// 每周排行榜
+message DbLeaderboardReply
+{
+  bool Success = 1;
+  string message = 2;
+  repeated DbLeaderboardData List = 3;
+}
+
+
+message DbLeaderboardData
+{
+    string GUID = 1;
+    int32 Avatar = 2; 
+    string Name = 3; 
+    string WinSum = 4; // 總計贏錢
+}
+
+message DbBankCardInput
+{
+    string GUID = 1;
+    string Name = 2; 
+    string CardNo = 3; 
+    string Bank = 4;
+    string BankBranch = 5;
+    string Province = 6;
+    string City = 7;
+}
+
+message PromoteData
+{
+    string playerId = 1;
+    string ip = 2;
+}
+
+// 推廣返回資料
+message PromoteInfoReply
+{
+    bool Success = 1;
+    string message = 2;
+    string Commission = 3;       // 回饋獎金
+    string SuperiorID = 4;
+    string MyID = 5;
+    int32 TeamSize = 6;
+    int32 DirectPlayers = 7;
+    int32 TodayAdded = 8;
+    int32 TodayLive = 9;
+    string QRCodeURL = 10;
+    string PromoteUrl = 11;
+}
+
+// 我的下線 資料
+message PromoteMyPlayerInfoReply
+{
+    bool Success = 1;
+    string message = 2;
+    repeated PromoteMyPlayerInfoData List = 3;
+}          
+
+// 我的下線 資料
+message PromoteMyPlayerInfoData
+{
+    string ID = 1;                  // 玩家ID
+    string Name = 2;                // 玩家名稱
+    int32 TeamGoldWeek = 3;         // 本周團隊貢獻
+    int32 PersonalGoldWeek = 4;     // 本周玩家貢獻
+    int32 TeamSize = 5;             // 團隊人數
+    string UpID = 6;                // 直屬玩家
+    string Operate = 7;             // 操作
+}     
+     
+// 我的業績 
+message PromoteMyPerformanceInfoReply
+{
+    bool Success = 1;
+    string message = 2;
+    repeated PromoteMyPerformanceInfoData List = 3;
+}          
+
+// 我的業績 資料
+message PromoteMyPerformanceInfoData
+{
+    string ID = 1;                 // 玩家ID
+    string SettleDate = 2;
+    int32 TeamGold = 3;             // 團隊業績
+    int32 MyGold = 4;               // 個人業績
+    string TotalCommission =5;       // 總回饋
+    string TeamCommission =6;        // 團隊回饋
+    string MyCommission =7;          // 總回饋
+    string ReceiveDate =8;          // 領取日期
+    string PersonalCommission=9;     // 個人回饋
+}            
+
+// 傭金領取 資料
+message DbTakeCommissionInput
+{
+    string ID = 1;                  // 玩家ID
+    string SettleDate = 2;    
+}
+
+// 每日簽到 資料
+message DbSignInInput
+{
+    string ID = 1;                 // 玩家ID
+    bool DoSignIn = 2;    
+}
+
+// 每日簽到 資料
+message DbSignInReply
+{
+    bool Success = 1;
+    string message = 2;
+    bool AlreadySignIn = 3;                 
+    string SignInReward = 4;        // 簽到獎勵金
+    bool DoSignIn = 5;               
+}
+
+/// 手機帳號註冊
+message CreateAccountByPhoneInput
+{
+    string UpID = 1;
+    string PhoneID = 2;
+    string PW = 3;
+    string IP = 4;
+    string UserDeviceID = 5;
+}
+
+/// 手機登入
+message LoginbyPhoneIDPWInput
+{
+    string PhoneID = 1;
+    string PW = 2;
+    string IP =3;
+    string UserDeviceID = 4;
+}
+
+/// 手機帳號的密碼重置
+message DBPhoneChangePasswordInput
+{
+    string PhoneID = 1;
+    string PW = 2;
+    string IP =3;
+}
+
+/// 贈送 - 金幣
+message DbSendGiftInput
+{
+    string FromID = 1;
+    string ToID = 2;
+    int32 Gold =3;
+}
+
+// 贈送紀錄
+message DBSendGiftRecordReply
+{
+    bool Success = 1;
+    string message = 2;
+    repeated DBSendGiftRecord List = 3;
+}
+
+// 贈送紀錄 結構
+message DBSendGiftRecord
+{
+    string ID = 1;
+    int32 AvatarIndex = 2;
+    string Name = 3;
+    string Date = 4;
+    int32 Income = 5;
+    int32 Expenditure = 6;
+}
+
+/// IAP 商品資料
+message DbIAPItemReply
+{
+  bool Success = 1;
+  string message = 2;
+  repeated DbIAPItem List = 3;
+}
+
+/// IAP 商品資料
+message DbIAPItem
+{        
+    string Platform = 1;
+    string ProductID = 2;
+    int32 ItemTag = 3;      // 商品標籤 0=none,1=熱門
+    int32 ItemType = 4;     // 道具類型 1=金幣
+    string ItemName = 5;
+    int32 Price = 6;        // 消費金額(台幣)
+    string AddValue = 7;     // 獲得資源數
+    string AddPlus = 8;      // 獲得額外資源數
+    int32 Status = 9;
+    string Desc = 10;
+    string Icon = 11;
+}
+
+/// 商城購買  Platform=apple,goole
+message DbIAPBuyInput
+{        
+    string GUID = 1;
+    string Platform = 2;
+    string ProductID = 3;
+    int32 Quantity = 4;
+}
+
+/// 商城購買結果  No => DbIAPBuy回傳的編號
+message DbIAPBuyResultInput
+{   
+    int32 No = 1;           // 我們自己的訂單編號
+    string GUID = 2;        // 玩家身分證
+    string Platform = 3;    // 平台
+    string ProductID = 4;   // 產品編號
+    int32 Quantity = 5;     // 數量
+    string OrderID = 6;     // 廠商訂單編號
+    int32 Status = 7;       // 狀態 (0尚未回報 1成功 2失敗)
+    string Content = 8;     // 原生資料
+    string Receipt = 9;     // 發票
+}
+
+
+/// 商城購買大陸金流  Platform=apple,goole
+message DbIAPBuyCNInput
+{        
+    string No = 1;
+    string GUID = 2;
+    string Platform = 3;
+    string MemberID = 4;
+    int32 Class = 5;
+    string Price = 6;
+    string Gold = 7;    
+    string SendString = 8;    
+}
+
+/// 商城購買結果  No => DbIAPBuy回傳的編號
+message DbIAPBuyResultCNInput
+{   
+    string No = 1;           // 我們自己的訂單編號
+    string OrderID = 2;     // 廠商訂單編號
+    string Amount = 3;
+    string Returncode = 4; // 00 success
+}
+
+  
+/// 查詢 提現紀錄 
+message DbTakeMoneyRecordReply
+{
+    bool Success = 1;
+    string message = 2;
+    repeated DbTakeMoneyData List = 3;
+}
+
+
+/// 查詢 遊戲 及 庫存  相關資訊
+message DbGameStockReply
+{
+    bool Success = 1;
+    string message = 2;
+    repeated DbGameStockData List = 3;
+}
+
+/// 遊戲 及 庫存 相關資料
+message DbGameStockData
+{
+    int32 EOpCode = 1;              // 遊戲編號
+    string StockGold = 2;            // 庫存水庫
+    string ProfitGold = 3;           // 利潤水庫
+    string WaterGold = 4;            // 水錢水庫
+    int32 GroupID = 5;              // 遊戲群組
+    string ProfitRate = 6;           // 利潤率(殺率)
+    string WaterRate = 7;            // 抽水率
+    string EOpName = 8;             // 遊戲代碼
+    int32 AIAmount = 9;             // 每一桌的AI人數上限
+    bool AIPlay = 10;               // 是否啟動AI
+    int32 CheatRate = 11;           // 低於水庫危險值後開始會作弊，作弊的啟動機率
+    int32 RecordAmount =12;         // 遊戲紀錄保存上限
+}
+
+message DbAIPlayInput
+{
+    int32 EOpCode = 1;              // 遊戲編號
+    int32 AIAmount = 9;             // 每一桌的AI人數上限
+    bool AIPlay = 10;               // 是否啟動AI
+}
+
+/// 給玩家看的儲值紀錄(CN)
+message DbOrderRecordCNReply
+{
+    bool Success = 1;
+    string message = 2;
+    repeated DbOrderRecordCNData List = 3;
+}
+
+message DbOrderRecordCNData
+{
+    string CompleteDate = 1; 
+    string OrderID = 2;
+    string TypeName = 3;
+    string Price = 4;
+}
+
+/// 給玩家看的儲值紀錄(TW)
+message DbOrderRecordReply
+{
+    bool Success = 1;
+    string message = 2;
+    repeated DbOrderRecordData List = 3;
+}
+
+message DbOrderRecordData
+{
+    string CompleteDate = 1; 
+    string OrderID = 2;
+    string TypeName = 3;
+    string Price = 4;
+    string Gold = 5;
+}
+
+message SMSLogInput
+{
+    string PhoneID = 1 ;
+    string Code = 2;
+    string Type = 3 ;
+    int32 Status = 4 ;
+}
+

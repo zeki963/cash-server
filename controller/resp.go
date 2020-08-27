@@ -35,6 +35,7 @@ var MsgFlags = map[int]string{
 	2001: "Casino 無此帳號或建單異常",
 	//3000 第3方錯誤
 	3001: "MyCard Auth 錯誤",
+	3002: "MyCard  交易失敗錯誤",
 	//其他
 	8000: "資料庫錯誤",
 	9999: "未預期錯誤",

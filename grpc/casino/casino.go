@@ -37,9 +37,9 @@ func GrpcCasinoCannot() grpc.ClientConnInterface {
 	return GrpcCasino
 }
 
-//VetifyUserGUID 驗證玩家ID GUID
-func VetifyUserGUID(ID string) (msg string) {
-	util.Test(fmt.Sprint("[GRPC-Casino] 驗證玩家ID GUID >  ", ID))
+//VetifyUserID 驗證玩家ID GUID
+func VetifyUserID(ID string) (msg string) {
+	util.Test(fmt.Sprint("[GRPC-Casino] 驗證玩家ID ID >  ", ID))
 	var newids Ids
 	newids.MyID = ID
 	conn := GrpcCasinoCannot()
@@ -54,8 +54,8 @@ func VetifyUserGUID(ID string) (msg string) {
 		util.Test("[GRPC-Casino] 驗證玩家ID資料 > No Account ")
 		return "Error"
 	}
-	util.Test(fmt.Sprint("[GRPC-Casino] 驗證玩家ID GUID >  ", a.Account.GUID))
-	return a.Account.GUID
+	util.Test(fmt.Sprint("[GRPC-Casino] 驗證玩家ID ID >  ", a.Account.ID))
+	return a.Account.ID
 }
 
 //VetifyUserName 驗證玩家ID名稱
@@ -158,7 +158,7 @@ func SendItemBuy(userid string, prodid string) (bool, int32) {
 	dbIAPBuyInput.Platform = "mycard"
 	dbIAPBuyInput.Quantity = 1
 	util.Test(fmt.Sprint("[GRPC-Casino] Userid : ", userid))
-	dbIAPBuyInput.GUID = userid
+	dbIAPBuyInput.ID = userid
 	dbIAPBuyInput.ProductID = prodid
 	conn := GrpcCasinoCannot()
 	c := NewMemberClient(conn)
@@ -179,7 +179,7 @@ func SendItemResult(o db.Order) bool {
 	casinoResu.No = o.OrderGameSubID
 	casinoResu.Platform = "mycard"
 	casinoResu.Quantity = 1
-	casinoResu.GUID = VetifyUserGUID(o.OrderClientID)
+	casinoResu.ID = VetifyUserID(o.OrderClientID)
 	casinoResu.OrderID = o.OrderSubID
 	casinoResu.ProductID = o.OrderItemID
 	casinoResu.Status = 1
