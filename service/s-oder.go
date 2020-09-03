@@ -2,6 +2,7 @@ package service
 
 import (
 	"cash-server/db"
+	casinogrpc "cash-server/grpc/casino"
 	"cash-server/model"
 	"cash-server/pkg/util"
 	"encoding/json"
@@ -61,6 +62,11 @@ func ToMycardTradeQuery(AuthCode string) bool {
 		model.MycardTradeQuery(db.Order{OrderSubID: Form.FacTradeSeq}, &Form)
 		// -> 3.4
 		ToMycardPaymentConfirm(AuthCode)
+		//TODO grpc 給order 傳送確認資料 要確認遊戲別
+		switch model.OrderSubidQuery(db.Order{OrderSubID: Form.FacTradeSeq}).PaymentTypeID {
+		case 2:
+			casinogrpc.SendItemResult(model.OrderSubidQuery(db.Order{OrderSubID: Form.FacTradeSeq}))
+		}
 		return true
 	}
 	return false

@@ -1,0 +1,17 @@
+{
+    "sqltools.connections": [
+        {
+            "askForPassword": true,
+            "database": "db",
+            "driver": "MySQL",
+            "mysqlOptions": {
+                "authProtocol": "default"
+            },
+            "name": "db",
+            "port": 3306,
+            "previewLimit": 50,
+            "server": "35.221.230.161",
+            "username": "root"
+        }
+    ]
+}
