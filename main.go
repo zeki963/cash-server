@@ -15,6 +15,7 @@ import (
 // @contact.url https://www.cqiserv.com/
 // @contact.email zor@cqiserv.com
 func main() {
+	util.Test(`hiccc`)
 	// server start
 	util.Info(" < - SERVER START - > ")
 	//DB 連線關閉

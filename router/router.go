@@ -34,12 +34,13 @@ func InitRouter() *gin.Engine {
 		gin.SetMode(gin.DebugMode)
 	}
 	r := gin.Default()
+	//CORS config
 	config := cors.DefaultConfig()
 	config.AllowAllOrigins = true
 	config.AllowCredentials = true
 	config.AddAllowHeaders("authorization")
+	config.AllowHeaders = []string{"access-control-allow-credentials,access-control-allow-methods,access-control-allow-origin,content-type"}
 	r.Use(cors.New(config))
-	//r.Use(Cors())
 
 	if configs.GetGlobalConfig().Logconf.LoggerToFile {
 		r.Use(util.LoggerToFile())
