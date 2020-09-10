@@ -70,7 +70,8 @@ func MycardSandOrderAdd(c *gin.Context) {
 				if nmycarderp.ReturnCode == "1" {
 					//給前端3-2
 					util.Test("Redirect mycard page")
-					c.Redirect(301, "http://test.mycard520.com.tw/MyCardPay/?AuthCode="+nmycarderp.AuthCode)
+					//c.Redirect(301, "http://test.mycard520.com.tw/MyCardPay/?AuthCode="+nmycarderp.AuthCode)
+					c.JSON(200, resp(200, "http://test.mycard520.com.tw/MyCardPay/?AuthCode="+nmycarderp.AuthCode))
 				} else {
 					c.JSON(411, resp(3001, nmycarderp))
 				}
