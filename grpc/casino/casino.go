@@ -192,6 +192,7 @@ func SendItemResult(o db.Order) bool {
 	a, err := c.DbIAPBuyResult(ctx, &casinoResu)
 	if err != nil {
 		util.Error("[GRPC-Casino] Could not get nonce: %v", err)
+		return false
 	}
 	util.Test(fmt.Sprint("[GRPC-Casino] Game 資料庫結果 :", a.Success))
 	return true

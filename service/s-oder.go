@@ -65,7 +65,9 @@ func ToMycardTradeQuery(AuthCode string) bool {
 		//TODO grpc 給order 傳送確認資料 要確認遊戲別
 		switch model.OrderSubidQuery(db.Order{OrderSubID: Form.FacTradeSeq}).PaymentTypeID {
 		case 2:
-			casinogrpc.SendItemResult(model.OrderSubidQuery(db.Order{OrderSubID: Form.FacTradeSeq}))
+			if casinogrpc.SendItemResult(model.OrderSubidQuery(db.Order{OrderSubID: Form.FacTradeSeq})) {
+				return false
+			}
 		}
 		return true
 	}

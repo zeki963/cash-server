@@ -39,7 +39,7 @@ func MycardSandOrderAdd(c *gin.Context) {
 	o.OrderOriginalData = ""
 	o.OrderDate = util.GetUTCTime()
 	o.ReceivedCallbackDate = util.GetUTCTime()
-	var gameOrderStatus bool = false
+	var checkgameOrderStatus bool = false
 	if o.OrderClientID != "" && o.OrderItemID != "" && o.OrderItemPrice != "" {
 		util.Test(fmt.Sprint("要求Mycard認証 -> token:", p.PlatformToken))
 		util.Test(fmt.Sprint("PlatformQueryStatus: ", service.PlatformQueryStatus(p), " / PlatformGroupAuthQuery: ", service.PlatformGroupAuthQuery(p, "1")))
@@ -54,14 +54,14 @@ func MycardSandOrderAdd(c *gin.Context) {
 					//casino資料庫建單
 					var gameOrderSubID int32
 					casinoUser := casinogrpc.VetifyUserID(o.OrderClientID)
-					gameOrderStatus, gameOrderSubID = casinogrpc.SendItemBuy(casinoUser, o.OrderItemID)
+					checkgameOrderStatus, gameOrderSubID = casinogrpc.SendItemBuy(casinoUser, o.OrderItemID)
 					o.OrderGameSubID = gameOrderSubID
 					o.OrderSubID = service.GroupOrderGet(p.PlatformGroupID, o.StageType)
 					o.PaymentTypeID = p.PlatformGroupID
 					o.PlatformID = int(p.ID)
 				}
 			}
-			if gameOrderStatus != false {
+			if checkgameOrderStatus != false {
 				service.OrderAdd(o)
 				//資料庫建單
 				util.Test(fmt.Sprintf("Order 資料： %+v", o))
@@ -150,8 +150,12 @@ func CallbackMycard(c *gin.Context) {
 	util.Test(fmt.Sprintf("%+v", OrderMycard))
 	if OrderMycard.PayResult == "3" {
 		service.OrderCallbackSave(OrderMycard)
-		//TODO  Redirect  網址要換
-		c.Redirect(301, "http://google.com")
+		//TODO  Redirect  網址要依遊戲別更換
+		switch (service.OrderFind(db.Order{OrderSubID: OrderMycard.FacTradeSeq}).PaymentTypeID) {
+		case 2:
+			c.Redirect(301, "https://www.cqicasino.com/")
+		}
+
 	} else {
 		c.JSON(411, resp(3002, fmt.Sprint(encryption.Urldecrypt(OrderMycard.ReturnMsg))))
 	}
