@@ -71,7 +71,7 @@ func MycardSandOrderAdd(c *gin.Context) {
 					//給前端3-2
 					util.Test("Redirect mycard page")
 					//c.Redirect(301, "http://test.mycard520.com.tw/MyCardPay/?AuthCode="+nmycarderp.AuthCode)
-					c.JSON(200, resp(200, "http://test.mycard520.com.tw/MyCardPay/?AuthCode="+nmycarderp.AuthCode))
+					c.JSON(200, resp(200, fmt.Sprint("http://test.mycard520.com.tw/MyCardPay/?AuthCode="+nmycarderp.AuthCode)))
 				} else {
 					c.JSON(411, resp(3001, nmycarderp))
 				}
@@ -149,16 +149,22 @@ func CallbackMycard(c *gin.Context) {
 		util.Error(err.Error())
 	}
 	util.Test(fmt.Sprintf("%+v", OrderMycard))
+	//Mycard 驗證成功
 	if OrderMycard.PayResult == "3" {
 		service.OrderCallbackSave(OrderMycard)
 		//TODO  Redirect  網址要依遊戲別更換
 		switch (service.OrderFind(db.Order{OrderSubID: OrderMycard.FacTradeSeq}).PaymentTypeID) {
 		case 2:
-			c.Redirect(301, "https://www.cqicasino.com/")
+			c.Redirect(301, "https://www.cqicasino.com/mycard?succeed=true")
+		}
+	} else {
+		// 失敗
+		switch (service.OrderFind(db.Order{OrderSubID: OrderMycard.FacTradeSeq}).PaymentTypeID) {
+		case 2:
+			//c.JSON(411, resp(3002, fmt.Sprint(encryption.Urldecrypt(OrderMycard.ReturnMsg))))
+			c.Redirect(301, "https://www.cqicasino.com/mycard?succeed=false&msg="+fmt.Sprint(encryption.Urldecrypt(OrderMycard.ReturnMsg)))
 		}
 
-	} else {
-		c.JSON(411, resp(3002, fmt.Sprint(encryption.Urldecrypt(OrderMycard.ReturnMsg))))
 	}
 }
 
