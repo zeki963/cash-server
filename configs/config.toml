@@ -1,5 +1,7 @@
-# 運行模式 (debug:調試,test:測試,release:正式)
+# 運行模式 (debug:調試很多很多的log,test:測試,release:正式)
 runMode = "test"
+# 運行環境 (alpha:調試,beta:測試,prod:正式)
+runEnv = "beta"
 
 # swagger 配置
 swagger = true
@@ -39,5 +41,5 @@ facServiceID = "CQIG"
 # TODO 要切換環境
 # proip =  "35.187.151.133:30001" // betaip =  "35.194.245.46:30001"  //   alphaip ="34.92.237.98:30001"
 alphaip ="34.92.237.98:30001"
-betaip = "34.92.237.98:30001"
-proip =  "34.92.237.98:30001"
+betaip = "35.194.245.46:30001"
+prodip =  "35.187.151.133:30001"

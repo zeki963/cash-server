@@ -35,6 +35,7 @@ func init() {
 	util.Info(" < - SERVER INIT - > ")
 	configs.LoadGlobalConfig("")
 	util.Success("[MODE] > " + configs.GetGlobalConfig().RunMode)
+	util.Success("[ENV] > " + configs.GetGlobalConfig().RunEnv)
 	util.Info("[GRPC-Casino] > " + configs.GetGlobalConfig().Casino.Alphaip)
 	util.Info(" < - MyDB INIT - >")
 	if err := db.Initgorm(); err != nil {

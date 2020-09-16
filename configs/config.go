@@ -27,6 +27,13 @@ func LoadGlobalConfig(fpath string) error {
 		return err
 	}
 	global = c
+	if global.RunMode != "debug" || global.RunMode != "test" || global.RunMode != "release" {
+		panic("[ERROR] runMode 請確認參數設定檔")
+	}
+	if getCasinoEnvip() == "" {
+		panic("[ERROR] runEnv 請確認參數設定檔")
+	}
+	global.Casino.Envip = getCasinoEnvip()
 	return nil
 }
 
@@ -51,6 +58,7 @@ func ParseConfig(fpath string) (*Config, error) {
 //Config 配置參數
 type Config struct {
 	RunMode  string   `toml:"runMode"`
+	RunEnv   string   `toml:"runEnv"`
 	Swagger  bool     `toml:"swagger"`
 	HTTP     HTTP     `toml:"http"`
 	Logconf  Logconf  `toml:"logconf"`
@@ -119,5 +127,18 @@ type Mycard struct {
 type Casino struct {
 	Alphaip string `toml:"alphaip"`
 	Betaip  string `toml:"betaip"`
-	Proip   string `toml:"proip"`
+	Prodip  string `toml:"prodip"`
+	Envip   string
+}
+
+func getCasinoEnvip() (Envip string) {
+	switch GetGlobalConfig().RunEnv {
+	case "alpha":
+		return GetGlobalConfig().Casino.Alphaip
+	case "beta":
+		return GetGlobalConfig().Casino.Betaip
+	case "prod":
+		return GetGlobalConfig().Casino.Prodip
+	}
+	return ""
 }
