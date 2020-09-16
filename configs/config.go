@@ -27,7 +27,7 @@ func LoadGlobalConfig(fpath string) error {
 		return err
 	}
 	global = c
-	if global.RunMode != "debug" || global.RunMode != "test" || global.RunMode != "release" {
+	if global.RunMode != "debug" && global.RunMode != "test" && global.RunMode != "release" {
 		panic("[ERROR] runMode 請確認參數設定檔")
 	}
 	if getCasinoEnvip() == "" {
