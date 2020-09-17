@@ -16,6 +16,7 @@ import (
 // @contact.email zor@cqiserv.com
 func main() {
 	// server start
+	util.Info(configs.GetGlobalConfig().Casino.Envip)
 	util.Info(" < - SERVER START - > ")
 	//DB 連線關閉
 	defer db.SQLDBX.Close()

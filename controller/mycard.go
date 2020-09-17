@@ -162,7 +162,8 @@ func CallbackMycard(c *gin.Context) {
 		switch (service.OrderFind(db.Order{OrderSubID: OrderMycard.FacTradeSeq}).PaymentTypeID) {
 		case 2:
 			//c.JSON(411, resp(3002, fmt.Sprint(encryption.Urldecrypt(OrderMycard.ReturnMsg))))
-			c.Redirect(301, "https://www.cqicasino.com/mycard?succeed=false&msg="+fmt.Sprint(encryption.Urldecrypt(OrderMycard.ReturnMsg)))
+			msg, _ := encryption.Urldecrypt(OrderMycard.ReturnMsg)
+			c.Redirect(301, "https://www.cqicasino.com/mycard?succeed=false&msg="+msg)
 		}
 
 	}

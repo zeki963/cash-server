@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/keepalive"
 )
 
 //CasinoItem 給前端Item的格式
@@ -26,7 +27,13 @@ var GrpcCasino *grpc.ClientConn
 
 //GrpcCasinoCannot 連線
 func GrpcCasinoCannot() grpc.ClientConnInterface {
-	GrpcCasino, err := grpc.Dial(configs.GetGlobalConfig().Casino.Envip, grpc.WithInsecure(), grpc.WithBlock())
+	var kacp = keepalive.ClientParameters{
+		Time:                10 * time.Second, // send pings every 10 seconds if there is no activity
+		Timeout:             3 * time.Second,  // wait 3 second for ping ack before considering the connection dead
+		PermitWithoutStream: true,             // send pings even without active streams
+	}
+	GrpcCasino, err := grpc.Dial(configs.GetGlobalConfig().Casino.Envip, grpc.WithInsecure(), grpc.WithKeepaliveParams(kacp))
+	//GrpcCasino, err := grpc.Dial(configs.GetGlobalConfig().Casino.Envip, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
 		util.Error("[GRPC-Casino] Can not connect to gRPC server: %v", err)
 	}
