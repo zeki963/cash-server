@@ -138,7 +138,10 @@ func OrderQueryInfoMoreMycard(StartDateTime string, EndDateTime string) string {
 	// var columnName string
 	for _, v := range Orders {
 		util.Test(v.PaymentType + "," + v.PaymentID + "," + v.MycardTradeNo + "," + v.OrderSubID + "," + v.OrderClientID + "," + v.OrderItemPrice + "," + "NTD," + v.OrderDate.String() + "<BR>")
-		mycardstring = mycardstring + v.PaymentType + "," + v.PaymentID + "," + v.MycardTradeNo + "," + v.OrderSubID + "," + v.OrderClientID + "," + v.OrderItemPrice + "," + "NTD," + v.OrderDate.Format("2006-01-02 15:04:05") + "<BR>"
+		if v.PaymentType != "" {
+			mycardstring = mycardstring + v.PaymentType + "," + v.PaymentID + "," + v.MycardTradeNo + "," + v.OrderSubID + "," + v.OrderClientID + "," + v.OrderItemPrice + "," + "NTD," + v.OrderDate.Format("2006-01-02T15:04:05") + "<BR>"
+		}
+
 	}
 	// }
 

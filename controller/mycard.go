@@ -222,7 +222,9 @@ func TransactionCheck(c *gin.Context) {
 			// backform.CustomerID = newo.OrderClientID
 			// backform.Currency = "NTD"
 			// backform.TradeDateTime = newo.OrderOriginalData
-			retu = newo.PaymentType + "," + newo.PaymentID + "," + newo.MycardTradeNo + "," + newo.OrderSubID + "," + newo.OrderClientID + "," + newo.OrderItemPrice + "," + "NTD," + newo.OrderDate.Format("2006-01-02 15:04:05") + "<BR>"
+			if newo.PaymentType != "" {
+				retu = newo.PaymentType + "," + newo.PaymentID + "," + newo.MycardTradeNo + "," + newo.OrderSubID + "," + newo.OrderClientID + "," + newo.OrderItemPrice + "," + "NTD," + newo.OrderDate.Format("2006-01-02T15:04:05") + "<BR>"
+			}
 		}
 		c.String(200, retu)
 	} else {
