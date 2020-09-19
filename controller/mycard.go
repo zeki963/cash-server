@@ -185,7 +185,7 @@ func Transactioncallback(c *gin.Context) {
 // TransactionCheck  這是給Mycard 摳背專用的 3.7
 func TransactionCheck(c *gin.Context) {
 	util.Info("<< Mycard 摳背專用的 3.7 >>")
-	var retu interface{}
+	var retu string
 	type TransactionCheckForm struct {
 		StartDateTime string `form:"StartDateTime" binding:"required"` //※開始日期(UTC+8) yyyy-mm-ddThr:mi:se(24 )
 		EndDateTime   string `form:"EndDateTime" binding:"required"`   // ※結束日期(UTC+8) 2014-12-01T00:00:00
@@ -201,30 +201,30 @@ func TransactionCheck(c *gin.Context) {
 		Currency      string //※幣別
 		TradeDateTime string //※交易成功時間
 	}
-	var backform TransactionCheckBackForm
+	//var backform TransactionCheckBackForm
 	form := &TransactionCheckForm{}
 	c.Bind(&form)
 	fmt.Printf("%+v", form)
 	if form.MyCardTradeNo != "" || form.StartDateTime != "" {
 		if form.StartDateTime != "" {
 			util.Test("多筆查詢")
-			retu = model.OrderQueryInfoMoreJSON(form.StartDateTime, form.EndDateTime)
+			retu = model.OrderQueryInfoMoreMycard(form.StartDateTime, form.EndDateTime)
 		} else {
 			util.Test("單筆查詢")
 			var o db.Order
 			o.MycardTradeNo = form.MyCardTradeNo
 			newo := service.OrderQueryOneMyCardTradeNo(o)
-			backform.Amount = newo.OrderItemPrice
-			backform.TradeSeq = newo.PaymentID
-			backform.PaymentType = newo.PaymentType
-			backform.MyCardTradeNo = newo.MycardTradeNo
-			backform.FacTradeSeq = newo.OrderSubID
-			backform.CustomerID = newo.OrderClientID
-			backform.Currency = "NTD"
-			backform.TradeDateTime = newo.OrderOriginalData
-			retu = backform
+			// backform.Amount = newo.OrderItemPrice
+			// backform.TradeSeq = newo.PaymentID
+			// backform.PaymentType = newo.PaymentType
+			// backform.MyCardTradeNo = newo.MycardTradeNo
+			// backform.FacTradeSeq = newo.OrderSubID
+			// backform.CustomerID = newo.OrderClientID
+			// backform.Currency = "NTD"
+			// backform.TradeDateTime = newo.OrderOriginalData
+			retu = newo.PaymentType + "," + newo.PaymentID + "," + newo.MycardTradeNo + "," + newo.OrderSubID + "," + newo.OrderClientID + "," + newo.OrderItemPrice + "," + "NTD," + newo.OrderDate.Format("2006-01-02 15:04:05") + "<BR>"
 		}
-		c.JSON(200, resp(200, retu))
+		c.String(200, retu)
 	} else {
 		c.JSON(200, resp(1001, nil))
 	}

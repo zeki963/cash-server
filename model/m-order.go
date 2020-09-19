@@ -127,3 +127,20 @@ func OrderQueryInfoMoreJSON(StartDateTime string, EndDateTime string) []db.Order
 	util.Test(fmt.Sprintln("All 交易單明細 : ", Orders))
 	return Orders
 }
+
+//OrderQueryInfoMoreMycard  查詢部份交易單明細 Mycard3.7
+func OrderQueryInfoMoreMycard(StartDateTime string, EndDateTime string) string {
+	mycardstring := ""
+	var Orders []db.Order
+	db.SQLDBX.Where("created_at > ? AND created_at <  ?", StartDateTime, EndDateTime).Find(&Orders)
+	util.Test(fmt.Sprintln("All 交易單明細 : ", Orders))
+	util.Test(fmt.Sprintln("1交易單明細 : ", Orders[0]))
+	// var columnName string
+	for _, v := range Orders {
+		util.Test(v.PaymentType + "," + v.PaymentID + "," + v.MycardTradeNo + "," + v.OrderSubID + "," + v.OrderClientID + "," + v.OrderItemPrice + "," + "NTD," + v.OrderDate.String() + "<BR>")
+		mycardstring = mycardstring + v.PaymentType + "," + v.PaymentID + "," + v.MycardTradeNo + "," + v.OrderSubID + "," + v.OrderClientID + "," + v.OrderItemPrice + "," + "NTD," + v.OrderDate.Format("2006-01-02 15:04:05") + "<BR>"
+	}
+	// }
+
+	return mycardstring
+}
