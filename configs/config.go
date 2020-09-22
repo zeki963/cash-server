@@ -95,6 +95,7 @@ type MySQL struct {
 	Password   string `toml:"password"`
 	DBName     string `toml:"dbName"`
 	Parameters string `toml:"parameters"`
+	Timezone   string `toml:"timezone"`
 }
 
 //Postgres 配置參數
@@ -114,8 +115,8 @@ func (a Postgres) DSN() string {
 
 //DSN mysql-DSN 數據庫連接串
 func (a MySQL) DSN() string {
-	return fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?%s",
-		a.User, a.Password, a.Host, a.Port, a.DBName, a.Parameters)
+	return fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?%s&loc=%s",
+		a.User, a.Password, a.Host, a.Port, a.DBName, a.Parameters, a.Timezone)
 }
 
 //Mycard 配置參數

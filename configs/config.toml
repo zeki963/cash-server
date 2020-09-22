@@ -25,6 +25,7 @@ user = "root"
 password = "cqig7777"
 dbname = "zor"
 parameters = "parseTime=true"
+timezone="Asia/Shanghai"
 
 # Postgres 
 [Postgres]
