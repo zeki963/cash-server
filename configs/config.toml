@@ -24,8 +24,7 @@ port= 32001
 user = "root"
 password = "cqig7777"
 dbname = "zor"
-parameters = "parseTime=true"
-timezone="Asia/Shanghai"
+parameters = "parseTime=true&loc=Local"
 
 # Postgres 
 [Postgres]

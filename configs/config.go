@@ -115,8 +115,8 @@ func (a Postgres) DSN() string {
 
 //DSN mysql-DSN 數據庫連接串
 func (a MySQL) DSN() string {
-	return fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?%s&loc=%s",
-		a.User, a.Password, a.Host, a.Port, a.DBName, a.Parameters, a.Timezone)
+	return fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?%s",
+		a.User, a.Password, a.Host, a.Port, a.DBName, a.Parameters)
 }
 
 //Mycard 配置參數
