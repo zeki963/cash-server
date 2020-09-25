@@ -36,6 +36,9 @@ func MycardSandOrderAdd(c *gin.Context) {
 	var o db.Order
 	c.Bind(&o)
 	o.StageType = 0
+	if configs.GetGlobalConfig().RunEnv == "prod" {
+		o.StageType = 1
+	}
 	o.OrderOriginalData = ""
 	o.OrderDate = util.GetUTCTime()
 	o.ReceivedCallbackDate = util.GetUTCTime()
@@ -70,8 +73,12 @@ func MycardSandOrderAdd(c *gin.Context) {
 				if nmycarderp.ReturnCode == "1" {
 					//給前端3-2
 					util.Test("Redirect mycard page")
-					//c.Redirect(301, "http://test.mycard520.com.tw/MyCardPay/?AuthCode="+nmycarderp.AuthCode)
-					c.JSON(200, resp(200, fmt.Sprint("http://test.mycard520.com.tw/MyCardPay/?AuthCode="+nmycarderp.AuthCode)))
+					if configs.GetGlobalConfig().RunEnv == "prod" {
+						c.JSON(200, resp(200, fmt.Sprint("http://mycard520.com.tw/MyCardPay/?AuthCode="+nmycarderp.AuthCode)))
+					} else {
+						c.JSON(200, resp(200, fmt.Sprint("http://test.mycard520.com.tw/MyCardPay/?AuthCode="+nmycarderp.AuthCode)))
+					}
+
 				} else {
 					c.JSON(411, resp(3001, nmycarderp))
 				}
@@ -91,22 +98,25 @@ func toMycardSandAuthGlobal(userid string, itemid string, itemprice string, serv
 	util.Info("<< ToMycardAuthGlobal 向 MyCard 要求交易授權碼 >>")
 	var (
 		authURL             = "https://testb2b.mycard520.com.tw/MyBillingPay/v1.1/AuthGlobal"
-		facServiceID string = configs.GetGlobalConfig().Mycard.FacServiceID               //廠商服務代碼
-		facTradeSeq  string = subid                                                       //廠商交易序號 - 廠商自訂，每筆訂單編號不得重覆，為訂單資料 key 值(只能用英數、底線(_)及連字號(-))
-		tradeType    string = "2"                                                         //交易模式 - 1:Android SDK (手遊適用) 2:WEB
-		serverID     string = serverid                                                    //伺服器代號 - 用戶在廠商端的伺服器編號(僅允許 0-9 a-z A-Z . _ - )
-		customerID   string = userid                                                      //會員代號 - 用戶在廠商端的會員唯一識別編號(僅允許 0-9 a-z A-Z . _ -# $ % & * ~ : / ^ ! + @)
-		paymentType  string                                                               //付費方式 / 付費方式群組代碼 - 參閱 4.1 付費方式和品項代碼查詢 可不填**
-		itemCode     string                                                               //品項代碼  - 參閱 4.1 付費方式和品項代碼查詢 可不填**
-		productName  string = itemid                                                      //產品名稱 - 用戶購買的產品名稱(不可以輸入 ' < > 其他皆可)
-		amount       string = itemprice                                                   //交易金額 - 可以為整數，若有小數點最多 2 位
-		currency     string = "TWD"                                                       //幣別
-		sandBoxMode  string = "true"                                                      //是否為測試環境
-		facReturnURL string = "https://test-cash.cqiserv.com/mycardsandbox/ordercallback" //廠商回傳網址
+		facServiceID string = configs.GetGlobalConfig().Mycard.FacServiceID   //廠商服務代碼
+		facTradeSeq  string = subid                                           //廠商交易序號 - 廠商自訂，每筆訂單編號不得重覆，為訂單資料 key 值(只能用英數、底線(_)及連字號(-))
+		tradeType    string = "2"                                             //交易模式 - 1:Android SDK (手遊適用) 2:WEB
+		serverID     string = serverid                                        //伺服器代號 - 用戶在廠商端的伺服器編號(僅允許 0-9 a-z A-Z . _ - )
+		customerID   string = userid                                          //會員代號 - 用戶在廠商端的會員唯一識別編號(僅允許 0-9 a-z A-Z . _ -# $ % & * ~ : / ^ ! + @)
+		paymentType  string                                                   //付費方式 / 付費方式群組代碼 - 參閱 4.1 付費方式和品項代碼查詢 可不填**
+		itemCode     string                                                   //品項代碼  - 參閱 4.1 付費方式和品項代碼查詢 可不填**
+		productName  string = itemid                                          //產品名稱 - 用戶購買的產品名稱(不可以輸入 ' < > 其他皆可)
+		amount       string = itemprice                                       //交易金額 - 可以為整數，若有小數點最多 2 位
+		currency     string = "TWD"                                           //幣別
+		sandBoxMode  string = "true"                                          //是否為測試環境
+		facReturnURL string = "https://cash.cqiserv.com/mycard/ordercallback" //廠商回傳網址
 	)
 	const (
 		Key string = "CQIGamesQ1FJR2FtZXM" //我們的KEY
 	)
+	if configs.GetGlobalConfig().RunEnv == "prod" {
+		authURL = "https://b2b.mycard520.com.tw/MyBillingPay/v1.1/AuthGlobal"
+	}
 	preHashValue := facServiceID + facTradeSeq + tradeType + serverID + customerID + paymentType + itemCode + productName + amount + currency + sandBoxMode + encryption.Urlencode(facReturnURL) + Key //準備加密字串
 	util.Test(fmt.Sprint("preHashValue : ", preHashValue))
 	hash := (encryption.Sha256encode(preHashValue))
@@ -214,14 +224,6 @@ func TransactionCheck(c *gin.Context) {
 			var o db.Order
 			o.MycardTradeNo = form.MyCardTradeNo
 			newo := service.OrderQueryOneMyCardTradeNo(o)
-			// backform.Amount = newo.OrderItemPrice
-			// backform.TradeSeq = newo.PaymentID
-			// backform.PaymentType = newo.PaymentType
-			// backform.MyCardTradeNo = newo.MycardTradeNo
-			// backform.FacTradeSeq = newo.OrderSubID
-			// backform.CustomerID = newo.OrderClientID
-			// backform.Currency = "NTD"
-			// backform.TradeDateTime = newo.OrderOriginalData
 			if newo.PaymentType != "" {
 				retu = newo.PaymentType + "," + newo.PaymentID + "," + newo.MycardTradeNo + "," + newo.OrderSubID + "," + newo.OrderClientID + "," + newo.OrderItemPrice + "," + "NTD," + newo.OrderDate.Format("2006-01-02T15:04:05") + "<BR>"
 			}

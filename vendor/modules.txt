@@ -5,7 +5,6 @@ cloud.google.com/go/compute/metadata
 github.com/BurntSushi/toml
 # github.com/Gre-Z/common v0.0.0-20191024025434-2dbc6bd196f9
 ## explicit
-github.com/Gre-Z/common/jtime
 # github.com/KyleBanks/depth v1.2.1
 github.com/KyleBanks/depth
 # github.com/PuerkitoBio/purell v1.1.1

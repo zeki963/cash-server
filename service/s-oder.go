@@ -1,6 +1,7 @@
 package service
 
 import (
+	"cash-server/configs"
 	"cash-server/db"
 	casinogrpc "cash-server/grpc/casino"
 	"cash-server/model"
@@ -40,6 +41,9 @@ func OrderCallbackSave(callbackform *db.OrderMycard) {
 // ToMycardTradeQuery 驗證 MyCard 交易結果 (Server to Server) 3.3
 func ToMycardTradeQuery(AuthCode string) bool {
 	authURL := "https://testb2b.mycard520.com.tw/MyBillingPay/v1.1/TradeQuery"
+	if configs.GetGlobalConfig().RunEnv == "prod" {
+		authURL = "https://b2b.mycard520.com.tw/MyBillingPay/v1.1/TradeQuery"
+	}
 	toServerVal := "AuthCode=" + AuthCode
 	util.Test(fmt.Sprint("ToMycardTradeQuery Auth : ", toServerVal))
 	resp, err := http.Post(authURL,
@@ -77,6 +81,9 @@ func ToMycardTradeQuery(AuthCode string) bool {
 // ToMycardPaymentConfirm 確認 MyCard 交易，並進行請款 (Server to Server) 3.4
 func ToMycardPaymentConfirm(AuthCode string) bool {
 	authURL := "https://testb2b.mycard520.com.tw/MyBillingPay/v1.1/PaymentConfirm"
+	if configs.GetGlobalConfig().RunEnv == "prod" {
+		authURL = "https://b2b.mycard520.com.tw/MyBillingPay/v1.1/PaymentConfirm"
+	}
 	toServerVal := "AuthCode=" + AuthCode
 	util.Test(fmt.Sprint("toServerVal : ", toServerVal))
 	resp, err := http.Post(authURL,

@@ -33,6 +33,7 @@ func LoadGlobalConfig(fpath string) error {
 	if getCasinoEnvip() == "" {
 		panic("[ERROR] runEnv 請確認參數設定檔")
 	}
+
 	global.Casino.Envip = getCasinoEnvip()
 	return nil
 }

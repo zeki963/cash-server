@@ -57,7 +57,7 @@ func InitRouter() *gin.Engine {
 	r.HTMLRender = loadTemplates("./templates")
 	r.Any("/", controller.Homepage)
 	r.GET("/demo", controller.Demopage)
-	rMycardSand := r.Group("mycardsandbox")
+	rMycardSand := r.Group("mycard")
 	{
 		rMycardSand.POST("/order", controller.MycardSandOrderAdd)    //新增 mycard 建單 Add
 		rMycardSand.Any("/ordercallback", controller.CallbackMycard) //給Mycard廠商用ReturnURL 3.2
