@@ -29,7 +29,7 @@ import (
 // @Param PlatformToken formData string true "平台token代號"
 // @success 200 {object}  Resp "OK"
 // @success 411 {object}  Resp "Error"
-// @Router /mycardsandbox/order [post]
+// @Router /mycard/order [post]
 func MycardSandOrderAdd(c *gin.Context) {
 	var p db.Platform
 	c.Bind(&p)

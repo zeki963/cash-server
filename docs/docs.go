@@ -347,7 +347,7 @@ var doc = `{
                 }
             }
         },
-        "/mycardsandbox/order": {
+        "/mycard/order": {
             "post": {
                 "consumes": [
                     "application/x-www-form-urlencoded"
@@ -447,14 +447,17 @@ var doc = `{
                 "callbackOriginalData": {
                     "type": "string"
                 },
-                "callbackURL": {
+                "createdAt": {
                     "type": "string"
                 },
-                "createdAt": {
+                "editor": {
                     "type": "string"
                 },
                 "id": {
                     "type": "integer"
+                },
+                "mycardTradeNo": {
+                    "type": "string"
                 },
                 "orderClientID": {
                     "type": "string"
@@ -463,7 +466,7 @@ var doc = `{
                     "type": "string"
                 },
                 "orderGameSubID": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "orderItemID": {
                     "type": "string"
@@ -477,7 +480,16 @@ var doc = `{
                 "orderSubID": {
                     "type": "string"
                 },
+                "paymentAuth": {
+                    "type": "string"
+                },
+                "paymentConfirm": {
+                    "type": "string"
+                },
                 "paymentID": {
+                    "type": "string"
+                },
+                "paymentType": {
                     "type": "string"
                 },
                 "paymentTypeID": {
@@ -504,6 +516,9 @@ var doc = `{
             "type": "object",
             "properties": {
                 "createdAt": {
+                    "type": "string"
+                },
+                "editor": {
                     "type": "string"
                 },
                 "id": {

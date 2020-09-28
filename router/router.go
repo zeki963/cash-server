@@ -2,7 +2,6 @@ package router
 
 import (
 	"cash-server/configs"
-	"path/filepath"
 
 	"cash-server/controller"
 	// cash-server/docs swag DOC
@@ -10,7 +9,7 @@ import (
 	"cash-server/pkg/util"
 
 	"github.com/gin-contrib/cors"
-	"github.com/gin-contrib/multitemplate"
+
 	"github.com/gin-gonic/gin"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"github.com/swaggo/gin-swagger/swaggerFiles"
@@ -54,9 +53,9 @@ func InitRouter() *gin.Engine {
 
 	//DEMO 用
 	r.Static("/static", "./templates/static")
-	r.HTMLRender = loadTemplates("./templates")
-	r.Any("/", controller.Homepage)
-	r.GET("/demo", controller.Demopage)
+	r.Any("/", func(c *gin.Context) {
+		c.JSON(200, gin.H{"message": "200"})
+	})
 	rMycardSand := r.Group("mycard")
 	{
 		rMycardSand.POST("/order", controller.MycardSandOrderAdd)    //新增 mycard 建單 Add
@@ -88,26 +87,5 @@ func InitRouter() *gin.Engine {
 		r.Any("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	}
 	r.NoRoute(controller.NoResponse)
-	return r
-}
-
-//loadTemplates 前端DEMO用
-func loadTemplates(templatesDir string) multitemplate.Renderer {
-	r := multitemplate.NewRenderer()
-	layouts, err := filepath.Glob(templatesDir + "/layouts/*.html")
-	if err != nil {
-		panic(err.Error())
-	}
-	includes, err := filepath.Glob(templatesDir + "/includes/*.html")
-	if err != nil {
-		panic(err.Error())
-	}
-	// Generate our templates map from our layouts/ and includes/ directories
-	for _, include := range includes {
-		layoutCopy := make([]string, len(layouts))
-		copy(layoutCopy, layouts)
-		files := append(layoutCopy, include)
-		r.AddFromFiles(filepath.Base(include), files...)
-	}
 	return r
 }

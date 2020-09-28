@@ -25,18 +25,20 @@ definitions:
     properties:
       callbackOriginalData:
         type: string
-      callbackURL:
-        type: string
       createdAt:
+        type: string
+      editor:
         type: string
       id:
         type: integer
+      mycardTradeNo:
+        type: string
       orderClientID:
         type: string
       orderDate:
         type: string
       orderGameSubID:
-        type: string
+        type: integer
       orderItemID:
         type: string
       orderItemPrice:
@@ -45,7 +47,13 @@ definitions:
         type: string
       orderSubID:
         type: string
+      paymentAuth:
+        type: string
+      paymentConfirm:
+        type: string
       paymentID:
+        type: string
+      paymentType:
         type: string
       paymentTypeID:
         type: integer
@@ -63,6 +71,8 @@ definitions:
   db.Platform:
     properties:
       createdAt:
+        type: string
+      editor:
         type: string
       id:
         type: integer
@@ -302,7 +312,7 @@ paths:
       summary: GetItem 查詢casino用戶
       tags:
       - Casino
-  /mycardsandbox/order:
+  /mycard/order:
     post:
       consumes:
       - application/x-www-form-urlencoded
