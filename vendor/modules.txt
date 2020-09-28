@@ -3,8 +3,6 @@ cloud.google.com/go/compute/metadata
 # github.com/BurntSushi/toml v0.3.1
 ## explicit
 github.com/BurntSushi/toml
-# github.com/Gre-Z/common v0.0.0-20191024025434-2dbc6bd196f9
-## explicit
 # github.com/KyleBanks/depth v1.2.1
 github.com/KyleBanks/depth
 # github.com/PuerkitoBio/purell v1.1.1
@@ -28,9 +26,6 @@ github.com/dgrijalva/jwt-go
 # github.com/gin-contrib/cors v1.3.1
 ## explicit
 github.com/gin-contrib/cors
-# github.com/gin-contrib/multitemplate v0.0.0-20200514145638-4955c9347179
-## explicit
-github.com/gin-contrib/multitemplate
 # github.com/gin-contrib/sse v0.1.0
 github.com/gin-contrib/sse
 # github.com/gin-gonic/contrib v0.0.0-20191209060500-d6e26eeaa607

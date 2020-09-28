@@ -63,7 +63,7 @@ func InitRouter() *gin.Engine {
 	}
 	rMycardCallSand := r.Group("mycardcall", MycardCallAuth()) //rmycardC  Mycard Call back!! 榜定白名單
 	{
-		rMycardCallSand.Any("/transactioncallback", controller.Transactioncallback) //給Mycard廠商用ReturnURL 3.6
+		rMycardCallSand.Any("/transactioncallback", controller.TransactionCallback) //給Mycard廠商用ReturnURL 3.6
 		rMycardCallSand.Any("/transactioncheck", controller.TransactionCheck)       //給Mycard廠商用ReturnURL 3.7
 	}
 	rCasino := r.Group("casino")

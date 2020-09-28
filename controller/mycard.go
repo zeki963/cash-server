@@ -179,8 +179,8 @@ func CallbackMycard(c *gin.Context) {
 	}
 }
 
-// Transactioncallback  這是給Mycard 摳背專用的 3.6
-func Transactioncallback(c *gin.Context) {
+// TransactionCallback  這是給Mycard 摳背專用的 3.6
+func TransactionCallback(c *gin.Context) {
 	util.Info("<< Mycard 摳背專用的 3.6 >>")
 	transactioncallbackForm := &db.TransactioncallbackForm{}
 	form := &db.MycardData{}
