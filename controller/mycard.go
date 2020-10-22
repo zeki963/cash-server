@@ -117,7 +117,9 @@ func toMycardSandAuthGlobal(userid string, itemid string, itemprice string, serv
 	if configs.GetGlobalConfig().RunEnv == "prod" {
 		authURL = "https://b2b.mycard520.com.tw/MyBillingPay/v1.1/AuthGlobal"
 		facReturnURL = "https://cash.cqiserv.com/mycard/ordercallback"
+		sandBoxMode = "false"
 	}
+
 	preHashValue := facServiceID + facTradeSeq + tradeType + serverID + customerID + paymentType + itemCode + productName + amount + currency + sandBoxMode + encryption.Urlencode(facReturnURL) + Key //準備加密字串
 	util.Test(fmt.Sprint("preHashValue : ", preHashValue))
 	hash := (encryption.Sha256encode(preHashValue))
