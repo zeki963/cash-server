@@ -74,7 +74,7 @@ func MycardSandOrderAdd(c *gin.Context) {
 					//給前端3-2
 					util.Test("Redirect mycard page")
 					if configs.GetGlobalConfig().RunEnv == "prod" {
-						c.JSON(200, resp(200, fmt.Sprint("http://mycard520.com.tw/MyCardPay/?AuthCode="+nmycarderp.AuthCode)))
+						c.JSON(200, resp(200, fmt.Sprint("http://www.mycard520.com.tw/MyCardPay/?AuthCode="+nmycarderp.AuthCode)))
 					} else {
 						c.JSON(200, resp(200, fmt.Sprint("http://test.mycard520.com.tw/MyCardPay/?AuthCode="+nmycarderp.AuthCode)))
 					}
